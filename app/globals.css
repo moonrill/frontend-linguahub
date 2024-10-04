@@ -2,3 +2,123 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter/Inter-VariableFont_opsz,wght.ttf') format('tff');
+}
+
+body {
+  font-family: 'Inter';
+}
+
+a {
+  @apply no-underline;
+}
+
+.ant-form-item {
+  margin-bottom: 16px;
+}
+
+.ant-input-affix-wrapper {
+  border: none;
+  background-color: #f4f4f5 !important;
+  padding: 0 1.5rem !important;
+  border-radius: 1rem !important;
+  min-height: 2.5rem;
+}
+
+.ant-input-affix-wrapper-focused {
+  border: none;
+  box-shadow: 0 0 0 2px white !important;
+  background-color: #f4f4f5 !important;
+}
+
+.ant-input-password-icon {
+  cursor: pointer;
+}
+
+.ant-col.ant-form-item-label {
+  padding: 0 0 10px 0 !important;
+}
+
+.ant-input-status-error {
+  background-color: #f4f4f5 !important;
+  border: 2px solid #f43f5e !important;
+  color: #f43f5e;
+}
+
+.ant-input-status-error > input::placeholder {
+  color: #f43f5e;
+}
+
+.ant-input-status-error > .ant-input-suffix * {
+  color: #f43f5e !important;
+}
+
+.ant-form-item-explain {
+  margin-top: 4px;
+}
+
+.ant-form-item-explain-error {
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+  line-height: 1rem;
+}
+
+.ant-btn:disabled {
+  border: none;
+}
+
+.ant-steps-item-active
+  > .ant-steps-item-container
+  > .ant-steps-item-content
+  > .ant-steps-item-title {
+  font-weight: 600;
+  color: #2563eb !important;
+}
+
+.ant-steps-item > .ant-steps-item-container > .ant-steps-item-tail {
+  top: 22px;
+  margin-inline-start: 62px;
+  padding: 0 28px;
+}
+
+.ant-steps-item > .ant-steps-item-container > .ant-steps-item-content {
+  margin-inline-start: 10px;
+}
+
+.ant-steps-item-content > .ant-steps-item-title {
+  font-size: 14px;
+  line-height: 1.5rem;
+  font-weight: 500;
+}
+
+.ant-steps-item-container > .ant-steps-item-icon {
+  width: 45px;
+  height: 45px;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.ant-steps-item-container > .ant-steps-item-icon > .ant-steps-icon {
+  font-size: 16px;
+}
+
+.ant-picker-outlined:focus-within {
+  border: none !important;
+  box-shadow: 0 0 0 2px white !important;
+  background-color: #f4f4f5;
+}
+
+.ant-select-selector {
+  border: none !important;
+  background-color: #f4f4f5 !important;
+  padding: 0 24px !important;
+  border-radius: 1rem !important;
+  box-shadow: 0 0 0 2px white !important;
+}
+
+.ant-select-arrow {
+  margin-right: 18px !important;
+}

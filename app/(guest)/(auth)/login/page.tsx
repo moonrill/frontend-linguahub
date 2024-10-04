@@ -1,142 +1,118 @@
-"use client";
+'use client';
 
-import React, {useState} from "react";
-// import {observer} from 'mobx-react-lite';
-import {Button, Card, Checkbox, Col, Form, Input, Row, Typography} from 'antd';
-import {LockOutlined, UserOutlined} from '@ant-design/icons';
-// import ParticlesLayout from "../components/Layout/ParticlesLayout";
+import { Icon } from '@iconify-icon/react';
+import { Button, Form, Input, message } from 'antd';
+import Link from 'next/link';
 
 const Login = () => {
-    // const store = useStore();
-    const [loading, setLoading] = useState(false);
+  const onFinish = async (values: any) => {
+    try {
+      const data = {
+        email: values?.email,
+        password: values?.password,
+      };
 
-    // let history = useHistory();
+      console.log(data);
+    } catch (error: any) {
+      message.error('test');
+    }
+  };
 
-    const onFinish = (values: any) => {
-        console.log('Received values of form: ', values);
-        enterLoading(values).then(res => {
-            console.log(res, "awasaa");
-        }).catch((error) => {
-            console.log({error}, "awasaa error");
-        });
-    };
+  return (
+    <>
+      <div className="mt-24 flex flex-col gap-8 lg:p-4">
+        <div className="flex flex-col gap-2">
+          <h1 className="text-[56px] font-semibold">Sign In</h1>
+          <p className="text-zinc-600">
+            Please enter your email and password below to connect with your
+            LinguaHub account.
+          </p>
+        </div>
 
-    const enterLoading = async (props: any) => {
-        // store.setInitialToken("ayayay", "clap");
-        // return history.push("/app/page_example_1");
-    };
-
-    return <div style={{width: '100vw', display: 'flex', justifyContent: 'center'}}>
-        <Row justify={'center'}>
-            <Col>
-                <div style={{
-                    display: 'flex',
-                    justifyContent: 'flex-start',
-                    marginTop: '5vh',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                }}>
-                    <div style={{display: 'flex', flexDirection: 'column', alignItems: 'stretch'}}>
-                        <Typography.Paragraph
-                            style={{
-                                margin: 0,
-                                padding: 0,
-                                fontSize: 20,
-                                marginLeft: 5,
-                                fontWeight: 600,
-                                color: "#413d3e",
-                            }}
-                        >
-                            Boilerplate
-                        </Typography.Paragraph>
-                    </div>
-                    <Card
-                        style={{width: 320, textAlign: 'center'}}
-                        headStyle={{fontSize: 13, fontWeight: 200}}
-                        className={"shadow"}
-                        bordered={true}
-                        title={'Sign in to your account'}
-                    >
-                        <Form
-                            layout={'vertical'}
-                            name="normal_login"
-                            className="login-form"
-                            onFinish={onFinish}
-                        >
-                            <Form.Item
-                                label="Email"
-                                name="email"
-                                // size={'large'}
-                                rules={[{required: false, message: 'Please input your Username!'}]}
-                            >
-                                <Input
-                                    prefix={<UserOutlined className="site-form-item-icon"/>}
-                                    type="text"
-                                    placeholder="Email"/>
-                            </Form.Item>
-
-                            <Form.Item
-                                style={{
-                                    marginBottom: 0,
-                                }}
-                                label="Password"
-                                name="password"
-                                // size={'large'}
-                                rules={[{required: false, message: 'Please input your Password!'}]}
-                            >
-                                <Input.Password
-                                    prefix={<LockOutlined className="site-form-item-icon"/>}
-                                    type="password"
-                                    placeholder="Password"
-                                />
-                            </Form.Item>
-                            <Form.Item
-                                style={{
-                                    marginTop: 0,
-                                    marginBottom: 20,
-                                    padding: 0
-                                }}
-                                // label="Password"
-                                name="forgot-password"
-                                // size={'small'}
-                                rules={[{required: false, message: 'Please input your Password!'}]}
-                            >
-                                <a className="login-form-forgot" href="">
-                                    Forgot password
-                                </a>
-                            </Form.Item>
-
-                            <Form.Item
-                                style={{
-                                    marginBottom: 5,
-                                    textAlign: 'left'
-                                }}>
-                                <Form.Item name="remember" valuePropName="checked" noStyle>
-                                    <Checkbox>Remember me</Checkbox>
-                                </Form.Item>
-                            </Form.Item>
-
-                            <Form.Item
-                                style={{
-                                    marginBottom: 0,
-                                }}>
-                                <Button type="primary"
-                                        block
-                                        loading={loading}
-                                        htmlType="submit"
-                                        size={'large'}
-                                        onSubmit={enterLoading}
-                                        className="login-form-button">
-                                    Sign In
-                                </Button>
-                            </Form.Item>
-                        </Form>
-                    </Card>
-                </div>
-            </Col>
-        </Row>
-
-    </div>;
+        <div>
+          <Form
+            className="flex flex-col"
+            autoComplete="off"
+            requiredMark={false}
+            layout="vertical"
+            onFinish={onFinish}
+          >
+            <Form.Item
+              name={'email'}
+              validateDebounce={500}
+              rules={[
+                {
+                  type: 'email',
+                  message: 'Please enter a valid email',
+                },
+                {
+                  required: true,
+                  message: 'Please enter your email',
+                },
+              ]}
+            >
+              <Input
+                type="email"
+                placeholder="Enter your email"
+                suffix={
+                  <Icon
+                    icon={'ic:round-email'}
+                    height={24}
+                    className="text-zinc-400"
+                  />
+                }
+                className="h-16 rounded-2xl border-none bg-zinc-100 hover:bg-zinc-200 px-6 font-medium"
+              />
+            </Form.Item>
+            <Form.Item
+              name={'password'}
+              validateDebounce={500}
+              rules={[
+                { required: true, message: 'Please enter your password' },
+              ]}
+            >
+              <Input.Password
+                placeholder="Enter your password"
+                className="h-16 rounded-2xl border-none bg-zinc-100 hover:bg-zinc-200 px-6 font-medium"
+                iconRender={(visible) =>
+                  visible ? (
+                    <Icon
+                      icon={'solar:eye-closed-bold'}
+                      height={24}
+                      style={{ color: '#a1a1aa' }}
+                    />
+                  ) : (
+                    <Icon
+                      icon={'solar:eye-bold'}
+                      height={24}
+                      style={{ color: '#a1a1aa' }}
+                    />
+                  )
+                }
+              />
+            </Form.Item>
+            <Form.Item className="mt-4">
+              <Button
+                className="w-full py-7 rounded-full focus:ring-0"
+                type="primary"
+                htmlType="submit"
+              >
+                Sign in
+              </Button>
+            </Form.Item>
+          </Form>
+          <div className="w-full flex justify-center">
+            <p className="text-sm">
+              Don't have an account?{' '}
+              <Link href={'/register'} className="text-blue-600 font-medium">
+                Create account
+              </Link>
+            </p>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 };
 
 export default Login;

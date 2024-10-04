@@ -28,7 +28,9 @@ export default function RootLayout({
 
       <body>
         <Script src="/api/env" strategy={'beforeInteractive'}></Script>
-        <Provider>{children}</Provider>
+        <Provider>
+          <body>{children}</body>
+        </Provider>
       </body>
     </html>
   );

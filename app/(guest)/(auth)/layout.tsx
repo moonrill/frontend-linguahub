@@ -1,7 +1,47 @@
-import React from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
 
-const AuthLayout = ({ children }: React.PropsWithChildren) => {
-  return <div>{children}</div>;
+const AuthLayout = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <div className="flex min-h-screen p-8 gap-8 bg-white">
+      {/* Left side */}
+      <div className="w-[756px] flex flex-col ">
+        <nav className="flex justify-between items-center mb-8">
+          <div>
+            <Image
+              src={'/images/logo.png'}
+              alt={'logo'}
+              width={177}
+              height={43}
+            />
+          </div>
+
+          <div className="flex gap-7">
+            <Link href={'/'} className="font-medium text-blue-600 text-base">
+              Home
+            </Link>
+            <Link href={'/'} className="font-medium text-blue-600 text-base">
+              Event
+            </Link>
+          </div>
+        </nav>
+
+        {/* Wrapper for children to take remaining height */}
+        <div className="flex-grow overflow-auto">{children}</div>
+      </div>
+
+      {/* Right side */}
+      <div className="w-3/5 relative hidden lg:block">
+        <Image
+          src="/images/auth.jpg"
+          alt="Login Illustration"
+          layout="fill"
+          objectFit="cover"
+          className="rounded-[28px]"
+        />
+      </div>
+    </div>
+  );
 };
 
 export default AuthLayout;
