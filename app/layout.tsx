@@ -1,8 +1,14 @@
 import 'antd/dist/reset.css';
 import { Metadata } from 'next';
+import { Inter } from 'next/font/google';
 import Script from 'next/script';
 import './globals.css';
 import { Provider } from './provider';
+
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+});
 
 export const metadata: Metadata = {
   title: {
@@ -18,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang='en'>
       {/* ugh */}
       {/*
         <head /> will contain the components returned by the nearest parent
@@ -26,11 +32,9 @@ export default function RootLayout({
       */}
       <head />
 
-      <body>
-        <Script src="/api/env" strategy={'beforeInteractive'}></Script>
-        <Provider>
-          <body>{children}</body>
-        </Provider>
+      <body className={inter.className}>
+        <Script src='/api/env' strategy={'beforeInteractive'}></Script>
+        <Provider>{children}</Provider>
       </body>
     </html>
   );
