@@ -4,6 +4,7 @@ export type BaseFormData = {
   email: string;
   gender: 'male' | 'female';
   password: string;
+  confirmPassword: string;
   dateOfBirth: string;
   phoneNumber: string;
   province: string;
