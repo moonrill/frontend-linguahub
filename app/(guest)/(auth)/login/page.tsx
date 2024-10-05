@@ -4,15 +4,15 @@ import { Icon } from '@iconify-icon/react';
 import { Button, Form, Input, message } from 'antd';
 import Link from 'next/link';
 
-const Login = () => {
-  const onFinish = async (values: any) => {
-    try {
-      const data = {
-        email: values?.email,
-        password: values?.password,
-      };
+type LoginData = {
+  email: string;
+  password: string;
+};
 
-      console.log(data);
+const Login = () => {
+  const onFinish = async (values: LoginData) => {
+    try {
+      console.log(values);
     } catch (error: any) {
       message.error('test');
     }
@@ -20,10 +20,10 @@ const Login = () => {
 
   return (
     <>
-      <div className="mt-24 flex flex-col gap-8 lg:p-4">
-        <div className="flex flex-col gap-2">
-          <h1 className="text-[56px] font-semibold">Sign In</h1>
-          <p className="text-zinc-600">
+      <div className='mt-24 flex flex-col gap-8 lg:p-4'>
+        <div className='flex flex-col gap-2'>
+          <h1 className='text-[56px] font-semibold'>Sign In</h1>
+          <p className='text-zinc-600'>
             Please enter your email and password below to connect with your
             LinguaHub account.
           </p>
@@ -31,10 +31,10 @@ const Login = () => {
 
         <div>
           <Form
-            className="flex flex-col"
-            autoComplete="off"
+            className='flex flex-col'
+            autoComplete='off'
             requiredMark={false}
-            layout="vertical"
+            layout='vertical'
             onFinish={onFinish}
           >
             <Form.Item
@@ -52,16 +52,16 @@ const Login = () => {
               ]}
             >
               <Input
-                type="email"
-                placeholder="Enter your email"
+                type='email'
+                placeholder='Enter your email'
                 suffix={
                   <Icon
                     icon={'ic:round-email'}
                     height={24}
-                    className="text-zinc-400"
+                    className='text-zinc-400'
                   />
                 }
-                className="h-16 rounded-2xl border-none bg-zinc-100 hover:bg-zinc-200 px-6 font-medium"
+                className='h-16 rounded-2xl border-none bg-zinc-100 hover:bg-zinc-200 px-6 font-medium'
               />
             </Form.Item>
             <Form.Item
@@ -72,8 +72,8 @@ const Login = () => {
               ]}
             >
               <Input.Password
-                placeholder="Enter your password"
-                className="h-16 rounded-2xl border-none bg-zinc-100 hover:bg-zinc-200 px-6 font-medium"
+                placeholder='Enter your password'
+                className='h-16 rounded-2xl border-none bg-zinc-100 hover:bg-zinc-200 px-6 font-medium'
                 iconRender={(visible) =>
                   visible ? (
                     <Icon
@@ -91,20 +91,20 @@ const Login = () => {
                 }
               />
             </Form.Item>
-            <Form.Item className="mt-4">
+            <Form.Item className='mt-4'>
               <Button
-                className="w-full py-7 rounded-full focus:ring-0"
-                type="primary"
-                htmlType="submit"
+                className='w-full py-7 rounded-full focus:ring-0 font-medium'
+                type='primary'
+                htmlType='submit'
               >
                 Sign in
               </Button>
             </Form.Item>
           </Form>
-          <div className="w-full flex justify-center">
-            <p className="text-sm">
-              Don't have an account?{' '}
-              <Link href={'/register'} className="text-blue-600 font-medium">
+          <div className='w-full flex justify-center'>
+            <p className='text-sm'>
+              Don&apos;t have an account?{' '}
+              <Link href={'/register'} className='text-blue-600 font-medium '>
                 Create account
               </Link>
             </p>
