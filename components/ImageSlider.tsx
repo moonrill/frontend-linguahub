@@ -50,10 +50,12 @@ const ImageSlider: React.FC = () => {
           <Image
             src={slide.src}
             alt={`Slider image ${index + 1}`}
-            layout='fill'
+            fill
             sizes='100%'
-            objectFit='cover'
+            style={{ objectFit: 'cover' }}
             className='rounded-[28px]'
+            placeholder='blur'
+            blurDataURL={slide.src}
           />
           <div className='absolute w-full h-full bg-[linear-gradient(0deg,rgba(0,0,0,0.75)_6.82%,rgba(0,0,0,0.00)_81.44%)] rounded-[28px]'></div>
           <div className='absolute bottom-8 left-8 right-8 text-white z-10'>

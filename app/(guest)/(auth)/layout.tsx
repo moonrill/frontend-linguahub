@@ -28,7 +28,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
         </nav>
 
         {/* Wrapper for children to take remaining height */}
-        <div className='flex-grow overflow-auto'>{children}</div>
+        <div className='flex-grow overflow-hidden'>{children}</div>
       </div>
 
       {/* Right side */}

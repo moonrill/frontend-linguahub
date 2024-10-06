@@ -4,6 +4,7 @@ import { RegisterFormData } from '#/types/RegisterTypes';
 import { useState } from 'react';
 import AddressInfo from './components/AddressInfo';
 import PersonalInfo from './components/PersonalInfo';
+import ProfessionalInfo from './components/ProfessionalInfo';
 import RoleSelection from './components/RoleSelection';
 import StepIndicator from './components/StepIndicator';
 
@@ -39,6 +40,10 @@ const Register = () => {
     },
     {
       component: AddressInfo,
+      props: { updateFormData, nextStep, prevStep, formData },
+    },
+    {
+      component: ProfessionalInfo,
       props: { updateFormData, nextStep, prevStep, formData },
     },
   ];
