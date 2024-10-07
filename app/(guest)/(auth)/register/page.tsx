@@ -56,7 +56,7 @@ const Register = () => {
     (formData.role === 'translator' && step === 4);
 
   return (
-    <div className='pt-14 flex flex-col h-full'>
+    <div className='pt-4 md:pt-14 flex flex-col h-full'>
       {step > 0 && (
         <div className='w-full'>
           <StepIndicator

@@ -34,16 +34,18 @@ const RoleSelection = ({
 
   return (
     <div className='flex flex-col justify-between flex-grow'>
-      <div className='flex flex-col gap-8'>
-        <div className='flex flex-col gap-4'>
-          <h1 className='font-semibold text-5xl'>Select Your Role</h1>
+      <div className='flex flex-col gap-2 md:gap-6'>
+        <div className='flex flex-col gap-2 md:gap-4'>
+          <h1 className='font-semibold text-4xl md:text-5xl m-0 md:mb-2'>
+            Select Your Role
+          </h1>
           <p className='text-zinc-600'>
             Pick your role: Are you joining as a Client or as a Translator?
             We&apos;re excited to have you!
           </p>
         </div>
 
-        <div className='grid grid-cols-2 gap-4'>
+        <div className='grid md:grid-cols-2 gap-4'>
           <Card
             className={`cursor-pointer hover:border-green-600 transition duration-200 ease-in ${
               currentRole === 'client'
@@ -53,50 +55,64 @@ const RoleSelection = ({
             styles={{ body: { padding: '1rem' } }}
             onClick={() => setCurrentRole('client')}
           >
-            <div className='flex flex-col gap-2'>
+            <div className='flex md:flex-col gap-4 md:gap-2'>
               <div
-                className={`flex justify-center items-center p-3 rounded-lg w-fit transition duration-200 ease-in ${
-                  selectedRole === 'client'
+                className={`flex justify-center items-center p-3 rounded-lg w-fit h-fit transition duration-200 ease-in ${
+                  currentRole === 'client'
                     ? 'bg-green-600 text-white'
                     : 'bg-green-50 text-green-600'
                 }`}
               >
-                <Icon icon={'mdi:users-group'} height={40} />
+                <Icon
+                  icon={'mdi:users-group'}
+                  className='text-[30px] md:text-[40px]'
+                />
               </div>
-              <h3 className='font-semibold text-[20px] mb-0'>I am Client</h3>
-              <p className='text-sm'>
-                Search qualified translators and request translation services
-              </p>
+              <div>
+                <h3 className='font-semibold text-lg md:text-[20px] mb-0'>
+                  I am Client
+                </h3>
+                <p className='text-xs md:text-sm m-0'>
+                  Search qualified translators and request translation services
+                </p>
+              </div>
             </div>
           </Card>
           <Card
             className={`cursor-pointer hover:border-blue-600 transition duration-200 ease-in ${
-              currentRole === 'translator' ? 'border-blue-600 bg-blue-50' : ''
+              currentRole === 'translator'
+                ? 'border-blue-600 bg-blue-50'
+                : 'border-zinc-200'
             }`}
             styles={{ body: { padding: '1rem' } }}
             onClick={() => setCurrentRole('translator')}
           >
-            <div className='flex flex-col gap-2'>
+            <div className='flex md:flex-col gap-4 md:gap-2'>
               <div
-                className={`flex justify-center items-center p-3 rounded-lg w-fit transition duration-200 ease-in ${
-                  selectedRole === 'translator'
+                className={`flex justify-center items-center p-3 rounded-lg w-fit h-fit transition duration-200 ease-in ${
+                  currentRole === 'translator'
                     ? 'bg-blue-600 text-white'
                     : 'bg-blue-50 text-blue-600'
                 }`}
               >
-                <Icon icon={'mdi:account-tie-voice'} height={40} />
+                <Icon
+                  icon={'mdi:users-group'}
+                  className='text-[30px] md:text-[40px]'
+                />
               </div>
-              <h3 className='font-semibold text-[20px] mb-0'>
-                I am Translator
-              </h3>
-              <p className='text-sm'>
-                Offer your translation expertise and connect with clients
-              </p>
+              <div>
+                <h3 className='font-semibold text-lg md:text-[20px] mb-0'>
+                  I am Translator
+                </h3>
+                <p className='text-xs md:text-sm m-0'>
+                  Offer your translation expertise and connect with clients
+                </p>
+              </div>
             </div>
           </Card>
         </div>
       </div>
-      <div className='flex flex-col gap-4 items-center'>
+      <div className='flex flex-col gap-4 items-center mt-8 md:mt-0'>
         <Button
           className='w-full py-6 font-medium rounded-xl'
           type='primary'

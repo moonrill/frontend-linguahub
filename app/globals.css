@@ -2,15 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* @font-face {
-  font-family: 'Inter';
-  src: url('/fonts/Inter/Inter-VariableFont_opsz,wght.ttf') format('tff') ;
-}
-
-body {
-  font-family: 'Inter';
-} */
-
 a {
   @apply no-underline;
 }

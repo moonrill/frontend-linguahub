@@ -113,6 +113,8 @@ const PersonalInfo = ({
             <Input
               type='text'
               placeholder='Phone Number'
+              inputMode='numeric'
+              pattern='[0-9]*'
               suffix={
                 <Icon
                   icon={'ic:round-phone'}

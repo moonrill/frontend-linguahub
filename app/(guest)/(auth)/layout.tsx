@@ -4,24 +4,31 @@ import Link from 'next/link';
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className='flex min-h-screen p-8 gap-8 bg-white'>
+    <div className='flex min-h-screen p-6 md:p-8 gap-8 bg-white'>
       {/* Left side */}
       <div className='w-[756px] flex flex-col'>
         <nav className='flex justify-between items-center mb-8'>
-          <div>
+          <div className='w-[118px] h-[28px] md:w-[177px] md:h-[43px] relative'>
             <Image
               src={'/images/logo.png'}
               alt={'logo'}
-              width={177}
-              height={43}
+              className='object-cover'
+              fill
+              sizes='(max-width: 177px)'
             />
           </div>
 
           <div className='flex gap-7'>
-            <Link href={'/'} className='font-medium text-blue-600 text-base'>
+            <Link
+              href={'/'}
+              className='font-medium text-blue-600 text-sm md:text-base'
+            >
               Home
             </Link>
-            <Link href={'/'} className='font-medium text-blue-600 text-base'>
+            <Link
+              href={'/'}
+              className='font-medium text-blue-600 text-sm md:text-base'
+            >
               Event
             </Link>
           </div>
