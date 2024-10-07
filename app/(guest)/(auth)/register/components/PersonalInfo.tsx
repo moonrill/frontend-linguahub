@@ -77,6 +77,7 @@ const PersonalInfo = ({
             <Input
               type='email'
               placeholder='Email'
+              inputMode='email'
               suffix={
                 <Icon
                   icon={'ic:round-email'}

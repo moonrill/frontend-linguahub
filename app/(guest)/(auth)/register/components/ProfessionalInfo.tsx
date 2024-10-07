@@ -1,7 +1,13 @@
-import { RegisterFormData } from '#/types/RegisterTypes';
+import LanguageSelector from '#/components/LanguageSelector';
+import SpecializationSelector from '#/components/SpecializationSelector';
+import { midtransSupportBanks } from '#/constants/banks';
+import { languagesRepository } from '#/repository/language';
+import { specializationRepository } from '#/repository/specialization';
+import { RegisterFormData, TranslatorFormData } from '#/types/RegisterTypes';
 import { Icon } from '@iconify-icon/react';
 import { Button, Form, Input, Select } from 'antd';
 import Link from 'next/link';
+import { useState } from 'react';
 
 type ProfessionalInfoProps = {
   nextStep: () => void;
@@ -16,8 +22,27 @@ const ProfessionalInfo = ({
   updateFormData,
   formData,
 }: ProfessionalInfoProps) => {
-  const onFinish = (values: any) => {
-    console.log(values);
+  const { data: languages, isLoading: isLoadingLanguages } =
+    languagesRepository.hooks.useAllLanguages(15, 1);
+  const { data: specializations, isLoading: isLoadingSpecializations } =
+    specializationRepository.hooks.useAllSpecializations(15, 1);
+
+  const [selectedLanguages, setSelectedLanguages] = useState<string[]>(
+    (formData as Partial<TranslatorFormData>).languages || []
+  );
+  const [selectedSpecializations, setSelectedSpecializations] = useState<
+    string[]
+  >((formData as Partial<TranslatorFormData>).specializations || []);
+
+  const onFinish = (values: Partial<TranslatorFormData>) => {
+    const updatedValues = {
+      ...values,
+      languages: selectedLanguages,
+      specializations: selectedSpecializations,
+    };
+
+    updateFormData(updatedValues);
+    console.log(formData);
   };
 
   return (
@@ -97,6 +122,7 @@ const ProfessionalInfo = ({
             <Select
               placeholder='Bank'
               className='h-14'
+              showSearch
               suffixIcon={
                 <Icon
                   icon={'mdi:chevron-down'}
@@ -104,6 +130,10 @@ const ProfessionalInfo = ({
                   className='text-zinc-400'
                 />
               }
+              options={midtransSupportBanks.map((bank) => ({
+                label: bank,
+                value: bank,
+              }))}
             />
           </Form.Item>
           <Form.Item
@@ -136,9 +166,22 @@ const ProfessionalInfo = ({
               className='h-14'
             />
           </Form.Item>
+          <LanguageSelector
+            languages={languages?.data}
+            isLoading={isLoadingLanguages}
+            selectedLanguages={selectedLanguages}
+            setSelectedLanguages={setSelectedLanguages}
+          />
+
+          <SpecializationSelector
+            specializations={specializations?.data}
+            isLoading={isLoadingSpecializations}
+            selectedSpecializations={selectedSpecializations}
+            setSelectedSpecializations={setSelectedSpecializations}
+          />
         </div>
 
-        <div className='flex flex-col gap-4 items-center'>
+        <div className='flex flex-col gap-4 items-center mt-4'>
           <div className='flex justify-between w-full gap-4'>
             <Button
               className='w-full py-6 font-medium rounded-xl'

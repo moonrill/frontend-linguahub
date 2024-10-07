@@ -159,3 +159,24 @@ a:hover {
 .ant-select-selection-search {
   margin-left: 15px;
 }
+
+.ant-tag-checkable:hover {
+  @apply border-blue-500 bg-transparent !important;
+}
+
+.ant-tag-checkable-checked {
+  @apply border-blue-500 bg-blue-50 text-blue-500 font-medium !important;
+}
+
+.ant-tooltip {
+  @apply text-sm !important;
+}
+
+.ant-tooltip-inner {
+  color: black !important;
+  background-color: white !important;
+}
+
+.ant-tooltip-arrow::before {
+  background-color: white !important;
+}
