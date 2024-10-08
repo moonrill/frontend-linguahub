@@ -1,3 +1,4 @@
+import { imgLanguage } from '#/constants/general';
 import { Language } from '#/types/Language';
 import { Form, Tag, Tooltip } from 'antd';
 import Image from 'next/image';
@@ -42,7 +43,7 @@ const LanguageSelector: React.FC<{
               >
                 <div className='relative w-[32px] h-[32px] md:w-[42px] md:h-[42px]'>
                   <Image
-                    src={lang.flagImage}
+                    src={imgLanguage(lang.flagImage)}
                     className='object-contain brightness-100'
                     alt={lang.name}
                     fill

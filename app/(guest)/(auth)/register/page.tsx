@@ -3,6 +3,7 @@
 import { RegisterFormData } from '#/types/RegisterTypes';
 import { useState } from 'react';
 import AddressInfo from './components/AddressInfo';
+import DocumentsUpload from './components/DocumentsUpload';
 import PersonalInfo from './components/PersonalInfo';
 import ProfessionalInfo from './components/ProfessionalInfo';
 import RoleSelection from './components/RoleSelection';
@@ -44,6 +45,10 @@ const Register = () => {
     },
     {
       component: ProfessionalInfo,
+      props: { updateFormData, nextStep, prevStep, formData },
+    },
+    {
+      component: DocumentsUpload,
       props: { updateFormData, nextStep, prevStep, formData },
     },
   ];

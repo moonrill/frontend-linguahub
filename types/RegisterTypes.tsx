@@ -23,8 +23,8 @@ export type TranslatorFormData = BaseFormData & {
   bankAccountNumber: string;
   languages: string[];
   specializations: string[];
-  cv?: File;
-  certificate?: File;
+  cv: string;
+  certificate: string;
 };
 
 export type RegisterFormData = ClientFormData | TranslatorFormData;

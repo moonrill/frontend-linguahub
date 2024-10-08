@@ -43,6 +43,8 @@ const ProfessionalInfo = ({
 
     updateFormData(updatedValues);
     console.log(formData);
+
+    nextStep();
   };
 
   return (

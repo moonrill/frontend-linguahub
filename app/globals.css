@@ -180,3 +180,19 @@ a:hover {
 .ant-tooltip-arrow::before {
   background-color: white !important;
 }
+
+.ant-upload {
+  @apply bg-transparent !important;
+}
+
+.ant-upload-drag-hover > .ant-upload > .ant-upload-drag-container > * {
+  @apply text-blue-600 transition duration-300 !important;
+}
+
+.ant-upload-list-item {
+  @apply bg-transparent !important;
+}
+
+.document-upload > .ant-upload-list-item {
+  @apply p-0 bg-blue-400 !important;
+}
