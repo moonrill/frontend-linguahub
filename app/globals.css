@@ -196,3 +196,43 @@ a:hover {
 .document-upload > .ant-upload-list-item {
   @apply p-0 bg-blue-400 !important;
 }
+
+.ant-menu-light.ant-menu-root.ant-menu-vertical {
+  @apply border-none !important;
+}
+
+.ant-menu-item {
+  @apply m-0 h-[56px] w-full flex items-center text-gray-500 px-4 rounded-xl !important;
+}
+
+.ant-menu-item-selected {
+  @apply bg-blue-600 text-white !important;
+}
+
+.ant-menu-submenu-title {
+  @apply h-[56px] w-full m-0 rounded-xl text-gray-500 !important;
+}
+
+.ant-menu-item > .ant-menu-title-content {
+  @apply flex items-center gap-2 !important;
+}
+
+.ant-layout > .ant-layout-header {
+  background: transparent;
+  margin-bottom: 32px;
+}
+
+.ant-menu-light.ant-menu-inline .ant-menu-sub.ant-menu-inline {
+  background: transparent;
+}
+
+.ant-menu-submenu-title {
+  padding-left: 16px !important;
+}
+
+.ant-menu-light.ant-menu-inline .ant-menu-sub.ant-menu-inline > .ant-menu-item {
+  height: 40px !important;
+  border-radius: 10px !important;
+  font-size: 14px !important;
+  padding-left: 48px !important;
+}
