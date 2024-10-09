@@ -1,8 +1,10 @@
 'use client';
 
 import { Icon } from '@iconify-icon/react';
-import { Button, Form, Input, message } from 'antd';
+import { Button, Form, Input } from 'antd';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 type LoginData = {
   email: string;
@@ -10,11 +12,24 @@ type LoginData = {
 };
 
 const Login = () => {
+  const router = useRouter();
+  const [error, setError] = useState('');
+
   const onFinish = async (values: LoginData) => {
     try {
-      console.log(values);
-    } catch (error: any) {
-      message.error('test');
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      });
+
+      const data = await response.json();
+
+      window.location.reload();
+    } catch (error) {
+      setError('An error occurred. Please try again.');
     }
   };
 
@@ -32,10 +47,11 @@ const Login = () => {
         <div>
           <Form
             className='flex flex-col'
-            autoComplete='off'
+            // autoComplete='off'
             requiredMark={false}
             layout='vertical'
             onFinish={onFinish}
+            onChange={() => setError('')}
           >
             <Form.Item
               name={'email'}
@@ -91,6 +107,7 @@ const Login = () => {
                 }
               />
             </Form.Item>
+            {error && <div className='text-red-500 text-sm'>{error}</div>}
             <Form.Item className='mt-4'>
               <Button
                 className='w-full py-7 rounded-full focus:ring-0 font-medium'

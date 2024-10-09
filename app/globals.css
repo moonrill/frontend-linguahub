@@ -10,6 +10,11 @@ a:hover {
   @apply text-blue-500;
 }
 
+h1,
+p {
+  @apply m-0;
+}
+
 .ant-form-item {
   margin-bottom: 16px;
 }
@@ -235,4 +240,12 @@ a:hover {
   border-radius: 10px !important;
   font-size: 14px !important;
   padding-left: 48px !important;
+}
+
+.ant-breadcrumb-link > a {
+  @apply text-gray-500 !important;
+}
+
+.ant-breadcrumb-link > a:hover {
+  @apply text-blue-500 bg-transparent !important;
 }

@@ -1,32 +1,33 @@
 import { Icon } from '@iconify-icon/react';
 import { Menu, MenuProps } from 'antd';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
-const adminItems: MenuItem[] = [
+const adminItems = [
   {
-    key: 'a1',
+    key: '/dashboard',
     label: <Link href={'/dashboard'}>Dashboard</Link>,
     icon: <Icon icon='bxs:dashboard' height={24} />,
   },
   {
-    key: 'a2',
+    key: '/dashboard/account',
     label: 'Account',
     icon: <Icon icon='mdi:users-group' height={24} />,
     children: [
       {
-        key: '1',
-        label: <Link href={'/dashboard/client'}>Client</Link>,
+        key: '/dashboard/account/client',
+        label: <Link href={'/dashboard/account/client'}>Client</Link>,
       },
       {
-        key: '2',
-        label: <Link href={'/dashboard/translator'}>Translator</Link>,
+        key: '/dashboard/account/translator',
+        label: <Link href={'/dashboard/account/translator'}>Translator</Link>,
       },
       {
-        key: '3',
+        key: '/dashboard/account/translator-approval',
         label: (
-          <Link href={'/dashboard/translator/approval'}>
+          <Link href={'/dashboard/account/translator-approval'}>
             Translator Approval
           </Link>
         ),
@@ -34,7 +35,7 @@ const adminItems: MenuItem[] = [
     ],
   },
   {
-    key: 'a3',
+    key: '/dashboard/expertise',
     label: 'Expertise',
     icon: (
       <Icon
@@ -44,72 +45,88 @@ const adminItems: MenuItem[] = [
     ),
     children: [
       {
-        key: '4',
-        label: <Link href={'/dashboard/language'}>Language</Link>,
+        key: '/dashboard/expertise/language',
+        label: <Link href={'/dashboard/expertise/language'}>Language</Link>,
       },
       {
-        key: '4',
-        label: <Link href={'/dashboard/specialization'}>Specialization</Link>,
+        key: '/dashboard/expertise/specialization',
+        label: (
+          <Link href={'/dashboard/expertise/specialization'}>
+            Specialization
+          </Link>
+        ),
       },
     ],
   },
   {
-    key: 'a4',
-    label: 'Transactions',
+    key: '/dashboard/transaction',
+    label: 'Transaction',
     icon: <Icon icon='mdi:credit-card-outline' height={24} />,
     children: [
       {
-        key: '5',
-        label: <Link href={'/dashboard/service-request'}>Service Request</Link>,
+        key: '/dashboard/transaction/service-request',
+        label: (
+          <Link href={'/dashboard/transaction/service-request'}>
+            Service Request
+          </Link>
+        ),
       },
       {
-        key: '6',
-        label: <Link href={'/dashboard/booking'}>Booking</Link>,
+        key: '/dashboard/transaction/booking',
+        label: <Link href={'/dashboard/transaction/booking'}>Booking</Link>,
       },
       {
-        key: '7',
-        label: <Link href={'/dashboard/payment'}>Payment</Link>,
+        key: '/dashboard/transaction/payment',
+        label: <Link href={'/dashboard/transaction/payment'}>Payment</Link>,
       },
     ],
   },
   {
-    key: 'a5',
+    key: '/dashboard/promotion',
     label: 'Promotion',
     icon: <Icon icon='mingcute:horn-2-line' height={24} />,
     children: [
       {
-        key: '8',
-        label: <Link href={'/dashboard/event'}>Event</Link>,
+        key: '/dashboard/promotion/event',
+        label: <Link href={'/dashboard/promotion/event'}>Event</Link>,
       },
       {
-        key: '9',
-        label: <Link href={'/dashboard/coupon'}>Coupon</Link>,
+        key: '/dashboard/promotion/coupon',
+        label: <Link href={'/dashboard/promotion/coupon'}>Coupon</Link>,
       },
     ],
   },
   {
-    key: 'a6',
+    key: '/dashboard/quality',
     label: 'Quality',
     icon: <Icon icon='mdi:filter-gear-outline' height={24} />,
     children: [
       {
-        key: '10',
-        label: <Link href={'/dashboard/service'}>Service</Link>,
+        key: '/dashboard/quality/service',
+        label: <Link href={'/dashboard/quality/service'}>Service</Link>,
       },
       {
-        key: '11',
-        label: <Link href={'/dashboard/review'}>Review</Link>,
+        key: '/dashboard/quality/review',
+        label: <Link href={'/dashboard/quality/review'}>Review</Link>,
       },
     ],
   },
 ];
 
 const AdminMenu = () => {
+  const pathname = usePathname();
+
+  const selectedKey = adminItems
+    .flatMap((item) =>
+      item?.children ? item.children.map((child) => child.key) : item.key
+    )
+    .filter((key) => pathname && pathname.endsWith(key));
+
   return (
     <Menu
       mode='inline'
       theme='light'
-      defaultSelectedKeys={['a1']}
+      selectedKeys={selectedKey}
       style={{ borderRight: 0 }}
       items={adminItems}
       className='flex flex-col gap-[10px] h-fit'
