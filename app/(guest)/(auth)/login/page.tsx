@@ -14,9 +14,11 @@ type LoginData = {
 const Login = () => {
   const router = useRouter();
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const onFinish = async (values: LoginData) => {
     try {
+      setLoading(true);
       const response = await fetch('/api/login', {
         method: 'POST',
         headers: {
@@ -35,6 +37,8 @@ const Login = () => {
       if (data?.role === 'client') router.push('/');
     } catch (error) {
       setError('An error occurred. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -118,8 +122,10 @@ const Login = () => {
                 className='w-full py-7 rounded-full focus:ring-0 font-medium'
                 type='primary'
                 htmlType='submit'
+                loading={loading}
+                disabled={loading}
               >
-                Sign in
+                {loading ? 'Signing in...' : 'Sign In'}
               </Button>
             </Form.Item>
           </Form>

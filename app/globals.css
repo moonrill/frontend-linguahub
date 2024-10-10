@@ -249,3 +249,27 @@ p {
 .ant-breadcrumb-link > a:hover {
   @apply text-blue-500 bg-transparent !important;
 }
+
+.ant-dropdown-menu {
+  @apply w-[200px] flex flex-col gap-0.5 rounded-xl p-2 !important;
+}
+
+.ant-dropdown-menu-item {
+  @apply text-sm py-2 rounded-lg !important;
+}
+
+.ant-dropdown-menu-item-danger:hover {
+  @apply text-rose-600 bg-rose-50 !important;
+}
+
+.dashboard-sidebar > .ant-layout-sider-children {
+  @apply flex flex-col justify-between !important;
+}
+
+.ant-btn-dangerous {
+  @apply bg-transparent shadow-none text-gray-500 hover:bg-rose-200 hover:text-red-500 !important;
+}
+
+.ant-btn-loading {
+  @apply bg-zinc-200 hover:bg-zinc-200 text-zinc-500 hover:text-zinc-500 !important;
+}

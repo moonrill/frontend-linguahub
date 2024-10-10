@@ -12,6 +12,11 @@ const translatorItems = [
     icon: <Icon icon='bxs:dashboard' height={24} />,
   },
   {
+    key: '/dashboard/translator/profile',
+    label: <Link href={'/dashboard/translator/profile'}>Profile</Link>,
+    icon: <Icon icon='mdi:account-outline' height={24} />,
+  },
+  {
     key: '/dashboard/translator/service-request',
     label: (
       <Link href={'/dashboard/translator/service-request'}>

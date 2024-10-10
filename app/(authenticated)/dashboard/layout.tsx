@@ -1,10 +1,9 @@
 'use client';
 
-import AdminMenu from '#/components/Menu/AdminMenu';
-import TranslatorMenu from '#/components/Menu/TranslatorMenu';
+import HeaderComponent from '#/components/Dashboard/Header';
+import SidebarComponent from '#/components/Dashboard/Sidebar';
 import { User } from '#/types/UserType';
-import { Avatar, Breadcrumb, Layout } from 'antd';
-import Image from 'next/image';
+import { Breadcrumb, Layout } from 'antd';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -65,66 +64,15 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     return breadcrumbItems;
   };
 
-  const capitalizeFirstLetter = (string: string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
-  };
-
   return (
     <Layout
       style={{ minHeight: '100vh' }}
       className='p-6 flex gap-6 bg-slate-100'
     >
-      <div className='relative w-[280px]'>
-        <Sider
-          width={280}
-          className='rounded-3xl p-6 bg-white fixed'
-          style={{ height: 'calc(100vh - 48px)' }}
-        >
-          <div className='w-[118px] h-[28px] md:w-[177px] md:h-[43px] relative mb-16'>
-            <Image
-              src={'/images/logo.png'}
-              alt={'logo'}
-              className='object-cover'
-              fill
-              sizes='(max-width: 177px)'
-              priority
-            />
-          </div>
-
-          {user?.role === 'admin' ? <AdminMenu /> : <TranslatorMenu />}
-        </Sider>
-      </div>
-
+      <SidebarComponent user={user} />
       <Layout className='bg-transparent'>
-        <Header style={{ padding: 0, margin: 0 }}>
-          <div className='flex items-center justify-between'>
-            <h1 className='mb-0 text-4xl text-blue-950 font-semibold'>
-              {getTitle()}
-            </h1>
-            <div className='flex items-center gap-4'>
-              <div className='flex flex-col items-end'>
-                <p className='text-base font-semibold m-0'>
-                  {user?.fullName || user?.email}
-                </p>
-                <p className='text-xs font-semibold text-zinc-400 m-0'>
-                  {user?.role ? capitalizeFirstLetter(user.role) : 'Loading...'}
-                </p>
-              </div>
-              <div
-                className='flex items-center p-[2px] rounded-full'
-                style={{ border: '2px solid #2563eb' }}
-              >
-                <Avatar className='w-12 h-12'>
-                  {user?.fullName?.charAt(0).toUpperCase() ||
-                    user?.email.charAt(0).toUpperCase()}
-                </Avatar>
-              </div>
-            </div>
-          </div>
-        </Header>
-
+        <HeaderComponent title={getTitle()} user={user} />
         {!isDashboardPage && <Breadcrumb items={getBreadcrumbItems()} />}
-
         <Content style={{ marginTop: '32px' }}>{children}</Content>
       </Layout>
     </Layout>

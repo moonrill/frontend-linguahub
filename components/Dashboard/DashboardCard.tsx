@@ -19,7 +19,7 @@ const DashboardCard = ({ icon, title, value }: DashboardCardProps) => {
         <div className='bg-blue-50 group-hover:bg-white group-hover:bg-opacity-25 rounded-2xl p-4 w-fit flex justify-center items-center'>
           <Icon
             icon={icon}
-            className='text-4xl text-blue-600 group-hover:text-white'
+            className='text-[32px] text-blue-600 group-hover:text-white'
           />
         </div>
         <Space direction='vertical' size={8}>
