@@ -8,9 +8,6 @@ export default async function middleware(request: NextRequest) {
   const isProtectedRoute = protectedRoute.some((route) =>
     request.nextUrl.pathname.startsWith(route)
   );
-  const isPublicRoute = publicRoute.some((route) =>
-    request.nextUrl.pathname.startsWith(route)
-  );
 
   if (isProtectedRoute) {
     const accessToken = request.cookies.get('accessToken')?.value;
@@ -20,11 +17,51 @@ export default async function middleware(request: NextRequest) {
     }
 
     try {
-      const data = await decrypt(accessToken);
+      const { payload } = await decrypt(accessToken);
 
-      if (data.payload.role === 'translator') {
+      // Redirect to the login page if the user is not client
+      if (
+        request.nextUrl.pathname.startsWith('/profile') &&
+        payload.role !== 'client'
+      ) {
+        return NextResponse.redirect(new URL('/login', request.url));
+      }
+
+      // Redirect to dashboard page if the user is translator
+      if (
+        request.nextUrl.pathname === '/dashboard' &&
+        payload.role === 'translator'
+      ) {
+        return NextResponse.redirect(
+          new URL('/dashboard/translator', request.url)
+        );
+      }
+
+      // Redirect translator if try access admin dashboard
+      if (
+        !request.nextUrl.pathname.startsWith('/dashboard/translator') &&
+        payload.role === 'translator'
+      ) {
+        return NextResponse.redirect(new URL('/dashboard', request.url));
+      }
+
+      // Redirect to dashboard page if the user is admin
+      if (
+        request.nextUrl.pathname.startsWith('/dashboard/translator') &&
+        payload.role === 'admin'
+      ) {
+        return NextResponse.redirect(new URL('/dashboard', request.url));
+      }
+
+      // Redirect to home page if the user is client
+      if (
+        request.nextUrl.pathname.startsWith('/dashboard') &&
+        payload.role === 'client'
+      ) {
+        return NextResponse.redirect(new URL('/', request.url));
       }
     } catch (error) {
+      // Redirect to the login page & clear the cookie if the token is invalid
       const response = NextResponse.redirect(new URL('/login', request.url));
 
       response.cookies.set('accessToken', '', { expires: new Date(0) });
@@ -32,6 +69,7 @@ export default async function middleware(request: NextRequest) {
     }
   }
 
+  // Redirect if the user is already logged in
   if (
     request.nextUrl.pathname.startsWith('/login') ||
     request.nextUrl.pathname.startsWith('/register')
@@ -55,7 +93,9 @@ export default async function middleware(request: NextRequest) {
         if (data.payload.role === 'client') {
           return NextResponse.redirect(new URL('/', request.url));
         }
-      } catch (error) {}
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 }

@@ -5,8 +5,6 @@ import { Col, Row } from 'antd';
 const AdminDashboard = async () => {
   const user = await getUser();
 
-  console.log(user);
-
   return (
     <>
       <Row gutter={24}>

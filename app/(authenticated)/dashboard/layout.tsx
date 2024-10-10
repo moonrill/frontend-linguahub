@@ -1,10 +1,13 @@
 'use client';
 
+import AdminMenu from '#/components/Menu/AdminMenu';
 import TranslatorMenu from '#/components/Menu/TranslatorMenu';
+import { User } from '#/types/UserType';
 import { Avatar, Breadcrumb, Layout } from 'antd';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 const { Header, Sider, Content } = Layout;
 
@@ -14,6 +17,20 @@ interface DashboardLayoutProps {
 
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const pathname = usePathname();
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await fetch('/api/user');
+        const data = await response.json();
+        setUser(data?.payload);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchUser();
+  }, []);
 
   const pathSegments = pathname?.split('/').filter(Boolean) || [];
   const isDashboardPage =
@@ -36,9 +53,8 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       { title: <Link href={'/dashboard'}>Dashboard</Link> },
     ];
 
-    // Skip 'translator' segment and add only the relevant segments after 'dashboard'
     pathSegments.slice(1).forEach((segment, index) => {
-      if (segment === 'translator') return; // Skip the 'translator' segment
+      if (segment === 'translator') return;
 
       const href = `/dashboard/${pathSegments.slice(1, index + 2).join('/')}`;
       breadcrumbItems.push({
@@ -47,6 +63,10 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     });
 
     return breadcrumbItems;
+  };
+
+  const capitalizeFirstLetter = (string: string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
   };
 
   return (
@@ -67,9 +87,11 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
               className='object-cover'
               fill
               sizes='(max-width: 177px)'
+              priority
             />
           </div>
-          <TranslatorMenu />
+
+          {user?.role === 'admin' ? <AdminMenu /> : <TranslatorMenu />}
         </Sider>
       </div>
 
@@ -81,16 +103,21 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             </h1>
             <div className='flex items-center gap-4'>
               <div className='flex flex-col items-end'>
-                <p className='text-base font-semibold m-0'>Kim Da Mi</p>
+                <p className='text-base font-semibold m-0'>
+                  {user?.fullName || user?.email}
+                </p>
                 <p className='text-xs font-semibold text-zinc-400 m-0'>
-                  Translator
+                  {user?.role ? capitalizeFirstLetter(user.role) : 'Loading...'}
                 </p>
               </div>
               <div
                 className='flex items-center p-[2px] rounded-full'
                 style={{ border: '2px solid #2563eb' }}
               >
-                <Avatar className='w-12 h-12'>W</Avatar>
+                <Avatar className='w-12 h-12'>
+                  {user?.fullName?.charAt(0).toUpperCase() ||
+                    user?.email.charAt(0).toUpperCase()}
+                </Avatar>
               </div>
             </div>
           </div>

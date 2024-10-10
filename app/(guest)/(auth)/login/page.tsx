@@ -26,8 +26,13 @@ const Login = () => {
       });
 
       const data = await response.json();
+      if (!response.ok) {
+        setError(data.message);
+      }
 
-      window.location.reload();
+      if (data?.role === 'admin') router.push('dashboard');
+      if (data?.role === 'translator') router.push('dashboard/translator');
+      if (data?.role === 'client') router.push('/');
     } catch (error) {
       setError('An error occurred. Please try again.');
     }

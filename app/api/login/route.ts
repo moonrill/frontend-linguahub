@@ -1,3 +1,4 @@
+import { decrypt } from '#/utils/auth';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -5,8 +6,6 @@ export async function POST(request: NextRequest) {
   try {
     const { email, password } = await request.json();
 
-    // Here you would typically validate the user credentials against your database
-    // For this example, we'll just mock a successful login
     const response = await fetch('http://localhost:3222/auth/login', {
       method: 'POST',
       headers: {
@@ -23,13 +22,16 @@ export async function POST(request: NextRequest) {
 
     // Set the cookie
     const expires = new Date(Date.now() + 1000 * 60 * 60 * 24 * 1); // 1 day
-    cookies().set('accessToken', result?.data.accessToken, {
+    const accessToken = result?.data.accessToken;
+    cookies().set('accessToken', accessToken, {
       expires,
       httpOnly: true,
     });
 
+    const { payload } = await decrypt(accessToken);
+
     return NextResponse.json(
-      { data: result?.data, message: 'Login successful' },
+      { accessToken, role: payload.role, message: 'Login successful' },
       { status: 200 }
     );
   } catch (error) {
