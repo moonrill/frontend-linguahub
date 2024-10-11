@@ -6,6 +6,8 @@ import { PhoneOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import FormModal from '#/components/Formmodal/FormModal';
 import Navbarlog from '#/components/Navbarlog/Navbarlog';
 import Footer from '#/components/Footer/Footer';
+import Tabletranslator from "#/components/Tabletranslator/Tabletranslator";
+import Reviewtranslator from "#/components/Reviewtranslator/Reviewtranslator";
 
 const { Title, Text } = Typography;
 
@@ -110,7 +112,7 @@ const Translatorp3 = () => {
   ];
 
   return (
-    <div className="bg-gray-50 min-h-screen">
+    <div className="bg-gray-50">
       <Navbarlog />
 
       <section className="container mx-auto p-8">
@@ -118,7 +120,7 @@ const Translatorp3 = () => {
 
 
           {/* Sidebar */}
-          <Card className="w-full md:w-64">
+          <Card className="w-full md:w-64 h-1/3">
             <div className="text-center mb-4">
               <Avatar src="/images/3.png" size={120} />
             </div>
@@ -190,10 +192,8 @@ const Translatorp3 = () => {
         </div>
 
 
-            <div className="mb-6">
-              <Title level={4}>Services</Title>
-              <Table dataSource={dataSource} columns={columns} pagination={false} />
-            </div>
+            {/* Services Section */}
+            <Tabletranslator dataSource={dataSource} columns={columns} />
 
 
             <div className="my-8">
@@ -202,42 +202,8 @@ const Translatorp3 = () => {
 
 
             {/* Reviews Section */}
-            <div className="flex items-center">
-              <Title level={4} className="mt-8">Reviews</Title>
-            </div>
-            <List
-              itemLayout="horizontal"
-              dataSource={reviews}
-              renderItem={review => (
-                <List.Item>
-                  <List.Item.Meta
-                    avatar={<Avatar src={review.avatar} size={64} />}
+            <Reviewtranslator reviews={reviews} />
 
-                    title={
-                      <>   
-                      <div className="flex items-center justify-between">            
-                       <span className="font-bold text-gray-700">{review.name}
-                       </span>
-                       <span className="text-gray-600">
-                         {review.rating ? '⭐'.repeat(Math.round(Number(review.rating))) : ''}
-                       </span>
-
-                       </div>
-                      
-                      </>
-
-                  }
-
-                    description={
-                      <>
-                        <p className="text-gray-500">{review.date}</p>
-                        <p className="text-gray-600">{review.review}</p>
-                      </>
-                    }
-                  />
-                </List.Item>
-              )}
-            />
           </Card>
         </div>
       </section>
