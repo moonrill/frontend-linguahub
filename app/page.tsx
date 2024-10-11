@@ -19,11 +19,12 @@ const Home = () => {
         <>
         
 
-        <div className="bg-white text-gray-900">
           <Navbar />
+
+   <div className="bg-white text-gray-800">
+
         
 
-{/* Hero Section */}
 <section className="flex flex-col md:flex-row justify-between items-center py-20">
 
 <Image
@@ -32,6 +33,8 @@ const Home = () => {
     width={750} 
     height={600} 
     className="" 
+    layout="responsive"
+
   />
 
   <div className="max-w-xl ml-10 lg:max-w-full">
@@ -132,6 +135,8 @@ const Home = () => {
     
       </section>
 
+
+
       {/* Events Section */}
       <section className="px-4 md:px-10 py-20">
         <div className="flex flex-col md:flex-row justify-between items-center">
@@ -147,7 +152,9 @@ const Home = () => {
                   alt="Event" 
                   width={350} 
                   height={200} 
-                  className="w-full" 
+                  className="rounded-md mx-auto" 
+                  layout="responsive" 
+
                 />
                 <div className="p-3">
                   <h3 className="text-lg font-bold mt-4">Event Title</h3>
@@ -163,6 +170,7 @@ const Home = () => {
 
 
       
+
       <section className="bg-blue-600 py-8">
 
     <div className="flex text-white justify-evenly">
@@ -182,9 +190,6 @@ const Home = () => {
           Book Now
         </button>
         </div>
-
-
-
       </div>
     </section>
   
@@ -243,44 +248,47 @@ const Home = () => {
   </section>
 
 
-
-      {/* Best Translator Section */}
+          {/* translator */}
       <section className="px-4 md:px-10 py-20">
         <h2 className="text-2xl font-bold mb-6">Our Best Translator</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 bg-blue-50 p-4 md:p-12 lg:p-6">
+        <Row gutter={[16, 16]} className="p-4 bg-blue-50">
           {[...Array(15)].map((_, idx) => (
-            <Card key={idx} className="bg-white shadow p-4 rounded-md mx-auto" hoverable>
-              <Image 
-              src="/images/4.png" 
-              alt="Translator" 
-              width={250} 
-              height={200} 
-              className="rounded-md mx-auto"
+            <Col key={idx} xs={24} sm={12} md={8}>
+              <Card key={idx} className="bg-white shadow p-4 rounded-md mx-auto" hoverable>
+                <Image 
+                src="/images/4.png" 
+                alt="Translator" 
+                width={250} 
+                height={200} 
+                className="rounded-md mx-auto"
+                layout="responsive" 
                 />
-              <h3 className="text-lg font-bold mt-4">Kim Da Mi</h3>
+                <h3 className="text-lg font-bold mt-4">Kim Da Mi</h3>
 
-              <div className="flex space-x-2 items-center mt-1">
-                <StarOutlined className="text-lg text-yellow-500" />
-                <p className="text-gray-600">4.9</p>
-                <p className="text-gray-600">(432 reviews)</p>
-              </div>
-              <div className="flex space-x-2 items-center mt-1">
-                <UserOutlined className="text-lg text-slate-800" />
-                <p className="text-gray-500">637 Booking completed</p>
-              </div>
-
-              <div className="flex flex-col space-x-2 mt-1">
-                <p className="text-gray-500">Languages offered:</p>
-                <div className="flex gap-2 mt-1">
-                  <Image src="/icons/korea.png" alt="flagk" width={30} height={30} className="rounded-full"/>
-                  <Image src="/icons/jerman.png" alt="flagj" width={30} height={30} className="rounded-full"/>
-                  <Image src="/icons/indonesia.png" alt="flagi" width={30} height={30} className="rounded-full"/>
+                <div className="flex space-x-2 items-center mt-1">
+                  <StarOutlined className="text-lg text-yellow-500" />
+                  <p className="text-gray-600">4.9</p>
+                  <p className="text-gray-600">(432 reviews)</p>
                 </div>
-              </div>
-              <Button className="bg-blue-600 text-white mt-4 w-full">View Profile</Button>
-            </Card>
+                <div className="flex space-x-2 items-center mt-1">
+                  <UserOutlined className="text-lg text-slate-800" />
+                  <p className="text-gray-500">637 Booking completed</p>
+                </div>
+
+                <div className="flex flex-col space-x-2 mt-1">
+                  <p className="text-gray-500">Languages offered:</p>
+                  <div className="flex gap-2 mt-1">
+                    <Image src="/icons/korea.png" alt="flagk" width={30} height={30} className="rounded-full"/>
+                    <Image src="/icons/jerman.png" alt="flagj" width={30} height={30} className="rounded-full"/>
+                    <Image src="/icons/indonesia.png" alt="flagi" width={30} height={30} className="rounded-full"/>
+                  </div>
+                </div>
+                <Button className="bg-blue-600 text-white mt-4 w-full">View Profile</Button>
+              </Card>
+            </Col>
           ))}
-        </div>
+          </Row>
+
       </section>
 
 
