@@ -24,6 +24,7 @@ const SidebarComponent: React.FC<SidebarComponentProps> = ({ user }) => {
     });
 
     if (response.ok) {
+      localStorage.clear();
       router.push('/login');
     } else {
       // Optionally handle error here

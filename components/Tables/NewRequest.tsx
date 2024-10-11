@@ -1,4 +1,5 @@
 'use client';
+import { serviceRequestRepository } from '#/repository/service-request';
 import { Table, TableProps } from 'antd';
 
 const columns: TableProps['columns'] = [
@@ -55,10 +56,11 @@ const data = [
 ];
 
 const NewRequest = () => {
-  // console.log(TokenUtil.getAccessToken());
+  const { data: sr } =
+    serviceRequestRepository.hook.useTranslatorNewServiceRequest();
 
-  // const { data } =
-  //   serviceRequestRepository.hook.useTranslatorNewServiceRequest();
+  console.log(sr);
+
   return <Table columns={columns} dataSource={data} pagination={false} />;
 };
 

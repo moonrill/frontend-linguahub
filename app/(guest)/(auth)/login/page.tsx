@@ -32,6 +32,8 @@ const Login = () => {
         setError(data.message);
       }
 
+      localStorage.setItem('access_token', data?.accessToken);
+
       if (data?.role === 'admin') router.push('dashboard');
       if (data?.role === 'translator') router.push('dashboard/translator');
       if (data?.role === 'client') router.push('/');

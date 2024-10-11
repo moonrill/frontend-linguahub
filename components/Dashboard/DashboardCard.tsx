@@ -23,10 +23,10 @@ const DashboardCard = ({ icon, title, value }: DashboardCardProps) => {
           />
         </div>
         <div className='flex flex-col xl:gap-0 2xl:gap-1'>
-          <h1 className='xl:text-sm 2xl:text-xl font-normal 2xl:font-medium group-hover:text-white'>
+          <h1 className='text-sm 2xl:text-xl font-normal 2xl:font-medium group-hover:text-white'>
             {title}
           </h1>
-          <p className='text-blue-950 xl:text-lg 2xl:text-2xl font-semibold group-hover:text-white'>
+          <p className='text-blue-950 text-lg 2xl:text-2xl font-semibold group-hover:text-white'>
             {value}
           </p>
         </div>
