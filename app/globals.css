@@ -97,6 +97,10 @@ p {
   line-height: 1rem;
 }
 
+.ant-btn {
+  @apply px-6 py-4 shadow-none rounded-xl !important;
+}
+
 .ant-btn:disabled {
   border: none;
 }
@@ -347,4 +351,16 @@ p {
 
 .ant-layout-footer {
   padding: 24px 0px !important;
+}
+
+.language-select {
+  @apply text-gray-400 !important;
+}
+
+.search-btn {
+  @apply rounded-2xl !important;
+}
+
+.ant-dropdown .ant-dropdown-menu .ant-dropdown-menu-item-selected {
+  @apply bg-zinc-200 text-black !important;
 }

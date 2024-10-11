@@ -3,7 +3,7 @@ import useSWR from 'swr';
 
 const url = {
   getAllLanguages(limit?: number, page?: number) {
-    return `/languages?limit=${limit}&page=${page}`;
+    return `/languages?${limit && `limit=${limit}`}${page && `&page=${page}`}`;
   },
 };
 
