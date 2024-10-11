@@ -14,7 +14,7 @@ const translatorItems = [
   {
     key: '/dashboard/translator/profile',
     label: <Link href={'/dashboard/translator/profile'}>Profile</Link>,
-    icon: <Icon icon='mdi:account-outline' height={24} />,
+    icon: <Icon icon='mdi:account' height={24} />,
   },
   {
     key: '/dashboard/translator/service-request',

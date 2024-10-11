@@ -273,3 +273,27 @@ p {
 .ant-btn-loading {
   @apply bg-zinc-200 hover:bg-zinc-200 text-zinc-500 hover:text-zinc-500 !important;
 }
+
+.ant-card-body {
+  @apply xl:p-4 2xl:p-6  !important;
+}
+
+.ant-table-thead > tr > th {
+  @apply bg-blue-50 text-blue-600 uppercase text-xs 2xl:text-sm !important;
+}
+
+.ant-table-cell {
+  @apply py-3 2xl:py-3 px-6 border-none text-xs 2xl:text-base !important;
+}
+
+.ant-table-container table > * > tr > *:first-child {
+  @apply rounded-s-xl !important;
+}
+
+.ant-table-container table > * > tr > *:last-child {
+  @apply rounded-e-xl !important;
+}
+
+.ant-table-wrapper {
+  @apply h-full !important;
+}

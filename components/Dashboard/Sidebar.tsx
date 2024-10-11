@@ -36,13 +36,14 @@ const SidebarComponent: React.FC<SidebarComponentProps> = ({ user }) => {
     <div className='relative w-[280px]'>
       <Sider
         width={280}
-        className='rounded-3xl p-6 bg-white fixed dashboard-sidebar'
+        className='rounded-3xl p-6 bg-white fixed dashboard-sidebar w-full flex-grow'
         style={{
           height: 'calc(100vh - 48px)',
+          width: '100%',
         }}
       >
         <div>
-          <div className='w-[118px] h-[28px] md:w-[177px] md:h-[43px] relative mb-16'>
+          <div className='w-[177px] h-[43px] xl:w-[120px] xl:h-[30px] relative mb-16'>
             <Image
               src={'/images/logo.png'}
               alt={'logo'}

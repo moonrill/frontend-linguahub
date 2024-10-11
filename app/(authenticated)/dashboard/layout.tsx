@@ -4,11 +4,10 @@ import HeaderComponent from '#/components/Dashboard/Header';
 import SidebarComponent from '#/components/Dashboard/Sidebar';
 import { User } from '#/types/UserType';
 import { Breadcrumb, Layout } from 'antd';
+import { Content } from 'antd/es/layout/layout';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
-
-const { Header, Sider, Content } = Layout;
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -23,6 +22,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       try {
         const response = await fetch('/api/user');
         const data = await response.json();
+
         setUser(data?.payload);
       } catch (error) {
         console.error(error);
@@ -73,7 +73,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       <Layout className='bg-transparent'>
         <HeaderComponent title={getTitle()} user={user} />
         {!isDashboardPage && <Breadcrumb items={getBreadcrumbItems()} />}
-        <Content style={{ marginTop: '32px' }}>{children}</Content>
+        <Content className='mt-4 2xl:mt-6'>{children}</Content>
       </Layout>
     </Layout>
   );

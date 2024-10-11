@@ -29,7 +29,7 @@ const HeaderComponent: React.FC<HeaderComponentProps> = ({ title, user }) => {
             className='flex items-center p-[2px] rounded-full'
             style={{ border: '2px solid #2563eb' }}
           >
-            <Avatar className='w-12 h-12'>
+            <Avatar className='w-10 h-10 2xl:w-12 2xl:h-12'>
               {user?.fullName?.charAt(0).toUpperCase() ||
                 user?.email.charAt(0).toUpperCase()}
             </Avatar>
