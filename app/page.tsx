@@ -3,22 +3,18 @@ import Footer from '#/components/Footer/Footer';
 import Navbar from '#/components/Navbar/Navbar';
 import Image from 'next/image';
 // import '@fortawesome/fontawesome-free/css/all.min.css';
+import SpecializationSection from '#/components/SpecializationSection';
 import TranslatorSearchBar from '#/components/TranslatorSearchBar';
 import {
   AudioOutlined,
   BuildOutlined,
-  CreditCardOutlined,
   GlobalOutlined,
-  HeartOutlined,
   LaptopOutlined,
   SearchOutlined,
   StarOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import { Button, Card, Col, Layout, Row, Select } from 'antd';
-
-const { Option } = Select;
-const { Content } = Layout;
+import { Button, Card, Col, Row } from 'antd';
 
 const Home = () => {
   return (
@@ -26,8 +22,8 @@ const Home = () => {
       <Navbar />
       <main className='bg-white text-gray-900 px-[120px]'>
         {/* Hero Section */}
-        <section className='grid grid-cols-2 gap-16 bg-slate-50 mx-[-120px] relative'>
-          <div className='relative w-full h-[500px] 2xl:h-[600px] '>
+        <section className='grid grid-cols-2 gap-12 2xl:gap-16 bg-slate-50 mx-[-120px] relative items-center'>
+          <div className='relative w-full md:h-[400px] xl:h-[500px] 2xl:h-[720px] '>
             <Image
               src='/images/hero.jpg'
               alt='Translator'
@@ -39,8 +35,8 @@ const Home = () => {
             />
           </div>
 
-          <div className='w-full mt-10 pe-[120px]'>
-            <h1 className='text-5xl 2xl:text-6xl font-bold mb-4'>
+          <div className='w-full pe-[120px] mt-[-2rem]'>
+            <h1 className='text-5xl 2xl:text-7xl font-bold mb-4 text-blue-950'>
               Find Your Perfect{' '}
               <span className='decoration-blue-600 text-blue-600'>
                 Translator
@@ -56,53 +52,9 @@ const Home = () => {
         </section>
         {/* End of Hero */}
 
-        <section className='px-4 md:px-10 py-20'>
-          <div className='flex flex-col md:flex-row justify-between items-center'>
-            <h2 className='text-2xl font-bold mb-6'>
-              Explore by Specialization
-            </h2>
-            <a href='#' className='text-blue-600'>
-              View all
-            </a>
-          </div>
-
-          <div className='grid grid-cols-1 md:grid-cols-5 gap-4 mt-8 text-center'>
-            <Card className='p-4 rounded-lg shadow-lg' hoverable>
-              <div className='bg-gray-100 w-1/3 mx-auto rounded-full p-2 text-center'>
-                <GlobalOutlined className='text-2xl text-slate-800 rounded-full font-bold' />
-              </div>
-              <h3 className='mt-4 text-xl font-bold'>General</h3>
-            </Card>
-
-            <Card className='p-4 rounded-lg shadow-lg' hoverable>
-              <div className='bg-gray-100 w-1/3 mx-auto rounded-full p-2 text-center'>
-                <HeartOutlined className='text-2xl text-slate-800 rounded-full font-bold' />
-              </div>
-              <h3 className='mt-4 text-xl font-bold'>Health</h3>
-            </Card>
-
-            <Card className='p-4 rounded-lg shadow-lg' hoverable>
-              <div className='bg-gray-100 w-1/3 mx-auto rounded-full p-2 text-center'>
-                <BuildOutlined className='text-2xl rounded-full text-slate-800 font-bold' />
-              </div>
-              <h3 className='mt-4 text-xl font-bold'>Business</h3>
-            </Card>
-
-            <Card className='p-4 rounded-lg shadow-lg' hoverable>
-              <div className='bg-gray-100 w-1/3 mx-auto rounded-full p-2 text-center'>
-                <CreditCardOutlined className='text-2xl rounded-full text-slate-800 font-bold' />
-              </div>
-              <h3 className='mt-4 text-xl font-bold'>Finance</h3>
-            </Card>
-
-            <Card className='p-4 rounded-lg shadow-lg' hoverable>
-              <div className='bg-gray-100 w-1/3 mx-auto rounded-full p-2 text-center'>
-                <LaptopOutlined className='text-2xl rounded-full text-slate-800 font-bold' />
-              </div>
-              <h3 className='mt-4 text-xl font-bold'>Tech</h3>
-            </Card>
-          </div>
-        </section>
+        {/* Specialization Section */}
+        <SpecializationSection />
+        {/* End Specialization Section */}
 
         {/* Events Section */}
         <section className='px-4 md:px-10 py-20'>

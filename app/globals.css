@@ -97,9 +97,9 @@ p {
   line-height: 1rem;
 }
 
-.ant-btn {
+/* .ant-btn {
   @apply px-6 py-4 shadow-none rounded-xl !important;
-}
+} */
 
 .ant-btn:disabled {
   border: none;

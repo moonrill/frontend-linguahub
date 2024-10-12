@@ -25,7 +25,7 @@ const CustomDropdown = ({ label, items, onSelect }: CustomDropdownProps) => {
       className='language-select cursor-pointer'
     >
       <div className='flex items-center gap-2'>
-        <p className='font-medium'>{label}</p>
+        <p className='font-medium text-sm 2xl:text-base'>{label}</p>
         <Icon icon='weui:arrow-outlined' height={24} className='rotate-90' />
       </div>
     </Dropdown>

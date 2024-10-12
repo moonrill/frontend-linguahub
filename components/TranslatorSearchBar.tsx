@@ -3,6 +3,7 @@ import { languagesRepository } from '#/repository/language';
 import { Language } from '#/types/Language';
 import { Icon } from '@iconify-icon/react';
 import { Button, MenuProps } from 'antd';
+import { MenuItemType } from 'antd/es/menu/interface';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import CustomDropdown from './CustomDropdown';
@@ -14,7 +15,7 @@ const TranslatorSearchBar = () => {
     sortBy: 'rating',
   });
 
-  const items: MenuProps['items'] = [
+  const sortByOptions: MenuItemType[] = [
     {
       key: 'mostReviewed',
       label: 'Most Reviewed',
@@ -30,7 +31,7 @@ const TranslatorSearchBar = () => {
   ];
 
   const { data: languages, isLoading } =
-    languagesRepository.hooks.useAllLanguages();
+    languagesRepository.hooks.useAllLanguages(15, 1);
 
   // Filter source languages agar tidak menampilkan targetLanguage
   const sourceLanguagesOptions: MenuProps['items'] = languages?.data
@@ -92,10 +93,15 @@ const TranslatorSearchBar = () => {
     console.log(`Selected ${type}:`, key); // Tampilkan key di console
   };
 
+  // TODO: Finish Search Action
+  const handleSearch = () => {
+    console.log(selectedValue);
+  };
+
   return (
     <div className='absolute px-[120px] 2xl:px-[300px] w-full bottom-[-80px]'>
-      <div className='bg-white w-full rounded-[40px] flex items-center justify-center shadow-[-17px_-17px_44px_48px_#0000000D,17px_17px_44px_0px_#0000000D] h-[160px] px-[100px] 2xl:px-[120px] py-[44px]'>
-        <div className='w-full grid grid-cols-4 items-start gap-[70px]'>
+      <div className='bg-white w-full rounded-[32px] 2xl:rounded-[40px] flex items-center justify-center shadow-[-17px_-17px_44px_48px_#0000000D,17px_17px_44px_0px_#0000000D] h-[140px] 2xl:h-[160px] px-[100px] 2xl:px-[120px] py-[44px]'>
+        <div className='w-full flex justify-between'>
           {/* Source Language */}
           <div className='flex flex-col gap-2'>
             <CustomDropdown
@@ -104,7 +110,7 @@ const TranslatorSearchBar = () => {
               onSelect={(key) => handleSelect('sourceLanguage', key)}
             />
             <div className='flex items-center gap-2'>
-              <div className='relative w-[40px] h-[40px]'>
+              <div className='relative w-8 h-8 2xl:w-[40px] 2xl:h-[40px]'>
                 {languages?.data && (
                   <Image
                     src={imgLanguage(
@@ -119,7 +125,7 @@ const TranslatorSearchBar = () => {
                   />
                 )}
               </div>
-              <h1 className='font-semibold text-xl 2xl:text-2xl'>
+              <h1 className='font-semibold text-lg 2xl:text-2xl'>
                 {selectedValue.sourceLanguage || 'English'}
               </h1>
             </div>
@@ -133,7 +139,7 @@ const TranslatorSearchBar = () => {
               onSelect={(key) => handleSelect('targetLanguage', key)}
             />
             <div className='flex items-center gap-2'>
-              <div className='relative w-[40px] h-[40px]'>
+              <div className='relative w-8 h-8 2xl:w-[40px] 2xl:h-[40px]'>
                 {languages?.data && (
                   <Image
                     src={imgLanguage(
@@ -152,7 +158,7 @@ const TranslatorSearchBar = () => {
                   />
                 )}
               </div>
-              <h1 className='font-semibold text-xl 2xl:text-2xl'>
+              <h1 className='font-semibold text-lg 2xl:text-2xl'>
                 {selectedValue.targetLanguage || 'English'}
               </h1>
             </div>
@@ -162,13 +168,14 @@ const TranslatorSearchBar = () => {
           <div className='flex flex-col gap-2'>
             <CustomDropdown
               label='Sort By'
-              items={items}
+              items={sortByOptions}
               onSelect={(key) => handleSelect('sortBy', key)}
             />
             <div className='flex items-center gap-2'>
-              <h1 className='font-semibold text-xl 2xl:text-2xl'>
-                {items.find((item) => item.key === selectedValue.sortBy)
-                  ?.label || 'Select'}
+              <h1 className='font-semibold text-lg 2xl:text-2xl'>
+                {sortByOptions.find(
+                  (item) => item?.key === selectedValue.sortBy
+                )?.label || 'Select'}
               </h1>
             </div>
           </div>
@@ -177,8 +184,9 @@ const TranslatorSearchBar = () => {
           <div className='flex justify-end'>
             <Button
               type='primary'
+              onClick={handleSearch}
               icon={<Icon icon='iconamoon:search-light' height={26} />}
-              className='!w-[75px] !h-[75px] search-btn'
+              className='h-full !w-[64px] 2xl:!w-[75px] search-btn'
             ></Button>
           </div>
         </div>

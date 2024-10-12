@@ -28,32 +28,32 @@ const Navbar = () => {
       <div className='flex items-center gap-8 2xl:gap-12'>
         <Link
           href={'/'}
-          className='font-semibold text-blue-600 text-sm 2xl:text-base'
+          className='font-semibold text-blue-600 text-xs 2xl:text-base'
         >
           Home
         </Link>
         <Link
           href={'/'}
-          className='font-semibold text-blue-600 text-sm 2xl:text-base'
+          className='font-semibold text-blue-600 text-xs 2xl:text-base'
         >
           Events
         </Link>
         <Link
           href={'/'}
-          className='font-semibold text-blue-600 text-sm 2xl:text-base'
+          className='font-semibold text-blue-600 text-xs 2xl:text-base'
         >
           Translator
         </Link>
         <div className='flex gap-2'>
           <Button
             type='primary'
-            className='text-blue-600 text-sm 2xl:text-base font-semibold bg-blue-100 h-[40px] 2xl:h-[50px] hover:!text-blue-600 hover:!bg-blue-50'
+            className='text-blue-600 rounded-[10px] 2xl:rounded-xl text-xs 2xl:text-base font-semibold bg-blue-100 h-[40px] 2xl:h-[50px] hover:!text-blue-600 hover:!bg-blue-200 shadow-none'
           >
             Join as Translator
           </Button>
           <Button
             type='primary'
-            className='bg-blue-600 text-sm 2xl:text-base font-semibold text-white h-[40px] 2xl:h-[50px]'
+            className='bg-blue-600 rounded-[10px] 2xl:rounded-xl text-xs 2xl:text-base font-semibold text-white h-[40px] 2xl:h-[50px]'
           >
             Sign in
           </Button>
