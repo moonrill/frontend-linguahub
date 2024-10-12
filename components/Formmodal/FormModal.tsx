@@ -26,7 +26,7 @@ const FormModal: React.FC<FormModalProps> = ({ visible, onCancel, onOk }) => {
 
   return (
     <Modal
-      title="Create Service Request"
+      title="Create Service R equest"
       visible={visible}
       onOk={handleOk}
       onCancel={onCancel}
@@ -57,28 +57,28 @@ const FormModal: React.FC<FormModalProps> = ({ visible, onCancel, onOk }) => {
           <Col span={8}>
             <Form.Item
               name="date"
-              label="Date"
-              rules={[{ required: true, message: 'Please select your date!' }]}
+              label="Tanggal"
+              rules={[{ required: true, message: 'Silakan pilih tanggal!' }]}
             >
-              <DatePicker format="YYYY-MM-DD" placeholder="Select Date" />
+              <DatePicker format="DD-MM-YYYY" placeholder="Pilih Tanggal" />
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item
               name="startDate"
-              label="Start"
-              rules={[{ required: true, message: 'Please select the start date!' }]}
+              label="Mulai"
+              rules={[{ required: true, message: 'Silakan pilih tanggal mulai!' }]}
             >
-              <DatePicker format="YYYY-MM-DD" placeholder="Select Start Date" />
+              <DatePicker format="DD-MM-YYYY HH:mm" showTime placeholder="Pilih Tanggal Mulai" />
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item
               name="endDate"
-              label="End"
-              rules={[{ required: true, message: 'Please select the end date!' }]}
+              label="Akhir"
+              rules={[{ required: true, message: 'Silakan pilih tanggal akhir!' }]}
             >
-              <DatePicker format="YYYY-MM-DD" placeholder="Select End Date" />
+              <DatePicker format="DD-MM-YYYY HH:mm" showTime placeholder="Pilih Tanggal Akhir" />
             </Form.Item>
           </Col>
         </Row>
