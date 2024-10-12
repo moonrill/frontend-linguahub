@@ -364,3 +364,15 @@ p {
 .ant-dropdown .ant-dropdown-menu .ant-dropdown-menu-item-selected {
   @apply bg-zinc-200 text-black !important;
 }
+
+.my-card {
+  @apply rounded-2xl 2xl:rounded-3xl hover:shadow-[rgba(17,_17,_26,_0.1)_0px_0px_16px] transition duration-300 !important;
+}
+
+.my-card > .ant-card-body {
+  @apply p-0 !important;
+}
+
+.event-card > .ant-card-body {
+  @apply h-full flex flex-col !important;
+}

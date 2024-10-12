@@ -3,10 +3,11 @@ import Footer from '#/components/Footer/Footer';
 import Navbar from '#/components/Navbar/Navbar';
 import Image from 'next/image';
 // import '@fortawesome/fontawesome-free/css/all.min.css';
+import Banner from '#/components/Banner';
+import EventSection from '#/components/EventSection';
 import SpecializationSection from '#/components/SpecializationSection';
 import TranslatorSearchBar from '#/components/TranslatorSearchBar';
 import {
-  AudioOutlined,
   BuildOutlined,
   GlobalOutlined,
   LaptopOutlined,
@@ -14,7 +15,7 @@ import {
   StarOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import { Button, Card, Col, Row } from 'antd';
+import { Button, Card } from 'antd';
 
 const Home = () => {
   return (
@@ -51,66 +52,11 @@ const Home = () => {
           <TranslatorSearchBar />
         </section>
         {/* End of Hero */}
-
-        {/* Specialization Section */}
-        <SpecializationSection />
-        {/* End Specialization Section */}
-
-        {/* Events Section */}
-        <section className='px-4 md:px-10 py-20'>
-          <div className='flex flex-col md:flex-row justify-between items-center'>
-            <h2 className='text-2xl font-bold mb-6'>Events for You</h2>
-            <a href='#' className='text-blue-600'>
-              View all
-            </a>
-          </div>
-          <Row gutter={[16, 16]} className='p-4'>
-            {[...Array(15)].map((_, idx) => (
-              <Col key={idx} xs={24} sm={12} md={8}>
-                <Card hoverable className='bg-white shadow rounded-md'>
-                  <Image
-                    src='/images/4.png'
-                    alt='Event'
-                    width={350}
-                    height={200}
-                    className='w-full'
-                  />
-                  <div className='p-3'>
-                    <h3 className='text-lg font-bold mt-4'>Event Title</h3>
-                    <p className='text-gray-600'>Ends at 27 November 2024</p>
-                    <p className='text-gray-500 mt-2 line-clamp-3'>
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                    </p>
-                    <a href='#' className='text-blue-600 mt-4 block'>
-                      View event
-                    </a>
-                  </div>
-                </Card>
-              </Col>
-            ))}
-          </Row>
-        </section>
-
-        <section className='bg-blue-600 py-8'>
-          <div className='flex text-white justify-evenly'>
-            <div className='bg-white w-32 rounded-full text-center'>
-              <AudioOutlined className='fas fa-microphone text-6xl text-blue-500 mt-7' />
-            </div>
-
-            <div className=''>
-              <h2 className='text-2xl font-bold'>
-                Need a Translator for Your Next Event?
-              </h2>
-              <p className='mt-2'>
-                Whether its a conference or a business meeting, find the perfect
-                translator for your event.
-              </p>
-              <button className='bg-white text-blue-600 px-4 py-2 rounded-lg mt-4'>
-                Book Now
-              </button>
-            </div>
-          </div>
-        </section>
+        <div className='flex flex-col gap-10 2xl:gap-12'>
+          <SpecializationSection />
+          <EventSection />
+          <Banner />
+        </div>
 
         <section className='bg-white py-8'>
           <div className='container mx-auto px-4'>

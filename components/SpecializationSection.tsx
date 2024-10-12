@@ -20,7 +20,7 @@ const SpecializationSection = () => {
         </Link>
       </div>
 
-      <div className='grid grid-cols-5 gap-4 2xl:gap-6 mt-6 2xl:mt-8'>
+      <div className='grid grid-cols-5 gap-4 2xl:gap-6 mt-4 2xl:mt-8'>
         {isLoading ? (
           <div>Loading</div>
         ) : (
