@@ -25,7 +25,7 @@ const SpecializationCard = ({ name, logo, href }: SpecializationCardProps) => {
               />
             </div>
           </div>
-          <h1 className='text-[18px] 2xl:text-2xl font-semibold text-blue-950 group-hover:text-white'>
+          <h1 className='text-xl 2xl:text-2xl font-semibold text-blue-950 group-hover:text-white'>
             {name}
           </h1>
         </div>

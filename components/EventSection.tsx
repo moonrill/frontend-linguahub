@@ -1,17 +1,46 @@
 import { eventRepository } from '#/repository/event';
 import { Event } from '#/types/EventType';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import EventCard from './EventCard';
 
 const EventSection = () => {
-  const { data: events, isLoading } = eventRepository.hooks.useAllEvents(3, 1);
+  const [itemsPerPage, setItemsPerPage] = useState(3); // Default ke 3 event
+
+  useEffect(() => {
+    // Cek ukuran layar dan sesuaikan jumlah event yang diambil
+    const handleResize = () => {
+      if (window.innerWidth >= 1536) {
+        setItemsPerPage(4); // Tampilkan 4 event di 2xl
+      } else {
+        setItemsPerPage(3); // Default ke 3 event
+      }
+    };
+
+    // Panggil saat komponen pertama kali mount
+    handleResize();
+
+    // Panggil saat ukuran layar berubah
+    window.addEventListener('resize', handleResize);
+
+    // Bersihkan event listener saat komponen unmount
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  // Panggil hook dengan jumlah event sesuai ukuran layar
+  const { data: events, isLoading } = eventRepository.hooks.useAllEvents(
+    itemsPerPage,
+    1
+  );
 
   return (
     <section>
       <div className='flex justify-between items-end'>
-        <h2 className='text-[28px] 2xl:text-4xl font-bold text-blue-950'>
+        <h1 className='text-[28px] 2xl:text-4xl font-bold text-blue-950'>
           Events for you
-        </h2>
+        </h1>
         <Link
           href={'/specialization'}
           className='text-sm 2xl:text-lg text-blue-600 font-medium'
@@ -20,7 +49,7 @@ const EventSection = () => {
         </Link>
       </div>
 
-      <div className='grid grid-cols-3 gap-6 2xl:gap-10 mt-4 2xl:mt-8'>
+      <div className='grid lg:grid-cols-3 2xl:grid-cols-4 gap-6 2xl:gap-10 mt-4 2xl:mt-8'>
         {isLoading ? (
           <div>Loading</div>
         ) : (

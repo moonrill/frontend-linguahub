@@ -1,81 +1,89 @@
-import Image from "next/image";
-import React from 'react';
 // import { FaInstagram, FaFacebook } from 'react-icons/fa';
-import { Layout, Typography, Divider } from 'antd'; 
+import { Icon } from '@iconify-icon/react';
+import { Layout } from 'antd';
+import Image from 'next/image';
+import Link from 'next/link';
 
-const { Footer: AntFooter } = Layout; 
-const { Text } = Typography; 
+const { Footer: AntFooter } = Layout;
 
 const Footer = () => {
-    return (
-        <>
-      <AntFooter className="bg-blue-950 text-white"> 
-      <div className="p-8">
-      <div className="flex flex-col md:flex-row justify-between w-full">
+  return (
+    <AntFooter className='bg-blue-950 flex justify-between h-fit'>
+      <div className='flex flex-col gap-2 max-w-[300px]'>
+        <Link href={'/'} className='relative w-[177px] h-[43px]'>
+          <Image
+            src={'/images/logo-light.png'}
+            alt={'logo'}
+            className='object-cover'
+            fill
+            quality={100}
+            sizes='(max-width: 177px)'
+          />
+        </Link>
+        <p className='text-xs 2xl:text-sm font-medium text-gray-400'>
+          LinguaHub connects you with professional translators for events,
+          travel, and document translation. Discover expert translators tailored
+          to your needs.
+        </p>
+      </div>
+      <div className='flex text-gray-300 text-sm gap-8'>
         <div>
-          <Image src="/images/logo2.png" alt="Logo" width={200} height={200} />
-          <Text className="mt-2 !text-gray-200"> 
-          LinguaHub connects you with professional translators for events, travel, and document translation. Discover expert translators tailored to your needs.     
-           </Text>
+          <h3 className='font-medium underline underline-offset-8 decoration-blue-600 decoration-2'>
+            Languages
+          </h3>
+          <ul className='text-gray-400 mt-3'>
+            <li>English</li>
+            <li>Indonesia</li>
+            <li>Spain</li>
+            <li>Arabic</li>
+            <li>Japanese</li>
+          </ul>
         </div>
-    
-        <div className="flex space-x-8">
-          <div>
-            <h4 className="text-lg font-bold">Languages</h4>
-            <ul className="space-y-2 text-gray-200">
-                <a href="#">
-              <li>English</li>
-              </a>
-              <a href="#">
-              <li>Indonesia</li>
-              </a>
-
-                <a href="#">
-              <li>Japan</li>
-              </a>
-            </ul>
-          </div>
-          <div>
-            <h4 className="text-lg font-bold">Specialization</h4>
-            <ul className="space-y-2 text-gray-200">
-                <a href="#">
-              <li>General</li>
-
-
-              </a>
-              <a href="#">
-              <li>Business</li>
-              </a>
-              <a href="#">
-              <li>Finance</li>
-              </a>
-            </ul>
-          </div>
-          <div>
-            <h4 className="text-lg font-bold">Social</h4>
-            <div className="flex flex-row items-center gap-2">
-              <a href="#" target="_blank" rel="noopener noreferrer" className="hover:text-pink-400 transition-colors duration-300">
-              {/* <FaInstagram size={20} className="sm:w-6 sm:h-6" /> */}
-            </a>
-              <a href="#" target="_blank" rel="noopener noreferrer" className="hover:text-blue-300 transition-colors duration-300">
-              {/* <FaFacebook size={20} className="sm:w-6 sm:h-6" /> */}
-            </a>
-    
-            </div>
-          </div>
+        <div>
+          <h3 className='font-medium underline underline-offset-8 decoration-blue-600 decoration-2'>
+            Specialization
+          </h3>
+          <ul className='text-gray-400 mt-3'>
+            <li>General</li>
+            <li>Medical</li>
+            <li>Tech</li>
+            <li>Finance</li>
+            <li>Business</li>
+          </ul>
+        </div>
+        <div>
+          <h3 className='font-medium underline underline-offset-8 decoration-blue-600 decoration-2'>
+            Social Media
+          </h3>
+          <ul className='text-gray-400 mt-3 flex gap-2'>
+            <li>
+              <Link href={'/'} className='hover:text-gray-500'>
+                <Icon
+                  icon={'mdi:instagram'}
+                  className='text-2xl 2xl:text-3xl'
+                />
+              </Link>
+            </li>
+            <li>
+              <Link href={'/'} className='hover:text-gray-500'>
+                <Icon icon={'mdi:twitter'} className='text-2xl 2xl:text-3xl' />
+              </Link>
+            </li>
+            <li>
+              <Link href={'/'} className='hover:text-gray-500'>
+                <Icon icon={'mdi:facebook'} className='text-2xl 2xl:text-3xl' />
+              </Link>
+            </li>
+            <li>
+              <Link href={'/'} className='hover:text-gray-500'>
+                <Icon icon={'mdi:youtube'} className='text-2xl 2xl:text-3xl' />
+              </Link>
+            </li>
+          </ul>
         </div>
       </div>
-      </div>
-    
-      <div className="mt-8 pt-6">
-        <Divider className="border-gray-400 !w-full" /> 
-        <Text className=" !text-center text-white text-sm mt-4 p-5">
-          &copy; {new Date().getFullYear()} LinguaHub. All rights reserved.
-        </Text>
-      </div>
-    </AntFooter> 
-    </>
-    );
+    </AntFooter>
+  );
 };
 
-export default Footer
+export default Footer;

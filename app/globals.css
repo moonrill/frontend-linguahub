@@ -376,3 +376,7 @@ p {
 .event-card > .ant-card-body {
   @apply h-full flex flex-col !important;
 }
+
+.ant-layout-footer {
+  @apply px-[120px] py-16 !important;
+}

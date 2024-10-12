@@ -5,3 +5,6 @@ export const imgLanguage = (flagImage: string) =>
 
 export const imgSpecialization = (logo: string) =>
   `${config.baseUrl}/images/specialization/${logo}`;
+
+export const eventPoster = (image: string) =>
+  `${config.baseUrl}/images/poster/${image}`;

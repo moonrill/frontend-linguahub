@@ -99,7 +99,7 @@ const TranslatorSearchBar = () => {
   };
 
   return (
-    <div className='absolute px-[120px] 2xl:px-[300px] w-full bottom-[-80px]'>
+    <div className='absolute px-[120px] w-full bottom-[-80px]'>
       <div className='bg-white w-full rounded-[32px] 2xl:rounded-[40px] flex items-center justify-center shadow-[-17px_-17px_44px_48px_#0000000D,17px_17px_44px_0px_#0000000D] h-[140px] 2xl:h-[160px] px-[100px] 2xl:px-[120px] py-[44px]'>
         <div className='w-full flex justify-between'>
           {/* Source Language */}

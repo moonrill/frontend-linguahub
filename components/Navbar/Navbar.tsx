@@ -28,19 +28,19 @@ const Navbar = () => {
       <div className='flex items-center gap-8 2xl:gap-12'>
         <Link
           href={'/'}
-          className='font-semibold text-blue-600 text-xs 2xl:text-base'
+          className='font-semibold text-blue-600 text-sm 2xl:text-base'
         >
           Home
         </Link>
         <Link
           href={'/'}
-          className='font-semibold text-blue-600 text-xs 2xl:text-base'
+          className='font-semibold text-blue-600 text-sm 2xl:text-base'
         >
           Events
         </Link>
         <Link
           href={'/'}
-          className='font-semibold text-blue-600 text-xs 2xl:text-base'
+          className='font-semibold text-blue-600 text-sm 2xl:text-base'
         >
           Translator
         </Link>

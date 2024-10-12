@@ -16,7 +16,7 @@ const EventCard = ({ event }: EventCardProps) => {
       <Card className='my-card event-card overflow-hidden h-full'>
         <div className='relative w-full h-52 2xl:h-64'>
           <Image
-            src={'/images/slide-2.jpg'}
+            src={'/images/event-placeholder.svg'}
             alt={'slide-2'}
             fill
             sizes='(max-width: 400px)'

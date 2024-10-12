@@ -9,9 +9,9 @@ const SpecializationSection = () => {
   return (
     <section className='mt-36'>
       <div className='flex justify-between items-end'>
-        <h2 className='text-[28px] 2xl:text-4xl font-bold text-blue-950'>
+        <h1 className='text-[28px] 2xl:text-4xl font-bold text-blue-950'>
           Explore by Specialization
-        </h2>
+        </h1>
         <Link
           href={'/specialization'}
           className='text-sm 2xl:text-lg text-blue-600 font-medium'
