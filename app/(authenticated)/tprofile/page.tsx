@@ -7,7 +7,7 @@ import Sidebartranslator, { SidebarProvider } from "#/components/Sidebartranslat
 
 const { Content } = Layout;
 
-export default function Dashboard() {
+export default function Tprofile() {
   const [profile, setProfile] = useState({
     fullName: "Kim Da Mi",
     gender: "Female",
