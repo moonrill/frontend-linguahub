@@ -1,6 +1,6 @@
 import AdminMenu from '#/components/Menu/AdminMenu';
 import TranslatorMenu from '#/components/Menu/TranslatorMenu';
-import { User } from '#/types/UserType';
+import { Payload } from '#/types/UserType';
 import { Icon } from '@iconify-icon/react';
 import { Button, Layout } from 'antd';
 import Image from 'next/image';
@@ -10,7 +10,7 @@ import { useState } from 'react';
 const { Sider } = Layout;
 
 interface SidebarComponentProps {
-  user: User | null;
+  user: Payload | null;
 }
 
 const SidebarComponent: React.FC<SidebarComponentProps> = ({ user }) => {

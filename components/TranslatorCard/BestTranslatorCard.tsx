@@ -1,34 +1,16 @@
+import { BestTranslator } from '#/types/TranslatorTypes';
 import { Icon } from '@iconify-icon/react';
 import { Button, Card, Tag } from 'antd';
 import Image from 'next/image';
 import Link from 'next/link';
-
-const Header = () => {
-  return (
-    <div>
-      <h1 className='text-2xl 2xl:text-3xl font-bold'>Kim Da Mi</h1>
-      <div className='flex gap-1 items-center'>
-        <Icon
-          icon={'mdi:book-open-variant'}
-          className='text-blue-600 text-xl'
-        />
-        <p className='text-xs font-light mt-0.5'>100+ |</p>
-        <Icon
-          icon={'tabler:star-filled'}
-          className='text-yellow-400 text-base 2xl:text-xl'
-        />
-        <p className='text-sm font-semibold'>4.7</p>
-        <p className='text-xs font-light'>(20 reviews)</p>
-      </div>
-    </div>
-  );
-};
+import LanguageFlag from '../LanguageFlag';
 
 const Languages = () => {
   return (
     <div>
       <p className='text-xs 2xl:text-sm font-medium'>Languages Proficiency</p>
       <div className='flex gap-1 2xl:gap-2 mt-2'>
+        <div className='relative w-[32px] h-[32px] md:w-[42px] md:h-[42px]'></div>
         <Icon
           icon={'emojione:flag-for-united-kingdom'}
           className='text-2xl 2xl:text-3xl'
@@ -81,7 +63,13 @@ const Specializations = () => {
   );
 };
 
-const BestTranslatorCard = () => {
+const BestTranslatorCard = ({ translator }: { translator: BestTranslator }) => {
+  const {
+    user: { userDetail },
+    completedBookingsCount,
+    rating,
+    reviewsCount,
+  } = translator;
   return (
     <Card className='my-card'>
       <div className='relative w-full h-52 2xl:h-64'>
@@ -94,8 +82,27 @@ const BestTranslatorCard = () => {
         />
       </div>
       <div className='p-6 flex flex-col gap-4'>
-        <Header />
-        <Languages />
+        <div>
+          <h1 className='text-2xl 2xl:text-3xl font-bold'>
+            {userDetail.fullName}
+          </h1>
+          <div className='flex gap-1 items-center'>
+            <Icon
+              icon={'mdi:book-open-variant'}
+              className='text-blue-600 text-xl'
+            />
+            <p className='text-xs font-light mt-0.5'>
+              {completedBookingsCount} |
+            </p>
+            <Icon
+              icon={'tabler:star-filled'}
+              className='text-yellow-400 text-base 2xl:text-xl'
+            />
+            <p className='text-sm font-semibold'>{rating}</p>
+            <p className='text-xs font-light'>{reviewsCount} reviews</p>
+          </div>
+        </div>
+        <LanguageFlag language={translator.languages[0]} />
         <Specializations />
         <Link href={'/'} className='flex w-full'>
           <Button

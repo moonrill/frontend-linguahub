@@ -1,4 +1,4 @@
-import { Event } from '#/types/EventType';
+import { Event } from '#/types/EventTypes';
 import formatDate from '#/utils/formatDate';
 import { Icon } from '@iconify-icon/react';
 import { Card } from 'antd';

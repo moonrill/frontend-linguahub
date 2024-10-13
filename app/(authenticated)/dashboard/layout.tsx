@@ -2,7 +2,7 @@
 
 import HeaderComponent from '#/components/Dashboard/Header';
 import SidebarComponent from '#/components/Dashboard/Sidebar';
-import { User } from '#/types/UserType';
+import { Payload } from '#/types/UserType';
 import { Breadcrumb, Layout } from 'antd';
 import { Content } from 'antd/es/layout/layout';
 import Link from 'next/link';
@@ -15,7 +15,7 @@ interface DashboardLayoutProps {
 
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const pathname = usePathname();
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<Payload | null>(null);
 
   useEffect(() => {
     const fetchUser = async () => {

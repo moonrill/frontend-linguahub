@@ -1,10 +1,10 @@
-import { User } from '#/types/UserType';
+import { Payload } from '#/types/UserType';
 import { Avatar } from 'antd';
 import { Header } from 'antd/es/layout/layout';
 
 interface HeaderComponentProps {
   title: string;
-  user: User | null;
+  user: Payload | null;
 }
 
 const capitalizeFirstLetter = (string: string) => {

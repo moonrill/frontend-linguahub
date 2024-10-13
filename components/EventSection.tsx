@@ -1,5 +1,5 @@
 import { eventRepository } from '#/repository/event';
-import { Event } from '#/types/EventType';
+import { Event } from '#/types/EventTypes';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import EventCard from './EventCard';

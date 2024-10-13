@@ -1,6 +1,6 @@
 'use client';
 
-import { User } from '#/types/UserType';
+import { Payload } from '#/types/UserType';
 import { ArrowUpOutlined } from '@ant-design/icons';
 import { Avatar, Button, Layout } from 'antd';
 import Image from 'next/image';
@@ -15,7 +15,7 @@ const Navbar = ({ visible }: { visible: boolean }) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<Payload | null>(null);
 
   useEffect(() => {
     const fetchUser = async () => {

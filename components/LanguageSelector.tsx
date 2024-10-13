@@ -1,5 +1,5 @@
 import { imgLanguage } from '#/constants/general';
-import { Language } from '#/types/Language';
+import { Language } from '#/types/LanguageTypes';
 import { Form, Tag, Tooltip } from 'antd';
 import Image from 'next/image';
 

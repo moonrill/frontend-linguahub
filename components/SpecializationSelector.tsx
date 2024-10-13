@@ -1,4 +1,4 @@
-import { Specialization } from '#/types/Specialization';
+import { Specialization } from '#/types/SpecializationTypes';
 import { Form, Tag } from 'antd';
 
 const SpecializationSelector: React.FC<{

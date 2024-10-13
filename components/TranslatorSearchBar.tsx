@@ -1,6 +1,6 @@
 import { imgLanguage } from '#/constants/general';
 import { languagesRepository } from '#/repository/language';
-import { Language } from '#/types/Language';
+import { Language } from '#/types/LanguageTypes';
 import { Icon } from '@iconify-icon/react';
 import { Button, MenuProps } from 'antd';
 import { MenuItemType } from 'antd/es/menu/interface';
