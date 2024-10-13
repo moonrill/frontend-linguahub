@@ -46,7 +46,7 @@ const Login = () => {
 
   return (
     <>
-      <div className='mt-24 flex flex-col gap-8 lg:p-4'>
+      <div className='mt-4 2xl:mt-24 flex flex-col gap-8 lg:p-4'>
         <div className='flex flex-col gap-2 md:gap-4'>
           <h1 className='text-[56px] font-semibold m-0'>Sign In</h1>
           <p className='text-zinc-600'>

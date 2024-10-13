@@ -1,6 +1,4 @@
 'use client';
-import Footer from '#/components/Footer/Footer';
-import Navbar from '#/components/Navbar/Navbar';
 import Image from 'next/image';
 // import '@fortawesome/fontawesome-free/css/all.min.css';
 import Banner from '#/components/Banner';
@@ -13,7 +11,6 @@ import TranslatorSearchBar from '#/components/TranslatorSearchBar';
 const Home = () => {
   return (
     <>
-      <Navbar />
       <main className='bg-white text-gray-900 px-[120px] mb-16'>
         {/* Hero Section */}
         <section className='grid grid-cols-2 gap-12 2xl:gap-16 bg-slate-50 mx-[-120px] relative items-center'>
@@ -53,8 +50,6 @@ const Home = () => {
           <BestTranslatorSection />
         </div>
       </main>
-
-      <Footer />
     </>
   );
 };

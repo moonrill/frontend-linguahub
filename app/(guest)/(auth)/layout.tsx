@@ -2,12 +2,12 @@ import ImageSlider from '#/components/ImageSlider';
 import Image from 'next/image';
 import Link from 'next/link';
 
-const AuthLayout = ({ children }: { children: React.ReactNode }) => {
+const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className='flex min-h-screen p-6 md:p-8 gap-8 bg-white'>
       {/* Left side */}
       <div className='w-[756px] flex flex-col'>
-        <nav className='flex justify-between items-center mb-8'>
+        <nav className='flex justify-between items-center 2xl:mb-8'>
           <div className='w-[118px] h-[28px] md:w-[177px] md:h-[43px] relative'>
             <Image
               src={'/images/logo.png'}
@@ -48,4 +48,4 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default AuthLayout;
+export default Layout;

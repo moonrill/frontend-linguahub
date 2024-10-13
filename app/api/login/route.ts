@@ -1,3 +1,4 @@
+import { config } from '#/config/app';
 import { decrypt } from '#/utils/auth';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
@@ -6,7 +7,7 @@ export async function POST(request: NextRequest) {
   try {
     const { email, password } = await request.json();
 
-    const response = await fetch('http://localhost:3222/auth/login', {
+    const response = await fetch(`${config.baseUrl}/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -35,8 +36,10 @@ export async function POST(request: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
+    console.log(error);
+
     return NextResponse.json(
-      { message: 'Internal server error' },
+      { message: 'Internal server error', error },
       { status: 500 }
     );
   }

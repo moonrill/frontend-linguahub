@@ -7,4 +7,5 @@ export type User = {
   exp: number;
   iat: number;
   accessToken: string;
+  profilePicture?: string;
 };
