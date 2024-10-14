@@ -23,7 +23,6 @@ const EventCard = ({ event }: EventCardProps) => {
             className='object-cover'
           />
         </div>
-        {/* Bagian ini menggunakan flex-1 untuk mengisi ruang yang tersisa */}
         <div className='p-4 2xl:p-6 flex flex-col gap-4 flex-1'>
           <div className='flex flex-col gap-4 flex-1'>
             <div className='flex flex-col gap-1.5 2xl:gap-2'>
@@ -36,14 +35,10 @@ const EventCard = ({ event }: EventCardProps) => {
               {description}
             </p>
           </div>
-          {/* Menambahkan mt-auto agar tombol selalu berada di bawah */}
-          <Link
-            href={`/events/${id}`}
-            className='flex gap-1.5 items-center text-sm text-blue-600 mt-auto'
-          >
-            <p>View event</p>
+          <p className='flex gap-1.5 items-center text-sm text-blue-600 mt-auto'>
+            View event
             <Icon icon={'weui:arrow-outlined'} height={18} />
-          </Link>
+          </p>
         </div>
       </Card>
     </Link>

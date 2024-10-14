@@ -10,4 +10,4 @@ export const eventPoster = (image: string) =>
   `${config.baseUrl}/images/poster/${image}`;
 
 export const imgProfilePicture = (image: string) =>
-  `${config.baseUrl}/images/profile/${image}`;
+  `${config.baseUrl}/images/profile-picture/${image}`;

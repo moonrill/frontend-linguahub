@@ -6,7 +6,7 @@ const BestTranslatorSection = () => {
   const { data: translator, isLoading } =
     translatorRepository.hooks.useGetBestTranslator();
   return (
-    <section className='flex flex-col gap-10 2xl:gap-24'>
+    <section className='flex flex-col gap-10 2xl:gap-20'>
       <h1 className='text-[28px] 2xl:text-4xl font-bold text-blue-950 text-center'>
         Our Best Translator
       </h1>

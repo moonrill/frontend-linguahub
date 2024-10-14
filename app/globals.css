@@ -370,11 +370,7 @@ p {
 }
 
 .my-card > .ant-card-body {
-  @apply p-0 !important;
-}
-
-.event-card > .ant-card-body {
-  @apply h-full flex flex-col !important;
+  @apply p-0 h-full flex flex-col !important;
 }
 
 .ant-layout-footer {

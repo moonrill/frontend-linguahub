@@ -1,5 +1,7 @@
 import AddressSelect from '#/components/AddressSelect';
+import ClientSuccess from '#/components/RegisterSuccess/Client';
 import { fetchAddress } from '#/repository/address';
+import { authRepository } from '#/repository/auth';
 import {
   Addresses,
   City,
@@ -10,8 +12,9 @@ import {
 } from '#/types/AddressTypes';
 import { RegisterFormData } from '#/types/RegisterTypes';
 import { Icon } from '@iconify-icon/react';
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Input, message } from 'antd';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 type AddressInfoProps = {
@@ -34,10 +37,12 @@ const AddressInfo = ({
     district: [],
     subDistrict: [],
   });
-
+  const [loading, setLoading] = useState(false);
+  const [registerSuccess, setRegisterSuccess] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState<SelectedAddress>({});
   const [selectedAddressNames, setSelectedAddressNames] =
     useState<SelectedAddress>({});
+  const router = useRouter();
 
   useEffect(() => {
     fetchAddress('provinces').then((data) =>
@@ -100,13 +105,34 @@ const AddressInfo = ({
     });
   };
 
-  const onFinish = (values: any) => {
-    updateFormData(selectedAddressNames);
-    updateFormData({ street: values.street });
-    if (formData.role === 'translator') {
-      nextStep();
+  const onFinish = async (values: any) => {
+    setLoading(true); // Set loading state to true
+    try {
+      if (formData.role === 'translator') {
+        updateFormData(selectedAddressNames);
+        updateFormData({ street: values.street });
+        nextStep();
+      }
+
+      const clientData = {
+        ...formData,
+        ...selectedAddressNames,
+        street: values.street,
+      };
+
+      await authRepository.manipulateData.register(clientData);
+
+      setRegisterSuccess(true);
+    } catch (error) {
+      message.error('Something went wrong');
+    } finally {
+      setLoading(false); // Set loading state to false after process
     }
   };
+
+  if (registerSuccess) {
+    return <ClientSuccess />;
+  }
 
   return (
     <div className='flex pt-10 flex-grow overflow-hidden'>
@@ -221,6 +247,7 @@ const AddressInfo = ({
               className='w-full py-6 font-medium rounded-xl'
               type='primary'
               htmlType='submit'
+              loading={loading} // Disable button while loading
             >
               {formData.role === 'translator' ? 'Next' : 'Create account'}
             </Button>
