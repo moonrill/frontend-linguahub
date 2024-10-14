@@ -1,4 +1,5 @@
 import CustomFileUpload from '#/components/CustomFileUpload';
+import { authRepository } from '#/repository/auth';
 import { uploadRepository } from '#/repository/upload';
 import { RegisterFormData } from '#/types/RegisterTypes';
 import { Icon } from '@iconify-icon/react';
@@ -23,6 +24,7 @@ const DocumentsUpload = ({
   updateFormData,
   formData,
 }: DocumentsUploadProps) => {
+  const [loading, setLoading] = useState(false);
   const [cvFile, setCvFile] = useState<UploadFile | null>(null);
   const [certificateFile, setCertificateFile] = useState<UploadFile | null>(
     null
@@ -79,7 +81,7 @@ const DocumentsUpload = ({
         );
         setCertificateFile(file);
       }
-      message.success(`${type.toWellFormed} uploaded successfully`);
+      message.success(`${type.toWellFormed()} uploaded successfully`);
       updateFormData({ [type]: response.body?.[type] });
     } catch (error) {
       console.error(error);
@@ -103,14 +105,21 @@ const DocumentsUpload = ({
     </div>
   );
 
-  const onFinish = () => {
-    if (!cvFile || !certificateFile) {
-      message.error('Please upload your CV and certificate');
-      return;
-    }
+  const onFinish = async () => {
+    try {
+      setLoading(true);
+      if (!cvFile || !certificateFile) {
+        message.error('Please upload your CV and certificate');
+        return;
+      }
 
-    console.log(formData);
-    // TODO: Handle onFinish
+      await authRepository.manipulateData.register(formData);
+      nextStep();
+    } catch (error) {
+      message.error('Something went wrong');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

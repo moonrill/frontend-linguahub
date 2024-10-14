@@ -1,5 +1,7 @@
 'use client';
 
+import ClientSuccess from '#/components/RegisterSuccess/Client';
+import TranslatorSuccess from '#/components/RegisterSuccess/Translator';
 import { RegisterFormData } from '#/types/RegisterTypes';
 import { useState } from 'react';
 import AddressInfo from './components/AddressInfo';
@@ -11,11 +13,22 @@ import StepIndicator from './components/StepIndicator';
 
 const Register = () => {
   const [step, setStep] = useState(0);
+  const [isRegistrationComplete, setIsRegistrationComplete] = useState(false); // Track registration completion
   const [formData, setFormData] = useState<Partial<RegisterFormData>>({
     role: undefined,
   });
 
-  const nextStep = () => setStep(step + 1);
+  const nextStep = () => {
+    // If client reaches their last step, mark the registration as complete
+    if (formData.role === 'client' && step === 2) {
+      setIsRegistrationComplete(true);
+    } else if (formData.role === 'translator' && step === 4) {
+      setIsRegistrationComplete(true);
+    } else {
+      setStep(step + 1);
+    }
+  };
+
   const prevStep = () => setStep(step - 1);
 
   const updateFormData = (data: Partial<RegisterFormData>) => {
@@ -49,28 +62,41 @@ const Register = () => {
     },
     {
       component: DocumentsUpload,
-      props: { updateFormData, nextStep, prevStep, formData },
+      props: {
+        updateFormData,
+        nextStep,
+        prevStep,
+        formData,
+      },
     },
   ];
 
-  const CurrentStep = steps[step].component;
-  const currentProps = steps[step].props;
-
-  const isLastStep =
-    (formData.role === 'client' && step === 2) ||
-    (formData.role === 'translator' && step === 4);
+  const isStepValid = step >= 0 && step < steps.length;
+  const CurrentStep = isStepValid ? steps[step].component : null;
+  const currentProps = isStepValid ? steps[step].props : {};
 
   return (
     <div className='pt-4 md:pt-14 flex flex-col h-full'>
-      {step > 0 && (
-        <div className='w-full'>
-          <StepIndicator
-            steps={formData.role === 'client' ? clientSteps : translatorSteps}
-            currentStep={step - 1}
-          />
-        </div>
+      {/* Conditionally render the step indicator and forms if registration is not complete */}
+      {!isRegistrationComplete ? (
+        <>
+          {step > 0 && (
+            <div className='w-full'>
+              <StepIndicator
+                steps={
+                  formData.role === 'client' ? clientSteps : translatorSteps
+                }
+                currentStep={step - 1}
+              />
+            </div>
+          )}
+          <CurrentStep {...currentProps} />
+        </>
+      ) : formData.role === 'client' ? (
+        <ClientSuccess />
+      ) : (
+        <TranslatorSuccess />
       )}
-      <CurrentStep {...currentProps} />
     </div>
   );
 };

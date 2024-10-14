@@ -1,5 +1,4 @@
 import AddressSelect from '#/components/AddressSelect';
-import ClientSuccess from '#/components/RegisterSuccess/Client';
 import { fetchAddress } from '#/repository/address';
 import { authRepository } from '#/repository/auth';
 import {
@@ -14,7 +13,6 @@ import { RegisterFormData } from '#/types/RegisterTypes';
 import { Icon } from '@iconify-icon/react';
 import { Button, Form, Input, message } from 'antd';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 type AddressInfoProps = {
@@ -38,11 +36,9 @@ const AddressInfo = ({
     subDistrict: [],
   });
   const [loading, setLoading] = useState(false);
-  const [registerSuccess, setRegisterSuccess] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState<SelectedAddress>({});
   const [selectedAddressNames, setSelectedAddressNames] =
     useState<SelectedAddress>({});
-  const router = useRouter();
 
   useEffect(() => {
     fetchAddress('provinces').then((data) =>
@@ -107,32 +103,28 @@ const AddressInfo = ({
 
   const onFinish = async (values: any) => {
     setLoading(true); // Set loading state to true
-    try {
-      if (formData.role === 'translator') {
-        updateFormData(selectedAddressNames);
-        updateFormData({ street: values.street });
+    if (formData.role === 'translator') {
+      updateFormData(selectedAddressNames);
+      updateFormData({ street: values.street });
+      nextStep();
+    } else {
+      try {
+        const clientData = {
+          ...formData,
+          ...selectedAddressNames,
+          street: values.street,
+        };
+
+        await authRepository.manipulateData.register(clientData);
+
         nextStep();
+      } catch (error) {
+        message.error('Something went wrong');
+      } finally {
+        setLoading(false); // Set loading state to false after process
       }
-
-      const clientData = {
-        ...formData,
-        ...selectedAddressNames,
-        street: values.street,
-      };
-
-      await authRepository.manipulateData.register(clientData);
-
-      setRegisterSuccess(true);
-    } catch (error) {
-      message.error('Something went wrong');
-    } finally {
-      setLoading(false); // Set loading state to false after process
     }
   };
-
-  if (registerSuccess) {
-    return <ClientSuccess />;
-  }
 
   return (
     <div className='flex pt-10 flex-grow overflow-hidden'>
