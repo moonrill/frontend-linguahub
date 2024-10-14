@@ -8,7 +8,7 @@ const { Content } = Layout;
 const { Title } = Typography;
 
 export default function MyCoupons() {
-  const [activeTab, setActiveTab] = useState('All'); // Default tab is 'All'
+  const [activeTab, setActiveTab] = useState('All');
   const tabs = ['All', 'Available', 'Used', 'Expired'];
 
   // Simulasi data kupon

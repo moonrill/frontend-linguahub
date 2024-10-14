@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from 'react';
 import { Layout, Button, Card, Typography, Row, Col } from 'antd';
 import Sidebartranslator, { SidebarProvider } from "#/components/Sidebartranslator/Sidebartranslator";
@@ -18,30 +19,42 @@ const ServiceRequest = ({ status, price }: { status: string; price: string }) =>
       : "red";
 
   return (
-    <Card hoverable className="mb-4 shadow-md rounded-lg">
-      <div className="flex justify-between items-center">
-        <div>
-          <Typography.Title level={4}>Business Meeting Translation</Typography.Title>
-          <Typography.Text type="secondary">Requested at: Sunday, 10 September 2024</Typography.Text>
-          <p>09:00 - 11:00 | Bekasi, Jawa Barat</p>
-        </div>
-        <div className="text-right">
-          <Typography.Text strong style={{ color: statusColor }}>{status}</Typography.Text>
-          <Typography.Title level={5} className="mt-2">Rp{price}</Typography.Title>
-        </div>
+    <Card hoverable className="mb-4 shadow-md rounded-lg p-4">
+      <div className="flex justify-between items-center mb-4">
+        <Typography.Text type="secondary">Requested at: Sunday, 10 September 2024</Typography.Text>
+        <Typography.Text strong style={{ color: statusColor }}>{status}</Typography.Text>
       </div>
-      <div className="flex justify-between mt-4">
-        {status === "Approved" ? (
-          <Button type="primary">Pay Now</Button>
-        ) : (
-          <Button>Details</Button>
-        )}
+      <div className="grid grid-cols-3 gap-4 items-center">
+        {/* Avatar dan Informasi User */}
+        <div className="flex items-center border-r border-gray-200 pr-4">
+          <Image src="/images/4.png" alt="logo" width={90} height={90} className="rounded-lg" />
+          <div className="ml-3">
+            <p className="font-semibold">Kim da mi</p>
+            <p className="text-sm text-gray-500">10 September 2024</p>
+            <p className="text-sm text-gray-500">09:00 - 11:00</p>
+          </div>
+        </div>
+
+        {/* Detail Service */}
+        <div className="px-4">
+          <Typography.Title level={5}>Business Meeting Translation</Typography.Title>
+          <p className="text-sm text-gray-600">English - Indonesia</p>
+          <p className="text-sm text-gray-500">Jl. Juanda No. 7, Bintara, Bekasi Barat, Kota Bekasi, Jawa Barat</p>
+        </div>
+
+        {/* Harga dan Aksi */}
+        <div className="text-right">
+          <Typography.Title level={5} className="text-lg">Rp{price}</Typography.Title>
+          <Button type={status === "Approved" ? "primary" : "default"} className="mt-2">
+            {status === "Approved" ? "Pay Now" : "Details"}
+          </Button>
+        </div>
       </div>
     </Card>
   );
 };
 
-export default function Bookings() {
+export default function Service() {
   const [activeTab, setActiveTab] = useState('All');
   const tabs = ['All', 'Pending', 'Approved', 'Rejected'];
 
@@ -67,7 +80,7 @@ export default function Bookings() {
         {/* Main Layout */}
         <Layout className="site-layout !bg-white">
           <Content style={{ margin: '16px' }}>
-            <Title level={2} className="mb-6">Bookings</Title>
+            <Title level={2} className="mb-6">Service Requests</Title>
 
             {/* Tabs Section */}
             <div className="mb-6">
@@ -92,7 +105,7 @@ export default function Bookings() {
                   </Col>
                 ))
               ) : (
-                <Typography.Text>No bookings found for this category.</Typography.Text>
+                <Typography.Text>No Service Requests found for this category.</Typography.Text>
               )}
             </Row>
           </Content>
