@@ -10,7 +10,7 @@ const BestTranslatorSection = () => {
       <h1 className='text-[28px] 2xl:text-4xl font-bold text-blue-950 text-center'>
         Our Best Translator
       </h1>
-      <div className='grid grid-cols-3 justify-center gap-10 bg-blue-50 py-9 px-14 rounded-3xl'>
+      <div className='grid grid-cols-3 justify-center gap-6 2xl:gap-10 bg-blue-50 py-9 px-14 rounded-3xl'>
         {isLoading ? (
           // TODO: Change to skeleton
           <div>Loading</div>

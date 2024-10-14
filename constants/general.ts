@@ -8,3 +8,6 @@ export const imgSpecialization = (logo: string) =>
 
 export const eventPoster = (image: string) =>
   `${config.baseUrl}/images/poster/${image}`;
+
+export const imgProfilePicture = (image: string) =>
+  `${config.baseUrl}/images/profile/${image}`;
