@@ -118,7 +118,7 @@ const translatorDropdownItems = (
       <DropdownLabel
         link='/dashboard/translator'
         name='Dashboard'
-        icon='hugeicons:dashboard'
+        icon='hugeicons:dashboard-speed-02'
       />
     ),
   },

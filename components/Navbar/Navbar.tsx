@@ -1,5 +1,6 @@
 'use client';
 
+import { imgProfilePicture } from '#/constants/general';
 import { Payload } from '#/types/UserType';
 import { ArrowUpOutlined } from '@ant-design/icons';
 import { Avatar, Button, Layout } from 'antd';
@@ -30,6 +31,7 @@ const Navbar = ({ visible }: { visible: boolean }) => {
     };
     fetchUser();
   }, []);
+  console.log(user);
 
   return (
     <Header
@@ -93,13 +95,13 @@ const Navbar = ({ visible }: { visible: boolean }) => {
           {user && (
             <AvatarDropdown role={user?.role}>
               <div
-                className='flex items-center p-[2px] rounded-full'
+                className='flex items-center p-[2px] 2xl:p-0.5 rounded-full'
                 style={{ border: '2px solid #2563eb' }}
               >
                 {user?.profilePicture ? (
                   <div className='relative w-10 h-10 2xl:w-12 2xl:h-12'>
                     <Image
-                      src={'/images/4.png'}
+                      src={imgProfilePicture(user?.profilePicture)}
                       alt={'user avatar'}
                       fill
                       sizes='(max-width: 50px)'
@@ -110,7 +112,7 @@ const Navbar = ({ visible }: { visible: boolean }) => {
                 ) : (
                   <Avatar className='w-10 h-10 2xl:w-12 2xl:h-12'>
                     {user?.fullName?.charAt(0).toUpperCase() ||
-                      user?.email.charAt(0).toUpperCase()}
+                      user?.email?.charAt(0).toUpperCase()}
                   </Avatar>
                 )}
               </div>

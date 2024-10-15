@@ -72,7 +72,10 @@ const BestTranslatorCard = ({ translator }: { translator: BestTranslator }) => {
             </Link>
           ))}
         </div>
-        <Link href={'/'} className='flex w-full mt-auto'>
+        <Link
+          href={`/translator/${translator?.id}`}
+          className='flex w-full mt-auto'
+        >
           <Button
             type='primary'
             className='text-sm py-5 2xl:py-6 mt-4 rounded-xl font-medium flex-grow'

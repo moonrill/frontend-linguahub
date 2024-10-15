@@ -8,15 +8,17 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       {/* Left side */}
       <div className='w-[756px] flex flex-col'>
         <nav className='flex justify-between items-center 2xl:mb-8'>
-          <div className='w-[118px] h-[28px] md:w-[177px] md:h-[43px] relative'>
-            <Image
-              src={'/images/logo.png'}
-              alt={'logo'}
-              className='object-cover'
-              fill
-              sizes='(max-width: 177px)'
-            />
-          </div>
+          <Link href={'/'}>
+            <div className='w-[118px] h-[28px] md:w-[177px] md:h-[43px] relative'>
+              <Image
+                src={'/images/logo.png'}
+                alt={'logo'}
+                className='object-cover'
+                fill
+                sizes='(max-width: 177px)'
+              />
+            </div>
+          </Link>
 
           <div className='flex gap-7'>
             <Link

@@ -94,10 +94,10 @@ const AddressInfo = ({
     };
 
     resetTypes[addressType as keyof typeof resetTypes]?.forEach((type) => {
-      setSelectedAddress((prev) => ({ ...prev, [type]: undefined }));
-      setSelectedAddressNames((prev) => ({ ...prev, [type]: undefined }));
+      setSelectedAddress((prev) => ({ ...prev, [type]: null }));
+      setSelectedAddressNames((prev) => ({ ...prev, [type]: null }));
       setAddresses((prev) => ({ ...prev, [type]: [] }));
-      form.setFieldsValue({ [type]: undefined });
+      form.resetFields([type]);
     });
   };
 
