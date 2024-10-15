@@ -19,6 +19,9 @@ export type Translator = {
   updatedAt: string;
   deletedAt: string | null;
   user: User;
+  languages?: Language[] | [];
+  specializations?: Specialization[] | [];
+  lowestServicePrice?: number;
 };
 
 export type BestTranslator = Translator & {

@@ -58,10 +58,10 @@ const Navbar = ({ visible }: { visible: boolean }) => {
           Home
         </Link>
         <Link
-          href={'/'}
+          href={'/event'}
           className='font-semibold text-blue-600 text-sm 2xl:text-base'
         >
-          Events
+          Event
         </Link>
         <Link
           href={'/'}

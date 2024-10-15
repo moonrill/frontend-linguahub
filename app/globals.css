@@ -366,13 +366,34 @@ p {
 }
 
 .my-card {
-  @apply rounded-2xl 2xl:rounded-3xl hover:shadow-[rgba(17,_17,_26,_0.1)_0px_0px_16px] transition duration-300 !important;
+  @apply rounded-2xl h-full 2xl:rounded-3xl hover:shadow-[rgba(17,_17,_26,_0.1)_0px_0px_16px] transition duration-300 !important;
 }
 
 .my-card > .ant-card-body {
-  @apply p-0 h-full flex flex-col !important;
+  @apply p-0 h-full flex flex-col overflow-hidden !important;
 }
 
 .ant-layout-footer {
   @apply px-[120px] py-16 !important;
+}
+
+.ant-pagination-item {
+  @apply rounded-xl w-9 h-9 2xl:w-10 2xl:h-10 flex items-center justify-center bg-zinc-100 hover:bg-zinc-200 me-1 !important;
+}
+
+.ant-pagination-item a {
+  @apply text-sm 2xl:text-base !important;
+}
+
+.ant-pagination-item-active {
+  @apply bg-blue-600 text-white border-none hover:bg-blue-500 !important;
+}
+
+.ant-pagination-item-active a {
+  @apply text-white font-light text-sm 2xl:text-base !important;
+}
+
+.ant-pagination-prev,
+.ant-pagination-next {
+  @apply rounded-xl w-9 h-9 2xl:w-10 2xl:h-10 text-base 2xl:text-xl flex items-center justify-center bg-zinc-100 hover:bg-zinc-200 me-1 !important;
 }

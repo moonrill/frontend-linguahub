@@ -1,3 +1,5 @@
+import { Translator } from './TranslatorTypes';
+
 export type Specialization = {
   id: string;
   name: string;
@@ -5,4 +7,5 @@ export type Specialization = {
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
+  translators?: Translator[];
 };

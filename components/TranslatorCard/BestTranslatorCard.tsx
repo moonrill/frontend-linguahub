@@ -14,7 +14,7 @@ const BestTranslatorCard = ({ translator }: { translator: BestTranslator }) => {
     reviewsCount,
   } = translator;
   return (
-    <Card className='my-card h-full flex flex-col overflow-hidden'>
+    <Card className='my-card'>
       <div className='p-4 border-b'>
         <div className='relative w-52 h-52 2xl:w-80 2xl:h-80 rounded-full m-auto'>
           <Image

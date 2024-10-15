@@ -11,7 +11,7 @@ import TranslatorSearchBar from '#/components/TranslatorSearchBar';
 const Home = () => {
   return (
     <>
-      <main className='bg-white text-gray-900 px-[120px] mb-16'>
+      <main className='bg-white text-gray-900'>
         {/* Hero Section */}
         <section className='grid grid-cols-2 gap-12 2xl:gap-16 bg-slate-50 mx-[-120px] relative items-center'>
           <div className='relative w-full md:h-[400px] xl:h-[500px] 2xl:h-[720px] '>
@@ -39,7 +39,9 @@ const Home = () => {
               at Your Service.
             </p>
           </div>
-          <TranslatorSearchBar />
+          <div className='absolute px-[120px] w-full bottom-[-80px]'>
+            <TranslatorSearchBar isHome={true} />
+          </div>
         </section>
         {/* End of Hero */}
         <div className='flex flex-col gap-10 2xl:gap-12'>

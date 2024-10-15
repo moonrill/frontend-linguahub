@@ -28,7 +28,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     >
       <Navbar visible={visible} />
       <main
-        className={`transition-all duration-300 ${visible ? '' : 'mt-[64px]'}`}
+        className={` px-[120px] transition-all duration-300 mb-16 ${
+          visible ? '' : 'mt-[64px]'
+        }`}
       >
         {children}
       </main>
