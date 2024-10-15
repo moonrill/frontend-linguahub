@@ -2,6 +2,7 @@ import 'antd/dist/reset.css';
 import { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import Script from 'next/script';
+import NextTopLoader from 'nextjs-toploader';
 import './globals.css';
 import { Provider } from './provider';
 
@@ -35,6 +36,11 @@ export default function RootLayout({
 
       <body className={inter.className}>
         <Script src='/api/env' strategy={'beforeInteractive'}></Script>
+        <NextTopLoader
+          color='#2563eb'
+          showSpinner={false}
+          shadow='0 0 10px #2563eb,0 0 5px #2563eb'
+        />
         <Provider>{children}</Provider>
       </body>
     </html>

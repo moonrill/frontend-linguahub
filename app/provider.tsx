@@ -19,7 +19,6 @@ export const Provider = ({ children }: any) => {
 
   return (
     <ConfigProvider
-      renderEmpty={() => 'Kosong'}
       theme={{
         token: {
           colorPrimary: '#2563eb',

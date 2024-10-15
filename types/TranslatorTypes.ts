@@ -1,4 +1,5 @@
 import { Language } from './LanguageTypes';
+import { Service } from './ServiceTypes';
 import { Specialization } from './SpecializationTypes';
 import { User } from './UserType';
 
@@ -22,6 +23,8 @@ export type Translator = {
   languages?: Language[] | [];
   specializations?: Specialization[] | [];
   lowestServicePrice?: number;
+  services?: Service[] | [];
+  reviews?: Review[] | [];
 };
 
 export type BestTranslator = Translator & {
@@ -29,4 +32,15 @@ export type BestTranslator = Translator & {
   specializations: Specialization[];
   completedBookingsCount: number;
   combinedScore: number;
+};
+
+export type Review = {
+  id: string;
+  rating: number;
+  comment: string;
+  translator?: Translator;
+  user?: User;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
 };

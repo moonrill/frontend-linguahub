@@ -142,6 +142,10 @@ p {
   font-size: 16px;
 }
 
+.ant-picker-outlined {
+  border: none;
+}
+
 .ant-picker-outlined:focus-within {
   border: none !important;
   box-shadow: 0 0 0 2px white !important;
@@ -396,4 +400,16 @@ p {
 .ant-pagination-prev,
 .ant-pagination-next {
   @apply rounded-xl w-9 h-9 2xl:w-10 2xl:h-10 text-base 2xl:text-xl flex items-center justify-center bg-zinc-100 hover:bg-zinc-200 me-1 !important;
+}
+
+.review-card > .ant-card-body {
+  @apply p-4 2xl:p-5  !important;
+}
+
+.ant-modal-content {
+  @apply rounded-2xl !important;
+}
+
+.ant-picker {
+  @apply rounded-xl h-14 px-6 bg-zinc-100 !important;
 }

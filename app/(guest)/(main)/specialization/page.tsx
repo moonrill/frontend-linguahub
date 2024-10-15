@@ -69,7 +69,7 @@ const Specializations = () => {
   }, [page]);
 
   return (
-    <div className='min-h-screen mt-6 2xl:mt-10'>
+    <div className='min-h-screen mt-6'>
       <div className='flex flex-col gap-4'>
         <h1 className='font-medium text-xl 2xl:text-2xl'>
           Search Translator by Their Specialization

@@ -24,7 +24,7 @@ const SpecializationSection = () => {
         {isLoading ? (
           <div>Loading</div>
         ) : (
-          specializations.data.map((s: any) => (
+          specializations?.data?.map((s: any) => (
             <SpecializationCard
               key={s.id}
               name={s.name}

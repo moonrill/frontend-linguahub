@@ -2,21 +2,28 @@ import { Icon } from '@iconify-icon/react';
 import { MenuProps } from 'antd';
 import Dropdown from 'antd/es/dropdown/dropdown';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 type DropdownLabelProps = {
   link: string;
   name: string;
   icon: string;
+  onClick?: () => void; // Tambahkan onClick optional
 };
 
-export const DropdownLabel = ({ link, name, icon }: DropdownLabelProps) => (
-  <Link href={link} className='flex items-center gap-1.5'>
+export const DropdownLabel = ({
+  link,
+  name,
+  icon,
+  onClick,
+}: DropdownLabelProps) => (
+  <Link href={link} className='flex items-center gap-1.5' onClick={onClick}>
     <Icon icon={icon} className='text-xl' />
     {name}
   </Link>
 );
 
-const clientDropdownItems: MenuProps['items'] = [
+const clientDropdownItems = (handleLogout: () => void): MenuProps['items'] => [
   {
     key: '1',
     label: (
@@ -66,13 +73,18 @@ const clientDropdownItems: MenuProps['items'] = [
   {
     key: '6',
     label: (
-      <DropdownLabel link='/logout' name='Logout' icon='hugeicons:logout-02' />
+      <DropdownLabel
+        link='#' // Prevent default link behavior
+        name='Logout'
+        icon='hugeicons:logout-02'
+        onClick={handleLogout} // Call handleLogout
+      />
     ),
     danger: true,
   },
 ];
 
-const adminDropdownItems: MenuProps['items'] = [
+const adminDropdownItems = (handleLogout: () => void): MenuProps['items'] => [
   {
     key: '1',
     label: (
@@ -86,13 +98,20 @@ const adminDropdownItems: MenuProps['items'] = [
   {
     key: '2',
     label: (
-      <DropdownLabel link='/logout' name='Logout' icon='hugeicons:logout-02' />
+      <DropdownLabel
+        link='#' // Prevent default link behavior
+        name='Logout'
+        icon='hugeicons:logout-02'
+        onClick={handleLogout} // Call handleLogout
+      />
     ),
     danger: true,
   },
 ];
 
-const translatorDropdownItems: MenuProps['items'] = [
+const translatorDropdownItems = (
+  handleLogout: () => void
+): MenuProps['items'] => [
   {
     key: '1',
     label: (
@@ -116,7 +135,12 @@ const translatorDropdownItems: MenuProps['items'] = [
   {
     key: '3',
     label: (
-      <DropdownLabel link='/logout' name='Logout' icon='hugeicons:logout-02' />
+      <DropdownLabel
+        link='#' // Prevent default link behavior
+        name='Logout'
+        icon='hugeicons:logout-02'
+        onClick={handleLogout} // Call handleLogout
+      />
     ),
     danger: true,
   },
@@ -128,11 +152,27 @@ type AvatarDropdownProps = {
 };
 
 const AvatarDropdown = ({ children, role }: AvatarDropdownProps) => {
-  const items = {
-    client: clientDropdownItems,
-    admin: adminDropdownItems,
-    translator: translatorDropdownItems,
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    const response = await fetch('/api/logout', {
+      method: 'POST',
+    });
+
+    if (response.ok) {
+      localStorage.clear();
+      router.push('/login');
+    } else {
+      // Optionally handle error here
+    }
   };
+
+  const items = {
+    client: clientDropdownItems(handleLogout),
+    admin: adminDropdownItems(handleLogout),
+    translator: translatorDropdownItems(handleLogout),
+  };
+
   return (
     <Dropdown
       menu={{ items: items[role as keyof typeof items] }}

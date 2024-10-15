@@ -13,10 +13,13 @@ export const decrypt = async (token: string) => {
 };
 
 export const getUser = async () => {
-  const token = cookies().get('accessToken')?.value;
-  if (!token) {
+  const accessToken = cookies().get('accessToken')?.value;
+  if (!accessToken) {
     return null;
   }
 
-  return await decrypt(token);
+  const { payload } = await decrypt(accessToken);
+  const result = { ...payload, accessToken };
+
+  return result;
 };

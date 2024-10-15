@@ -58,13 +58,18 @@ const BestTranslatorCard = ({ translator }: { translator: BestTranslator }) => {
         </div>
         <div className='flex gap-y-2 flex-wrap justify-center'>
           {translator.specializations.map((specialization, index) => (
-            <Tag
+            <Link
               key={index}
-              color='blue'
-              className='border-none text-xs 2xl:text-sm py-1 px-5 rounded-full font-medium'
+              href={`/specialization?name=${specialization.name}`}
+              className='group'
             >
-              {specialization.name}
-            </Tag>
+              <Tag
+                color='blue'
+                className='!border-blue-50 text-xs 2xl:text-sm py-1 px-5 rounded-full font-medium group-hover:!border-blue-600'
+              >
+                {specialization.name}
+              </Tag>
+            </Link>
           ))}
         </div>
         <Link href={'/'} className='flex w-full mt-auto'>

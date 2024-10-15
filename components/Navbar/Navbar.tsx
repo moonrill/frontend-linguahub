@@ -23,7 +23,7 @@ const Navbar = ({ visible }: { visible: boolean }) => {
         const response = await fetch('/api/user');
         const data = await response.json();
 
-        setUser(data?.payload);
+        setUser(data);
       } catch (error) {
         console.error(error);
       }

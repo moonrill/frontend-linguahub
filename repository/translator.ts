@@ -12,6 +12,7 @@ const url = {
     limit: number
   ) =>
     `/translators/service?sourceLanguage=${sourceLanguage}&targetLanguage=${targetLanguage}&sortBy=${sortBy}&page=${page}&limit=${limit}`,
+  getById: (id: string) => `/translators/${id}`,
 };
 
 const hooks = {
@@ -38,6 +39,9 @@ const hooks = {
       ),
       http.fetcher
     );
+  },
+  useGetTranslatorById: (id: string) => {
+    return useSWR(url.getById(id), http.fetcher);
   },
 };
 
