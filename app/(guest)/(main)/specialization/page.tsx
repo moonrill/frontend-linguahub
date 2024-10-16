@@ -21,7 +21,7 @@ const Specializations = () => {
 
   // State for managing current page and limit
   const [currentPage, setCurrentPage] = useState(page);
-  const [limit, setLimit] = useState(10); // Default limit is 10
+  const [limit, setLimit] = useState(10);
 
   // Fetch all specializations
   const { data: specializations, isLoading } =
@@ -46,9 +46,9 @@ const Specializations = () => {
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth <= 1440) {
-        setLimit(12); // Set limit to 8 for xl screens
+        setLimit(12);
       } else {
-        setLimit(15); // Set limit to 10 for smaller screens
+        setLimit(15);
       }
     };
 

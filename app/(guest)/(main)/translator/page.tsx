@@ -26,7 +26,8 @@ const TranslatorPage = () => {
       sourceLanguage,
       targetLanguage,
       sortBy,
-      page
+      page,
+      limit
     );
 
   // Handle page change
@@ -41,9 +42,9 @@ const TranslatorPage = () => {
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth <= 1440) {
-        setLimit(10); // Set limit to 8 for xl screens
+        setLimit(12);
       } else {
-        setLimit(15); // Set limit to 10 for smaller screens
+        setLimit(15);
       }
     };
 

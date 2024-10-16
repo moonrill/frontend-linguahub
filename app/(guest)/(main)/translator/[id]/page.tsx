@@ -29,6 +29,7 @@ import { useEffect, useState } from 'react';
 const TranslatorDetail = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
   const [modalOpen, setModalOpen] = useState(false);
+  const [user, setUser] = useState<Payload | null>(null);
   const { data: result, isLoading } =
     translatorRepository.hooks.useGetTranslatorById(params.id);
 
@@ -38,8 +39,6 @@ const TranslatorDetail = ({ params }: { params: { id: string } }) => {
     if (!translator) return;
     document.title = `${translator?.user?.userDetail?.fullName} - Translator`;
   }, [translator]);
-
-  const [user, setUser] = useState<Payload | null>(null);
 
   useEffect(() => {
     const fetchUser = async () => {

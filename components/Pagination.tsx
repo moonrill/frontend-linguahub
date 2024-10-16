@@ -21,7 +21,7 @@ const Pagination: FC<PaginationProps> = ({
       total={total}
       pageSize={pageSize}
       onChange={onChange}
-      className='mt-10'
+      className={`mt-10 ${total <= pageSize ? 'hidden' : ''}`}
       align='end'
       prevIcon={<Icon icon='iconamoon:arrow-left-2-light' />}
       nextIcon={<Icon icon='iconamoon:arrow-right-2-light' />}

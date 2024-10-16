@@ -31,7 +31,6 @@ const Navbar = ({ visible }: { visible: boolean }) => {
     };
     fetchUser();
   }, []);
-  console.log(user);
 
   return (
     <Header

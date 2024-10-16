@@ -40,6 +40,10 @@ export const Provider = ({ children }: any) => {
             optionSelectedBg: '#f4f4f5',
             optionSelectedFontWeight: 500,
           },
+          Segmented: {
+            itemSelectedBg: '#2563eb',
+            itemSelectedColor: '#ffffff',
+          },
         },
       }}
     >

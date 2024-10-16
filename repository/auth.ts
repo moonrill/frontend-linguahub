@@ -1,8 +1,10 @@
 import { http } from '#/utils/http';
+import useSWR from 'swr';
 
 const url = {
   login: () => '/auth/login',
   register: () => '/auth/register',
+  profile: () => '/auth/profile',
 };
 
 const manipulateData = {
@@ -14,7 +16,14 @@ const manipulateData = {
   },
 };
 
+const hooks = {
+  useProfile: () => {
+    return useSWR(url.profile(), http.fetcher);
+  },
+};
+
 export const authRepository = {
   url,
+  hooks,
   manipulateData,
 };

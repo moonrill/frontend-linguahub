@@ -34,7 +34,7 @@ const clientDropdownItems = (handleLogout: () => void): MenuProps['items'] => [
     key: '2',
     label: (
       <DropdownLabel
-        link='/profile/coupons'
+        link='/profile/coupon'
         name='Coupons'
         icon='hugeicons:coupon-percent'
       />
@@ -44,9 +44,9 @@ const clientDropdownItems = (handleLogout: () => void): MenuProps['items'] => [
     key: '3',
     label: (
       <DropdownLabel
-        link='/profile/service-requests'
+        link='/profile/service-request'
         name='Service Requests'
-        icon='hugeicons:mail-upload-01'
+        icon='hugeicons:mail-01'
       />
     ),
   },
@@ -54,7 +54,7 @@ const clientDropdownItems = (handleLogout: () => void): MenuProps['items'] => [
     key: '4',
     label: (
       <DropdownLabel
-        link='/profile/bookings'
+        link='/profile/booking'
         name='Bookings'
         icon='hugeicons:customer-service-01'
       />
@@ -64,7 +64,7 @@ const clientDropdownItems = (handleLogout: () => void): MenuProps['items'] => [
     key: '5',
     label: (
       <DropdownLabel
-        link='/profile/payments'
+        link='/profile/payment'
         name='Payments'
         icon='hugeicons:credit-card'
       />

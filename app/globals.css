@@ -413,3 +413,15 @@ p {
 .ant-picker {
   @apply rounded-xl h-14 px-6 bg-zinc-100 !important;
 }
+
+.profile-sider > .ant-layout-sider-children {
+  @apply w-full  flex flex-col items-center  !important;
+}
+
+.ant-segmented {
+  @apply p-1.5 flex items-center justify-center text-xs 2xl:text-sm w-fit h-fit rounded-xl !important;
+}
+
+.ant-segmented-item {
+  @apply rounded-lg py-0.5 px-1 2xl:py-1 2xl:px-2 !important;
+}
