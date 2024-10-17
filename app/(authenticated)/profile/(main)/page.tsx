@@ -5,15 +5,11 @@ import { User } from '#/types/UserType';
 import { capitalizeFirstLetter } from '#/utils/capitalizeFirstLetter';
 import { Icon } from '@iconify-icon/react';
 import { Button, Form, Input, Skeleton } from 'antd';
-import { useEffect } from 'react';
 
 const Profile = () => {
   const { data: result, isLoading } = authRepository.hooks.useProfile();
 
   const user: User = result?.data;
-  useEffect(() => {
-    document.title = `${user?.userDetail?.fullName}`;
-  });
 
   return (
     <div className='flex flex-col gap-4'>

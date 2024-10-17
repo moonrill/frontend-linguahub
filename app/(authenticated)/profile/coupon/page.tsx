@@ -57,10 +57,6 @@ const ProfileCoupon = () => {
     router.push(`/profile/coupons?status=${status}&page=${page}`);
   };
 
-  useEffect(() => {
-    document.title = 'Coupons';
-  }, []);
-
   return (
     <div className='flex flex-col gap-6 h-full'>
       <div className='flex justify-between items-center'>

@@ -65,7 +65,7 @@ const Navbar = ({ visible }: { visible: boolean }) => {
           Event
         </Link>
         <Link
-          href={'/'}
+          href={'/translator'}
           className='font-semibold text-blue-600 text-sm 2xl:text-base'
         >
           Translator

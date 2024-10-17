@@ -3,6 +3,7 @@
 import Layout from '#/app/(guest)/(main)/layout';
 import { imgProfilePicture } from '#/constants/general';
 import { Payload } from '#/types/UserType';
+import { TokenUtil } from '#/utils/token';
 import { Icon } from '@iconify-icon/react';
 import { Divider, Menu } from 'antd';
 import Sider from 'antd/es/layout/Sider';
@@ -38,6 +39,8 @@ const profileItems = [
     icon: <Icon icon='hugeicons:credit-card' height={24} />,
   },
 ];
+
+TokenUtil.loadToken();
 
 const ClientProfileLayout = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<Payload | null>(null);

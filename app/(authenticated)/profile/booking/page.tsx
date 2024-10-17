@@ -6,7 +6,7 @@ import { bookingRepository } from '#/repository/booking';
 import { Booking } from '#/types/BookingTypes';
 import { Empty, Segmented, Skeleton } from 'antd';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 const ProfileBooking = () => {
   const router = useRouter();
@@ -36,10 +36,6 @@ const ProfileBooking = () => {
     setCurrentPage(page);
     router.push(`/profile/booking?status=${status}&page=${page}`);
   };
-
-  useEffect(() => {
-    document.title = 'Bookings';
-  }, []);
 
   return (
     <div className='flex flex-col gap-6 h-full'>

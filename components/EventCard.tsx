@@ -12,7 +12,7 @@ type EventCardProps = {
 const EventCard = ({ event }: EventCardProps) => {
   const { id, name, poster, description, endDate } = event;
   return (
-    <Link href={`/events/${id}`}>
+    <Link href={`/event/${id}`}>
       <Card className='my-card event-card overflow-hidden h-full'>
         <div className='relative w-full h-52 2xl:h-64'>
           <Image

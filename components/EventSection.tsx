@@ -42,7 +42,7 @@ const EventSection = () => {
           Events for you
         </h1>
         <Link
-          href={'/specialization'}
+          href={'/event'}
           className='text-sm 2xl:text-lg text-blue-600 font-medium'
         >
           View All
