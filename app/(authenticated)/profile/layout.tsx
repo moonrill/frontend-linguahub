@@ -19,22 +19,22 @@ const profileItems = [
   },
   {
     key: '/profile/coupon',
-    label: <Link href={'/profile/coupon'}>Coupons</Link>,
+    label: <Link href={'/profile/coupon'}>Coupon</Link>,
     icon: <Icon icon='hugeicons:coupon-percent' height={24} />,
   },
   {
     key: '/profile/service-request',
-    label: <Link href={'/profile/service-request'}>Service Requests</Link>,
+    label: <Link href={'/profile/service-request'}>Service Request</Link>,
     icon: <Icon icon='hugeicons:mail-01' height={24} />,
   },
   {
     key: '/profile/booking',
-    label: <Link href={'/profile/booking'}>Bookings</Link>,
+    label: <Link href={'/profile/booking'}>Booking</Link>,
     icon: <Icon icon='hugeicons:customer-service-01' height={24} />,
   },
   {
     key: '/profile/payment',
-    label: <Link href={'/profile/payment'}>Payments</Link>,
+    label: <Link href={'/profile/payment'}>Payment</Link>,
     icon: <Icon icon='hugeicons:credit-card' height={24} />,
   },
 ];

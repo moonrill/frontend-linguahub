@@ -118,12 +118,14 @@ const Specializations = () => {
                 )
               )}
         </div>
-        <Pagination
-          total={specialization?.total}
-          onChange={handlePageChange}
-          current={currentPage}
-          pageSize={limit}
-        />
+        {!isLoading && (
+          <Pagination
+            total={specialization?.total}
+            onChange={handlePageChange}
+            current={currentPage}
+            pageSize={limit}
+          />
+        )}
       </div>
     </div>
   );

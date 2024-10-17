@@ -2,8 +2,7 @@ import { http } from '#/utils/http';
 import useSWR from 'swr';
 
 const url = {
-  getTranslatorNewServiceRequest: () => `/translators/service-requests`,
-  getUserServiceRequest: (
+  getUserBookings: (
     status: string | undefined,
     page: number,
     limit: number,
@@ -29,19 +28,14 @@ const url = {
     }
 
     const queryString = params.toString();
-    const url = `/users/service-requests${
-      queryString ? `?${queryString}` : ''
-    }`;
+    const url = `/users/bookings${queryString ? `?${queryString}` : ''}`;
 
     return url;
   },
 };
 
 const hooks = {
-  useTranslatorNewServiceRequest: () => {
-    return useSWR(url.getTranslatorNewServiceRequest(), http.fetcher);
-  },
-  useUserServiceRequest: (
+  useUserBookings: (
     status: string | undefined,
     page: number,
     limit: number,
@@ -49,13 +43,13 @@ const hooks = {
     order?: string
   ) => {
     return useSWR(
-      url.getUserServiceRequest(status, page, limit, sortBy, order),
+      url.getUserBookings(status, page, limit, sortBy, order),
       http.fetcher
     );
   },
 };
 
-export const serviceRequestRepository = {
+export const bookingRepository = {
   url,
   hooks,
 };

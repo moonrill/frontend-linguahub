@@ -3,8 +3,8 @@
 import Pagination from '#/components/Pagination';
 import { couponRepository } from '#/repository/coupon';
 import { UserCoupon } from '#/types/CouponTypes';
-import formatDate from '#/utils/formatDate';
 import { Segmented, Skeleton } from 'antd';
+import dayjs from 'dayjs';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -57,10 +57,14 @@ const ProfileCoupon = () => {
     router.push(`/profile/coupons?status=${status}&page=${page}`);
   };
 
+  useEffect(() => {
+    document.title = 'Coupons';
+  }, []);
+
   return (
     <div className='flex flex-col gap-6 h-full'>
       <div className='flex justify-between items-center'>
-        <h1 className='text-3xl 2xl:text-4xl font-semibold'>My Coupons</h1>
+        <h1 className='text-2xl 2xl:text-3xl font-semibold'>My Coupons</h1>
         <Segmented options={items} defaultValue={status} onChange={onChange} />
       </div>
       {!isLoading && coupons?.data?.length === 0 && (
@@ -88,12 +92,14 @@ const ProfileCoupon = () => {
               <CouponCard key={uc?.id} userCoupon={uc} status={status} />
             ))}
       </div>
-      <Pagination
-        total={coupons?.total}
-        pageSize={coupons?.limit}
-        current={currentPage}
-        onChange={handlePageChange}
-      />
+      {!isLoading && (
+        <Pagination
+          total={coupons?.total}
+          pageSize={coupons?.limit}
+          current={currentPage}
+          onChange={handlePageChange}
+        />
+      )}
     </div>
   );
 };
@@ -137,7 +143,7 @@ const CouponCard = ({
             active && 'text-rose-500'
           }`}
         >
-          {formatDate(coupon?.expiredAt)}
+          {dayjs(coupon?.expiredAt).format('DD MMMM YYYY, HH:mm')}
         </p>
       </div>
     </div>

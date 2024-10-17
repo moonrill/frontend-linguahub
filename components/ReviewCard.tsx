@@ -1,8 +1,8 @@
 import { imgProfilePicture } from '#/constants/general';
 import { Review } from '#/types/TranslatorTypes';
-import formatDate from '#/utils/formatDate';
 import { Icon } from '@iconify-icon/react';
 import { Card } from 'antd';
+import dayjs from 'dayjs';
 import Image from 'next/image';
 
 const ReviewCard = ({ review }: { review: Review }) => {
@@ -28,7 +28,7 @@ const ReviewCard = ({ review }: { review: Review }) => {
               {review?.user?.userDetail.fullName}
             </p>
             <p className='font-semibold text-gray-400 text-[10px] 2xl:text-xs'>
-              {formatDate(review?.createdAt).split(',')[0]}
+              {dayjs(review?.createdAt).format('DD MMMM YYYY')}
             </p>
           </div>
         </div>

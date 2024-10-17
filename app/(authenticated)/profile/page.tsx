@@ -2,6 +2,7 @@
 
 import { authRepository } from '#/repository/auth';
 import { User } from '#/types/UserType';
+import { capitalizeFirstLetter } from '#/utils/capitalizeFirstLetter';
 import { Icon } from '@iconify-icon/react';
 import { Button, Form, Input, Skeleton } from 'antd';
 import { useEffect } from 'react';
@@ -11,13 +12,13 @@ const Profile = () => {
 
   const user: User = result?.data;
   useEffect(() => {
-    document.title = `${user?.userDetail?.fullName} - Profile`;
+    document.title = `${user?.userDetail?.fullName}`;
   });
 
   return (
     <div className='flex flex-col gap-4'>
       <div className='flex justify-between'>
-        <h1 className='text-3xl 2xl:text-4xl font-semibold'>Profile</h1>
+        <h1 className='text-2xl 2xl:text-3xl font-semibold'>Profile</h1>
         <Button type='primary' className='py-5 text-sm rounded-xl'>
           <Icon icon={'hugeicons:pencil-edit-01'} className='text-xl' />
           Edit
@@ -25,7 +26,7 @@ const Profile = () => {
       </div>
       <div className='w-full flex flex-col gap-4'>
         <div className='flex flex-col gap-3 border p-4 rounded-lg'>
-          <p className='font-semibold text-lg 2xl:text-2xl border-b pb-1'>
+          <p className='font-semibold text-lg 2xl:text-xl border-b pb-1'>
             About
           </p>
           {isLoading ? (
@@ -41,7 +42,7 @@ const Profile = () => {
               <div className='flex flex-col'>
                 <p className='text-gray-500 font-medium text-xs'>Gender</p>
                 <h3 className='text-blue-950 font-semibold'>
-                  {user?.userDetail?.gender}
+                  {capitalizeFirstLetter(user?.userDetail?.gender)}
                 </h3>
               </div>
               <div className='flex flex-col'>
@@ -63,7 +64,7 @@ const Profile = () => {
           )}
         </div>
         <div className='flex flex-col gap-3 border p-4 rounded-lg'>
-          <p className='font-semibold text-lg 2xl:text-2xl border-b pb-1'>
+          <p className='font-semibold text-lg 2xl:text-xl border-b pb-1'>
             Contact
           </p>
           {isLoading ? (
@@ -86,7 +87,7 @@ const Profile = () => {
           )}
         </div>
         <div className='flex flex-col gap-3 border p-4 rounded-lg'>
-          <p className='font-semibold text-lg 2xl:text-2xl border-b pb-1'>
+          <p className='font-semibold text-lg 2xl:text-xl border-b pb-1'>
             Address
           </p>
           {isLoading ? (
@@ -134,7 +135,7 @@ const Profile = () => {
         </div>
       </div>
       <div className='flex flex-col gap-3 border p-4 rounded-lg'>
-        <p className='font-semibold text-lg 2xl:text-2xl border-b pb-1'>
+        <p className='font-semibold text-lg 2xl:text-xl border-b pb-1'>
           Change Password
         </p>
         <Form className='flex flex-col'>

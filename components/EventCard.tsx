@@ -1,7 +1,7 @@
 import { Event } from '#/types/EventTypes';
-import formatDate from '#/utils/formatDate';
 import { Icon } from '@iconify-icon/react';
 import { Card } from 'antd';
+import dayjs from 'dayjs';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -28,7 +28,7 @@ const EventCard = ({ event }: EventCardProps) => {
             <div className='flex flex-col gap-1.5 2xl:gap-2'>
               <h1 className='font-semibold text-lg 2xl:text-2xl'>{name}</h1>
               <p className='font-medium text-xs 2xl:text-sm text-gray-400'>
-                Ends at : {formatDate(endDate)}
+                Ends at : {dayjs(endDate).format('DD MMMM YYYY, HH:mm')}
               </p>
             </div>
             <p className='text-sm 2xl:text-base font-light line-clamp-2 2xl:line-clamp-3'>

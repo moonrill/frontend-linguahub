@@ -83,12 +83,14 @@ const TranslatorPage = () => {
           <TranslatorCard key={translator.id} translator={translator} />
         ))}
       </div>
-      <Pagination
-        total={translators?.total}
-        onChange={handlePageChange}
-        current={currentPage}
-        pageSize={limit}
-      />
+      {!isLoading && (
+        <Pagination
+          total={translators?.total}
+          onChange={handlePageChange}
+          current={currentPage}
+          pageSize={limit}
+        />
+      )}
     </div>
   );
 };
