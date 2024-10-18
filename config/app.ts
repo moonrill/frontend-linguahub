@@ -11,4 +11,6 @@ export const config = {
       : '') ||
     process.env.NEXT_JWT_SECRET ||
     'secret',
+  midtransClientKey: process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY,
+  midtransSnapUrl: process.env.NEXT_PUBLIC_MIDTRANS_SNAP_URL,
 };

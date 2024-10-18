@@ -1,7 +1,6 @@
 import { imgProfilePicture } from '#/constants/general';
 import { Review } from '#/types/TranslatorTypes';
-import { Icon } from '@iconify-icon/react';
-import { Card } from 'antd';
+import { Card, Rate } from 'antd';
 import dayjs from 'dayjs';
 import Image from 'next/image';
 
@@ -33,13 +32,7 @@ const ReviewCard = ({ review }: { review: Review }) => {
           </div>
         </div>
         <div>
-          {Array.from({ length: review?.rating }).map((_, index) => (
-            <Icon
-              key={index}
-              icon={'tabler:star-filled'}
-              className='text-yellow-400 text-lg 2xl:text-2xl'
-            />
-          ))}
+          <Rate disabled defaultValue={review.rating} />
         </div>
       </div>
       <p className='mt-3 2xl:mt-4 text-xs 2xl:text-sm font-light'>

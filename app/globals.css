@@ -425,3 +425,7 @@ p {
 .ant-segmented-item {
   @apply rounded-lg py-0.5 px-1 2xl:py-1 2xl:px-2 !important;
 }
+
+.ant-rate .ant-rate-star {
+  @apply mr-1 !important;
+}

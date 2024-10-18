@@ -1,3 +1,4 @@
+import { config } from '#/config/app';
 import 'antd/dist/reset.css';
 import { Metadata } from 'next';
 import { Inter } from 'next/font/google';
@@ -20,6 +21,12 @@ export const metadata: Metadata = {
   description: 'Linguahub, the best translation language platform',
 };
 
+declare global {
+  interface Window {
+    snap: any;
+  }
+}
+
 export default function RootLayout({
   children,
 }: {
@@ -35,7 +42,11 @@ export default function RootLayout({
       <head />
 
       <body className={inter.className}>
-        <Script src='/api/env' strategy={'beforeInteractive'}></Script>
+        <Script
+          src={config.midtransSnapUrl}
+          strategy={'beforeInteractive'}
+          data-client-key={config.midtransClientKey}
+        ></Script>
         <NextTopLoader
           color='#2563eb'
           showSpinner={false}

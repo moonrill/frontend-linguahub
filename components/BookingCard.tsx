@@ -1,10 +1,12 @@
 import { imgProfilePicture } from '#/constants/general';
 import { Booking } from '#/types/BookingTypes';
 import { capitalizeFirstLetter } from '#/utils/capitalizeFirstLetter';
+import { http } from '#/utils/http';
 import { Icon } from '@iconify-icon/react';
 import { Button, Divider } from 'antd';
 import dayjs from 'dayjs';
 import Image from 'next/image';
+import { useState } from 'react';
 import LanguageFlag from './LanguageFlag';
 import StatusBadge from './StatusBadge';
 
@@ -26,12 +28,47 @@ const statusColor = {
     completed: 'green',
     cancelled: 'red',
   },
-  payment: {
-    pending: 'yellow',
-    paid: 'green',
-    failed: 'red',
-    refund: 'purple',
-  },
+};
+
+const CardButton = ({ booking }: { booking: Booking }) => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handlePayNow = async () => {
+    setIsLoading(true);
+    try {
+      const response = await http.post(`/payments/client/${booking.id}`);
+      const token = response.body.data.token;
+
+      window.snap.pay(token);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  if (booking?.bookingStatus === 'unpaid') {
+    if (booking?.requestStatus === 'approved') {
+      return (
+        <Button
+          type='primary'
+          onClick={handlePayNow}
+          loading={isLoading}
+          className='text-white rounded-[10px] 2xl:rounded-xl text-xs 2xl:text-sm font-semibold bg-blue-600 py-2.5 px-4 h-fit shadow-none'
+        >
+          Pay Now
+        </Button>
+      );
+    }
+  }
+
+  return (
+    <Button
+      type='link'
+      href={`/profile/service-request/${booking.id}`}
+      className='text-blue-600 rounded-[10px] 2xl:rounded-xl text-xs 2xl:text-sm font-semibold bg-blue-100 py-2.5 px-4 h-fit hover:!text-blue-600 hover:!bg-blue-200 shadow-none'
+    >
+      Details
+    </Button>
+  );
 };
 
 const BookingCard = ({ booking, type }: Props) => {
@@ -41,31 +78,6 @@ const BookingCard = ({ booking, type }: Props) => {
   };
 
   const badgeColor = statusColor[type][status[type]];
-
-  const CardButton = () => {
-    if (booking?.bookingStatus === 'unpaid') {
-      if (booking?.requestStatus === 'approved') {
-        return (
-          <Button
-            type='primary'
-            className='text-white rounded-[10px] 2xl:rounded-xl text-xs 2xl:text-sm font-semibold bg-blue-600 py-2.5 px-4 h-fit shadow-none'
-          >
-            Pay Now
-          </Button>
-        );
-      }
-    }
-
-    return (
-      <Button
-        type='link'
-        href={`/profile/service-request/${booking.id}`}
-        className='text-blue-600 rounded-[10px] 2xl:rounded-xl text-xs 2xl:text-sm font-semibold bg-blue-100 py-2.5 px-4 h-fit hover:!text-blue-600 hover:!bg-blue-200 shadow-none'
-      >
-        Details
-      </Button>
-    );
-  };
 
   return (
     <div className='flex flex-col gap-3 pb-4 border-b mb-4'>
@@ -157,7 +169,7 @@ const BookingCard = ({ booking, type }: Props) => {
           <p className='text-sm 2xl:text-base font-semibold'>
             Rp{booking?.totalPrice.toLocaleString('id-ID')}
           </p>
-          <CardButton />
+          <CardButton booking={booking} />
         </div>
       </div>
     </div>
