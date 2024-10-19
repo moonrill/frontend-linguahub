@@ -17,7 +17,7 @@ const TranslatorCard = ({ translator }: { translator: Translator }) => {
                 ? imgProfilePicture(translator.user.userDetail.profilePicture)
                 : '/images/avatar-placeholder.png'
             }
-            alt={'slide-2'}
+            alt={'Translator Profile Picture'}
             fill
             sizes='(max-width: 400px)'
             className='object-cover'

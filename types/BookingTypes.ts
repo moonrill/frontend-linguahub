@@ -1,3 +1,4 @@
+import { Coupon } from './CouponTypes';
 import { Service } from './ServiceTypes';
 import { Translator } from './TranslatorTypes';
 import { User } from './UserType';
@@ -24,4 +25,5 @@ export type Booking = {
   service: Service;
   translator?: Translator;
   user?: User;
+  coupon?: Coupon;
 };

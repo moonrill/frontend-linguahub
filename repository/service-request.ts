@@ -35,6 +35,9 @@ const url = {
 
     return url;
   },
+  getServiceRequestById: (id: string) => {
+    return `/service-requests/${id}`;
+  },
 };
 
 const hooks = {
@@ -52,6 +55,9 @@ const hooks = {
       url.getUserServiceRequest(status, page, limit, sortBy, order),
       http.fetcher
     );
+  },
+  useGetServiceRequestById: (id: string) => {
+    return useSWR(url.getServiceRequestById(id), http.fetcher);
   },
 };
 

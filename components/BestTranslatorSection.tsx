@@ -15,7 +15,7 @@ const BestTranslatorSection = () => {
           // TODO: Change to skeleton
           <div>Loading</div>
         ) : (
-          translator.data.map((t: BestTranslator) => (
+          translator?.data?.map((t: BestTranslator) => (
             <BestTranslatorCard key={t.id} translator={t} />
           ))
         )}

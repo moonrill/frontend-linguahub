@@ -219,7 +219,9 @@ const TranslatorDetail = ({ params }: { params: { id: string } }) => {
                       icon={'tabler:star-filled'}
                       className='text-yellow-400 text-base 2xl:text-xl'
                     />
-                    <p className='text-sm font-semibold'>{translator.rating}</p>
+                    <p className='text-sm font-semibold'>
+                      {translator?.rating}
+                    </p>
                     <p className='text-xs font-light'>
                       ({translator?.reviewsCount} reviews)
                     </p>

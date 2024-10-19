@@ -1,4 +1,4 @@
-import { imgProfilePicture } from '#/constants/general';
+import { imgProfilePicture, statusColor } from '#/constants/general';
 import { Booking } from '#/types/BookingTypes';
 import { capitalizeFirstLetter } from '#/utils/capitalizeFirstLetter';
 import { http } from '#/utils/http';
@@ -13,21 +13,6 @@ import StatusBadge from './StatusBadge';
 type Props = {
   booking: Booking;
   type: 'request' | 'booking';
-};
-
-const statusColor = {
-  request: {
-    pending: 'yellow',
-    approved: 'green',
-    rejected: 'red',
-    cancelled: 'red',
-  },
-  booking: {
-    unpaid: 'yellow',
-    in_progress: 'blue',
-    completed: 'green',
-    cancelled: 'red',
-  },
 };
 
 const CardButton = ({ booking }: { booking: Booking }) => {

@@ -53,7 +53,7 @@ const EventSection = () => {
         {isLoading ? (
           <div>Loading</div>
         ) : (
-          events.data.map((e: Event) => <EventCard event={e} key={e.id} />)
+          events?.data?.map((e: Event) => <EventCard event={e} key={e.id} />)
         )}
       </div>
     </section>

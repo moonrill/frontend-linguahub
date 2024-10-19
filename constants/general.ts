@@ -11,3 +11,24 @@ export const eventPoster = (image: string) =>
 
 export const imgProfilePicture = (image: string) =>
   `${config.baseUrl}/images/profile-picture/${image}`;
+
+export const statusColor = {
+  request: {
+    pending: 'yellow',
+    approved: 'green',
+    rejected: 'red',
+    cancelled: 'red',
+  },
+  booking: {
+    unpaid: 'yellow',
+    in_progress: 'blue',
+    completed: 'green',
+    cancelled: 'red',
+  },
+  payment: {
+    pending: 'yellow',
+    paid: 'green',
+    failed: 'red',
+    refund: 'purple',
+  },
+};

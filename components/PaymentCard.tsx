@@ -1,4 +1,4 @@
-import { imgProfilePicture } from '#/constants/general';
+import { imgProfilePicture, statusColor } from '#/constants/general';
 import { Booking } from '#/types/BookingTypes';
 import { Payment } from '#/types/PaymentTypes';
 import { capitalizeFirstLetter } from '#/utils/capitalizeFirstLetter';
@@ -92,14 +92,7 @@ const PaymentCard = ({ payment }: Props) => {
     };
   }, []);
 
-  const statusColor = {
-    pending: 'yellow',
-    paid: 'green',
-    failed: 'red',
-    refund: 'purple',
-  };
-
-  const badgeColor = statusColor[payment.status];
+  const badgeColor = statusColor['payment'][payment.status];
 
   return (
     <div className='flex flex-col gap-3 pb-4 border-b mb-4'>
