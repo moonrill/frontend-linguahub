@@ -32,6 +32,7 @@ const url = {
 
     return url;
   },
+  getBookingById: (id: string) => `/bookings/${id}`,
 };
 
 const hooks = {
@@ -46,6 +47,9 @@ const hooks = {
       url.getUserBookings(status, page, limit, sortBy, order),
       http.fetcher
     );
+  },
+  useGetBookingById: (id: string) => {
+    return useSWR(url.getBookingById(id), http.fetcher);
   },
 };
 

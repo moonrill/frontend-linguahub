@@ -2,7 +2,7 @@ import { http } from '#/utils/http';
 import useSWR from 'swr';
 
 const url = {
-  getAllCoupons: (
+  getUserCoupons: (
     status?: string,
     page?: number,
     limit?: number,
@@ -16,10 +16,16 @@ const url = {
       }${page && `&page=${page}`}${limit && `&limit=${limit}`}`
     }`;
   },
+  getUserCouponsByEvent: (eventId: string) => {
+    return `/users/coupons?event=${eventId}`;
+  },
+  claimCoupon: (couponId: string) => {
+    return `/coupons/claim/${couponId}`;
+  },
 };
 
 const hooks = {
-  useAllCoupons: (
+  useGetUserCoupons: (
     status: string,
     page: number = 1,
     limit: number = 10,
@@ -27,13 +33,23 @@ const hooks = {
     order: string = 'asc'
   ) => {
     return useSWR(
-      url.getAllCoupons(status, page, limit, sortBy, order),
+      url.getUserCoupons(status, page, limit, sortBy, order),
       http.fetcher
     );
+  },
+  useGetUserCouponsByEvent: (eventId: string) => {
+    return useSWR(url.getUserCouponsByEvent(eventId), http.fetcher);
+  },
+};
+
+const manipulateData = {
+  claimCoupon: (couponId: string) => {
+    return http.post(url.claimCoupon(couponId));
   },
 };
 
 export const couponRepository = {
   url,
   hooks,
+  manipulateData,
 };

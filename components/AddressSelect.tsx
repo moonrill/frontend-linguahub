@@ -8,6 +8,7 @@ type AddressSelectOptions = Province[] | City[] | District[] | SubDistrict[];
 type AddressSelectProps = {
   type: 'province' | 'city' | 'district' | 'subDistrict';
   placeholder: string;
+  value?: string;
   options: AddressSelectOptions;
   disabled: boolean;
   onChange: (label: string, value: string) => void;
@@ -17,6 +18,7 @@ const AddressSelect = ({
   type,
   placeholder,
   options,
+  value,
   disabled,
   onChange,
 }: AddressSelectProps) => {
@@ -30,6 +32,7 @@ const AddressSelect = ({
       filterOption={(input, option) =>
         (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
       }
+      value={value}
       options={options.map((opt) => ({
         label: capitalizeFirstLetter(opt.name),
         value: opt.id,

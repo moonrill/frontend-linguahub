@@ -10,7 +10,7 @@ export type Booking = {
   endAt: string;
   duration: number;
   requestStatus: 'pending' | 'approved' | 'rejected' | 'cancelled';
-  bookingStatus: 'unpaid' | 'in_progress' | 'completed' | 'cancelled' | null;
+  bookingStatus: 'unpaid' | 'in_progress' | 'completed' | 'cancelled';
   notes: string | null;
   location: string;
   serviceFee: number;

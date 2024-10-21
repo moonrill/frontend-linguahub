@@ -1,113 +1,163 @@
 'use client';
-import Footer from '#/components/Footer/Footer';
+import { couponRepository } from '#/repository/coupon';
+import { eventRepository } from '#/repository/event';
+import { Coupon, UserCoupon } from '#/types/CouponTypes';
+import { Event } from '#/types/EventTypes';
+import { TokenUtil } from '#/utils/token';
+import { Button, message, Result, Skeleton } from 'antd';
+import SkeletonImage from 'antd/es/skeleton/Image';
+import dayjs from 'dayjs';
 import Image from 'next/image';
+import { useState } from 'react';
 
-import { Button, Typography } from 'antd';
+TokenUtil.loadToken();
 
-const { Title, Paragraph } = Typography;
+const EventDetail = ({ params }: { params: { id: string } }) => {
+  const [isClaiming, setIsClaiming] = useState(false);
+  const { data, isLoading } = eventRepository.hooks.useGetEventById(params.id);
+  const { data: uc, mutate } = couponRepository.hooks.useGetUserCouponsByEvent(
+    params.id
+  );
 
-const homee2 = () => {
+  const event: Event = data?.data;
+  const userCoupons: UserCoupon[] = uc?.data;
+
+  const claimedCoupons = userCoupons?.map((uc) => uc?.coupon?.id);
+
+  const handleClaimCoupon = async (couponId: string) => {
+    setIsClaiming(true);
+    try {
+      await couponRepository.manipulateData.claimCoupon(couponId);
+      mutate();
+      message.success('Coupon claimed successfully!');
+    } catch (error) {
+      message.error('Failed to claim the coupon. Please try again.');
+    } finally {
+      setIsClaiming(false);
+    }
+  };
+
+  const isCouponClaimable = (startDate: string, endDate: string) => {
+    const now = dayjs();
+    const eventStart = dayjs(startDate);
+    const eventEnd = dayjs(endDate);
+    return now.isAfter(eventStart) && now.isBefore(eventEnd);
+  };
+
+  if (!isLoading && !event) {
+    return (
+      <Result
+        status='404'
+        title='404'
+        subTitle='Sorry, the event you visited does not exist.'
+        extra={
+          <Button type='primary' href='/'>
+            Back Home
+          </Button>
+        }
+      />
+    );
+  }
+
+  // Set claimed coupon to end of array
+  const sortedCoupons = event?.coupons?.slice().sort((a: Coupon, b: Coupon) => {
+    const isClaimedA = claimedCoupons?.includes(a?.id);
+    const isClaimedB = claimedCoupons?.includes(b?.id);
+    return isClaimedA === isClaimedB ? 0 : isClaimedA ? 1 : -1; // Kupon yang diklaim di akhir
+  });
+
   return (
-    <>
-      {/* Header */}
+    <section className='bg-white text-slate-800 flex flex-col gap-6 mt-6'>
+      {isLoading ? (
+        <div className='flex flex-col gap-4'>
+          <SkeletonImage active className='!w-full !h-[250px]' />
+          <Skeleton active />
+          <Skeleton active />
+          <Skeleton active />
+        </div>
+      ) : (
+        <>
+          {event?.poster && (
+            <div className='h-[360px] rounded-lg shadow-lg relative'>
+              <Image
+                src='/images/2.png'
+                alt='Poster'
+                fill
+                className='rounded-lg object-cover'
+              />
+            </div>
+          )}
 
-      <div className='bg-white text-slate-800'>
-        {/* Event Details */}
-        <section className='px-5 md:px-10 py-10'>
-          <div className='h-64 rounded-lg shadow-lg mb-8 relative'>
-            <Image
-              src='/images/2.png'
-              alt='Banner'
-              layout='fill'
-              objectFit='cover'
-              className='rounded-lg'
-            />
-          </div>
-
-          <div className='mt-8'>
-            <Title level={2} className='mb-4'>
-              Global Language and Culture Exchange: Bridging Communication Gaps
-              Through Translation
-            </Title>
-            <Paragraph className='text-blue-600 text-lg mb-4'>
-              Event ends at: 27 September 2024
-            </Paragraph>
-            <h3 className='text-xl font-bold mb-4'>Event Description</h3>
-          </div>
+          <h1 className='text-3xl font-bold'>{event?.name}</h1>
+          <p className='text-blue-600 text-lg'>
+            {dayjs().isAfter(event?.startDate)
+              ? `Event ends at: ${dayjs(event?.endDate).format(
+                  'DD MMMM YYYY, HH:mm'
+                )}`
+              : `Event starts at: ${dayjs(event?.startDate).format(
+                  'DD MMMM YYYY, HH:mm'
+                )}`}
+          </p>
+          <h3 className='text-xl font-bold'>Event Description</h3>
 
           {/* Event Description */}
-          <div className='text-gray-600 text-lg'>
-            <Paragraph className='mb-4'>
-              Join us for an exciting event where language enthusiasts,
-              professional translators, and clients come together to explore the
-              power of translation in bridging cultural divides. Learn from
-              expert speakers, engage in interactive workshops, and network with
-              fellow professionals.
-            </Paragraph>
-            <Paragraph className='mb-4'>
-              Whether youre a seasoned translator or a client looking to enhance
-              your global reach, this event offers valuable insights and the
-              chance to claim exclusive discounts on translation services. Dont
-              miss this opportunity to expand your knowledge and connect with
-              the global community!
-            </Paragraph>
-            <Paragraph className='mb-4'>
-              In addition to insightful sessions, attendees will have the
-              opportunity to participate in hands-on activities designed to
-              improve language skills and translation techniques.
-            </Paragraph>
-            <Paragraph className='mb-4'>
-              The event will also feature a special segment on the latest
-              translation tools and technologies, providing practical advice on
-              how to streamline your translation processes.
-            </Paragraph>
-          </div>
+          <div className='text-gray-600 text-lg'>{event?.description}</div>
 
-          {/* Event Coupons Section */}
-          <div className='mt-10'>
-            <Title level={2} className='mb-6'>
-              Event Coupons
-            </Title>
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-10'>
-              {[...Array(4)].map((_, idx) => (
-                <div
-                  key={idx}
-                  className='bg-white shadow-lg p-4 rounded-md flex justify-between items-center transition-transform transform hover:scale-105 mb-4'
-                >
-                  <div className='flex items-center'>
-                    <div className='bg-blue-600 p-3 rounded-lg shadow-md'>
-                      <div className='text-xl font-bold text-white'>
-                        50% Discount
-                      </div>
-                    </div>
-                    <div className='ml-4 text-gray-600 border-l-2 border-dashed border-gray-500 pl-4 h-full'>
-                      <p className='font-bold mb-1'>Exclusive Summer Sale</p>
-                      <p className='text-sm'>
-                        Enjoy an extra discount on all summer collections. Use
-                        this coupon to get amazing deals before it expires!
+          <h3 className='text-xl font-bold'>Event Coupons</h3>
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-6 p-4 border rounded-xl'>
+            {sortedCoupons?.map((coupon: Coupon) => (
+              <div
+                key={coupon?.id}
+                className='bg-white border rounded-md flex justify-between transition-transform transform gap-8'
+              >
+                <div className='flex gap-4'>
+                  <div className='flex justify-center items-center p-3 border-r-2 border-gray-500 border-dashed'>
+                    <div
+                      className={`${
+                        isCouponClaimable(event?.startDate, event?.endDate) ||
+                        coupon?.status === 'Inactive'
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-zinc-100 text-zinc-300'
+                      } p-3 w-[100px] 2xl:w-[120px] h-full rounded-lg flex flex-col items-center justify-center`}
+                    >
+                      <p className='text-2xl 2xl:text-4xl font-bold tracking-tight'>
+                        {coupon?.discountPercentage} %
                       </p>
-                      <p className='text-xs text-red-400 mt-1'>
-                        Expires on: 30 September 2024
-                      </p>
+                      <p className='text-sm'>Discount</p>
                     </div>
                   </div>
-                  <Button
-                    type={idx === 3 ? 'default' : 'primary'}
-                    disabled={idx === 3}
-                  >
-                    {idx === 3 ? 'Claimed' : 'Claim'}
-                  </Button>
+                  <div className='flex flex-col gap-1 py-3 h-fit'>
+                    <h2 className='text-xl font-semibold text-slate-800 line-clamp-1'>
+                      {coupon?.name}
+                    </h2>
+                    <p className='text-sm line-clamp-3'>
+                      {coupon?.description}
+                    </p>
+                    <p className='text-rose-600 text-sm'>
+                      Expires On:{' '}
+                      {dayjs(coupon?.expiredAt).format('DD MMMM YYYY')}
+                    </p>
+                  </div>
                 </div>
-              ))}
-            </div>
+                <Button
+                  type='primary'
+                  className='mt-3 mr-3 text-sm'
+                  disabled={
+                    claimedCoupons?.includes(coupon?.id) ||
+                    !isCouponClaimable(event?.startDate, event?.endDate) ||
+                    coupon?.status === 'Inactive'
+                  }
+                  onClick={() => handleClaimCoupon(coupon?.id)}
+                >
+                  {claimedCoupons?.includes(coupon?.id) ? 'Claimed' : 'Claim'}
+                </Button>
+              </div>
+            ))}
           </div>
-        </section>
-      </div>
-
-      {/* Footer */}
-      <Footer />
-    </>
+        </>
+      )}
+    </section>
   );
 };
 
-export default homee2;
+export default EventDetail;

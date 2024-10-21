@@ -7,11 +7,15 @@ const url = {
       status ? `&status=${status}` : ''
     }`;
   },
+  getEventById: (id: string) => `/events/${id}`,
 };
 
 const hooks = {
   useAllEvents: (limit?: number, page?: number, status?: string) => {
     return useSWR(url.getAllEvents(limit, page, status), http.fetcher);
+  },
+  useGetEventById: (id: string) => {
+    return useSWR(url.getEventById(id), http.fetcher);
   },
 };
 

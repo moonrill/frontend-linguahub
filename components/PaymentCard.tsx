@@ -1,3 +1,4 @@
+import { config } from '#/config/app';
 import { imgProfilePicture, statusColor } from '#/constants/general';
 import { Booking } from '#/types/BookingTypes';
 import { Payment } from '#/types/PaymentTypes';
@@ -93,6 +94,35 @@ const PaymentCard = ({ payment }: Props) => {
   }, []);
 
   const badgeColor = statusColor['payment'][payment.status];
+
+  const handleExport = async () => {
+    try {
+      const response = await fetch(
+        `${config.baseUrl}/payments/invoice/${payment.id}`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const blob = await response.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = `invoice_${payment.id}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error('Error exporting payment:', error);
+    }
+  };
 
   return (
     <div className='flex flex-col gap-3 pb-4 border-b mb-4'>
@@ -274,6 +304,7 @@ const PaymentCard = ({ payment }: Props) => {
               </div>
               <Button
                 type='primary'
+                onClick={handleExport}
                 className='text-white mt-4 rounded-[10px] 2xl:rounded-xl text-xs 2xl:text-sm bg-blue-600 py-2.5 px-4 h-fit shadow-none'
               >
                 Export Invoice

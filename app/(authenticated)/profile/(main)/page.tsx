@@ -1,24 +1,50 @@
 'use client';
 
+import EditProfileModal from '#/components/Modal/EditProfileModal';
 import { authRepository } from '#/repository/auth';
 import { User } from '#/types/UserType';
 import { capitalizeFirstLetter } from '#/utils/capitalizeFirstLetter';
 import { Icon } from '@iconify-icon/react';
-import { Button, Form, Input, Skeleton } from 'antd';
+import { Button, Form, Input, message, Skeleton } from 'antd';
+import { useForm } from 'antd/es/form/Form';
+import { useState } from 'react';
 
 const Profile = () => {
-  const { data: result, isLoading } = authRepository.hooks.useProfile();
+  const [form] = useForm();
+  const [open, setOpen] = useState(false);
+  const { data: result, isLoading, mutate } = authRepository.hooks.useProfile();
 
   const user: User = result?.data;
+
+  const handleUpdatePassword = async (values: any) => {
+    try {
+      await authRepository.manipulateData.updatePassword(values);
+
+      message.success('Password updated successfully');
+      form.resetFields();
+    } catch (error) {
+      message.error('Failed to update password');
+    }
+  };
 
   return (
     <div className='flex flex-col gap-4'>
       <div className='flex justify-between'>
         <h1 className='text-2xl 2xl:text-3xl font-semibold'>Profile</h1>
-        <Button type='primary' className='py-5 text-sm rounded-xl'>
+        <Button
+          type='primary'
+          className='py-5 text-sm rounded-xl'
+          onClick={() => setOpen(true)}
+        >
           <Icon icon={'hugeicons:pencil-edit-01'} className='text-xl' />
           Edit
         </Button>
+        <EditProfileModal
+          open={open}
+          onCancel={() => setOpen(false)}
+          user={user}
+          mutate={mutate}
+        />
       </div>
       <div className='w-full flex flex-col gap-4'>
         <div className='flex flex-col gap-3 border p-4 rounded-lg'>
@@ -134,7 +160,11 @@ const Profile = () => {
         <p className='font-semibold text-lg 2xl:text-xl border-b pb-1'>
           Change Password
         </p>
-        <Form className='flex flex-col'>
+        <Form
+          className='flex flex-col'
+          onFinish={handleUpdatePassword}
+          form={form}
+        >
           <Form.Item
             name={'oldPassword'}
             validateDebounce={500}
@@ -200,6 +230,18 @@ const Profile = () => {
                   required: true,
                   message: 'Please enter your confirm password',
                 },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue('newPassword') === value) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(
+                      new Error(
+                        'The new password that you entered do not match!'
+                      )
+                    );
+                  },
+                }),
               ]}
             >
               <Input.Password

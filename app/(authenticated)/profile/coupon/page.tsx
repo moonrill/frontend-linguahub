@@ -20,7 +20,7 @@ const ProfileCoupon = () => {
 
   const items = ['Available', 'Used', 'Expired', 'Unavailable'];
 
-  const { data: coupons, isLoading } = couponRepository.hooks.useAllCoupons(
+  const { data: coupons, isLoading } = couponRepository.hooks.useGetUserCoupons(
     status.toLowerCase(),
     1,
     limit

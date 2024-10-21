@@ -10,12 +10,7 @@ import { useState } from 'react';
 import LanguageFlag from './LanguageFlag';
 import StatusBadge from './StatusBadge';
 
-type Props = {
-  booking: Booking;
-  type: 'request' | 'booking';
-};
-
-const CardButton = ({ booking }: { booking: Booking }) => {
+const CardButton = ({ booking, type }: { booking: Booking; type: string }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handlePayNow = async () => {
@@ -48,12 +43,19 @@ const CardButton = ({ booking }: { booking: Booking }) => {
   return (
     <Button
       type='link'
-      href={`/profile/service-request/${booking.id}`}
+      href={`/profile/${type === 'request' ? 'service-request' : 'booking'}/${
+        booking.id
+      }`}
       className='text-blue-600 rounded-[10px] 2xl:rounded-xl text-xs 2xl:text-sm font-semibold bg-blue-100 py-2.5 px-4 h-fit hover:!text-blue-600 hover:!bg-blue-200 shadow-none'
     >
       Details
     </Button>
   );
+};
+
+type Props = {
+  booking: Booking;
+  type: 'request' | 'booking';
 };
 
 const BookingCard = ({ booking, type }: Props) => {
@@ -154,7 +156,7 @@ const BookingCard = ({ booking, type }: Props) => {
           <p className='text-sm 2xl:text-base font-semibold'>
             Rp{booking?.totalPrice.toLocaleString('id-ID')}
           </p>
-          <CardButton booking={booking} />
+          <CardButton booking={booking} type={type} />
         </div>
       </div>
     </div>

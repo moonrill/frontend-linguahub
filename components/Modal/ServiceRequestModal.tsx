@@ -1,6 +1,8 @@
 'use client';
 
 import { imgProfilePicture } from '#/constants/general';
+import { couponRepository } from '#/repository/coupon';
+import { UserCoupon } from '#/types/CouponTypes';
 import { Translator } from '#/types/TranslatorTypes';
 import { Icon } from '@iconify-icon/react';
 import {
@@ -36,6 +38,14 @@ const ServiceRequestModal = ({
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [countdown, setCountdown] = useState(5);
+  const { data: userCoupons, isLoading } =
+    couponRepository.hooks.useGetUserCoupons(
+      'available',
+      1,
+      20,
+      'discountPercentage',
+      'desc'
+    );
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -304,13 +314,12 @@ const ServiceRequestModal = ({
                 />
               </Form.Item>
             </div>
-            {/* TODO: Handle Coupon Selection */}
             <div className='flex flex-col gap-1 2xl:gap-2'>
               <p className='text-xs 2xl:text-sm font-medium'>Coupon</p>
               <Form.Item name='couponId'>
                 <Select
                   placeholder='Select a coupon'
-                  className='h-14'
+                  className='h-16'
                   suffixIcon={
                     <Icon
                       icon={'mdi:chevron-down'}
@@ -318,6 +327,33 @@ const ServiceRequestModal = ({
                       className='text-zinc-400'
                     />
                   }
+                  options={userCoupons?.data?.map((uc: UserCoupon) => ({
+                    value: uc?.coupon.id,
+                    label: (
+                      <div className='flex justify-between'>
+                        <div className='flex gap-3'>
+                          <div className='p-3 bg-blue-600 flex justify-center items-center rounded-lg'>
+                            <Icon
+                              icon='mdi:ticket-percent'
+                              className='text-2xl text-white'
+                            />
+                          </div>
+                          <div className='flex flex-col justify-between'>
+                            <p className='text-base font-semibold'>
+                              {uc?.coupon?.discountPercentage} % OFF
+                            </p>
+                            <p className='text-sm font-medium line-clamp-1'>
+                              {uc?.coupon?.name}
+                            </p>
+                          </div>
+                        </div>
+                        <p className='text-sm text-rose-600'>
+                          Exp:{' '}
+                          {dayjs(uc?.coupon?.expiredAt).format('DD MMM YYYY')}
+                        </p>
+                      </div>
+                    ),
+                  }))}
                 />
               </Form.Item>
             </div>
