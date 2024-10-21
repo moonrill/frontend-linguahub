@@ -28,7 +28,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
               Home
             </Link>
             <Link
-              href={'/'}
+              href={'/event'}
               className='font-medium text-blue-600 text-sm md:text-base'
             >
               Event

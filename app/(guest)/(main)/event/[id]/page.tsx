@@ -3,20 +3,25 @@ import { couponRepository } from '#/repository/coupon';
 import { eventRepository } from '#/repository/event';
 import { Coupon, UserCoupon } from '#/types/CouponTypes';
 import { Event } from '#/types/EventTypes';
+import { http } from '#/utils/http';
 import { TokenUtil } from '#/utils/token';
 import { Button, message, Result, Skeleton } from 'antd';
 import SkeletonImage from 'antd/es/skeleton/Image';
 import dayjs from 'dayjs';
 import Image from 'next/image';
 import { useState } from 'react';
+import useSWR from 'swr';
 
 TokenUtil.loadToken();
 
 const EventDetail = ({ params }: { params: { id: string } }) => {
   const [isClaiming, setIsClaiming] = useState(false);
   const { data, isLoading } = eventRepository.hooks.useGetEventById(params.id);
-  const { data: uc, mutate } = couponRepository.hooks.useGetUserCouponsByEvent(
-    params.id
+
+  const isLoggedIn = !!TokenUtil.accessToken;
+  const { data: uc, mutate } = useSWR(
+    isLoggedIn ? couponRepository.url.getUserCouponsByEvent(params.id) : null,
+    http.fetcher
   );
 
   const event: Event = data?.data;
@@ -25,6 +30,11 @@ const EventDetail = ({ params }: { params: { id: string } }) => {
   const claimedCoupons = userCoupons?.map((uc) => uc?.coupon?.id);
 
   const handleClaimCoupon = async (couponId: string) => {
+    if (!TokenUtil.accessToken) {
+      message.warning('You need to login to claim the coupon.');
+      return;
+    }
+
     setIsClaiming(true);
     try {
       await couponRepository.manipulateData.claimCoupon(couponId);
@@ -143,6 +153,7 @@ const EventDetail = ({ params }: { params: { id: string } }) => {
                   type='primary'
                   className='mt-3 mr-3 text-sm'
                   disabled={
+                    !isLoggedIn ||
                     claimedCoupons?.includes(coupon?.id) ||
                     !isCouponClaimable(event?.startDate, event?.endDate) ||
                     coupon?.status === 'Inactive'

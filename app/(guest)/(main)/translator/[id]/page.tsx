@@ -280,7 +280,6 @@ const TranslatorDetail = ({ params }: { params: { id: string } }) => {
         translator={translator}
         open={modalOpen}
         onCancel={() => setModalOpen(false)}
-        accessToken={user?.accessToken}
       />
     </div>
   );

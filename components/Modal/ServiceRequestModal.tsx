@@ -4,6 +4,8 @@ import { imgProfilePicture } from '#/constants/general';
 import { couponRepository } from '#/repository/coupon';
 import { UserCoupon } from '#/types/CouponTypes';
 import { Translator } from '#/types/TranslatorTypes';
+import { http } from '#/utils/http';
+import { TokenUtil } from '#/utils/token';
 import { Icon } from '@iconify-icon/react';
 import {
   Button,
@@ -18,34 +20,34 @@ import { useForm } from 'antd/es/form/Form';
 import dayjs from 'dayjs';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
+import useSWR from 'swr';
 
 type Props = {
   open: boolean;
   onCancel: () => void;
   translator: Translator;
-  accessToken?: string;
 };
 
 const currentDate = dayjs().format('YYYY-MM-DD');
 
-const ServiceRequestModal = ({
-  open,
-  onCancel,
-  translator,
-  accessToken,
-}: Props) => {
+const ServiceRequestModal = ({ open, onCancel, translator }: Props) => {
   const [form] = useForm();
+  const accessToken = TokenUtil.accessToken;
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [countdown, setCountdown] = useState(5);
-  const { data: userCoupons, isLoading } =
-    couponRepository.hooks.useGetUserCoupons(
-      'available',
-      1,
-      20,
-      'discountPercentage',
-      'desc'
-    );
+  const { data: userCoupons, isLoading } = useSWR(
+    accessToken
+      ? couponRepository.url.getUserCoupons(
+          'available',
+          1,
+          15,
+          'discountPercentage',
+          'desc'
+        )
+      : null,
+    http.fetcher
+  );
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
