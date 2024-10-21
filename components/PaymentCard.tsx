@@ -129,7 +129,7 @@ const PaymentCard = ({ payment }: Props) => {
       <div className='flex justify-between items-center bg-zinc-50 rounded-lg py-2 px-4 w-full'>
         <p className='text-xs 2xl:text-sm'>
           <span className='font-semibold'>
-            {dayjs(payment.createdAt).format('DD MMMM YYYY, HH:mm')}
+            {dayjs(payment.updatedAt).format('DD MMMM YYYY, HH:mm')}
           </span>
         </p>
         <StatusBadge

@@ -38,6 +38,10 @@ const url = {
   getServiceRequestById: (id: string) => {
     return `/service-requests/${id}`;
   },
+  cancelRequest: (id: string) => {
+    return `/service-requests/${id}/cancel`;
+  },
+  updateServiceRequestStatus: (id: string) => `/service-requests/${id}`,
 };
 
 const hooks = {
@@ -61,7 +65,17 @@ const hooks = {
   },
 };
 
+const manipulateData = {
+  cancelRequest: (id: string) => {
+    return http.put(url.cancelRequest(id));
+  },
+  updateServiceRequest(id: string, data: any) {
+    return http.put(url.updateServiceRequestStatus(id)).send(data);
+  },
+};
+
 export const serviceRequestRepository = {
   url,
   hooks,
+  manipulateData,
 };

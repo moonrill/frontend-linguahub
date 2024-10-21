@@ -6,6 +6,7 @@ import TranslatorCard from '#/components/TranslatorCard';
 import TranslatorSearchBar from '#/components/TranslatorSearchBar';
 import { translatorRepository } from '#/repository/translator';
 import { Translator } from '#/types/TranslatorTypes';
+import { Result } from 'antd';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -65,7 +66,7 @@ const TranslatorPage = () => {
   }, [page]);
 
   return (
-    <div className='mt-6'>
+    <div className='mt-6 min-h-screen'>
       <TranslatorSearchBar
         sourceLanguage={sourceLanguage}
         targetLanguage={targetLanguage}
@@ -77,7 +78,12 @@ const TranslatorPage = () => {
             <CardSkeleton key={index} />
           ))
         ) : translators?.data?.length === 0 ? (
-          <div>No translators found</div>
+          <Result
+            status='404'
+            title='404'
+            subTitle='Sorry there are no translators that match your search.'
+            className='col-span-5'
+          />
         ) : null}
         {translators?.data?.map((translator: Translator) => (
           <TranslatorCard key={translator.id} translator={translator} />

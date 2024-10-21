@@ -18,7 +18,7 @@ const EventDetail = ({ params }: { params: { id: string } }) => {
   const [isClaiming, setIsClaiming] = useState(false);
   const { data, isLoading } = eventRepository.hooks.useGetEventById(params.id);
 
-  const isLoggedIn = !!TokenUtil.accessToken;
+  const isLoggedIn = TokenUtil.accessToken;
   const { data: uc, mutate } = useSWR(
     isLoggedIn ? couponRepository.url.getUserCouponsByEvent(params.id) : null,
     http.fetcher
@@ -61,8 +61,12 @@ const EventDetail = ({ params }: { params: { id: string } }) => {
         title='404'
         subTitle='Sorry, the event you visited does not exist.'
         extra={
-          <Button type='primary' href='/'>
-            Back Home
+          <Button
+            type='primary'
+            href='/event'
+            className='py-3 px-8 w-fit h-fit text-sm rounded-xl'
+          >
+            Back
           </Button>
         }
       />

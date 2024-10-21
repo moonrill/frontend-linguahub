@@ -33,6 +33,8 @@ const url = {
     return url;
   },
   getBookingById: (id: string) => `/bookings/${id}`,
+  completeBooking: (id: string) => `/bookings/${id}/complete`,
+  cancelBooking: (id: string) => `/bookings/${id}/cancel`,
 };
 
 const hooks = {
@@ -53,7 +55,17 @@ const hooks = {
   },
 };
 
+const manipulateData = {
+  completeBooking: (id: string) => {
+    return http.put(url.completeBooking(id));
+  },
+  cancelBooking: (id: string) => {
+    return http.put(url.cancelBooking(id));
+  },
+};
+
 export const bookingRepository = {
   url,
   hooks,
+  manipulateData,
 };

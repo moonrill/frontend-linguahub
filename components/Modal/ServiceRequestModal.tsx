@@ -36,7 +36,7 @@ const ServiceRequestModal = ({ open, onCancel, translator }: Props) => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [countdown, setCountdown] = useState(5);
-  const { data: userCoupons, isLoading } = useSWR(
+  const { data: userCoupons } = useSWR(
     accessToken
       ? couponRepository.url.getUserCoupons(
           'available',
@@ -92,16 +92,14 @@ const ServiceRequestModal = ({ open, onCancel, translator }: Props) => {
     }
   };
 
+  const handleCancel = () => {
+    onCancel();
+    form.resetFields();
+    setSuccess(false);
+  };
+
   return (
-    <Modal
-      open={open}
-      onCancel={() => {
-        onCancel();
-        form.resetFields();
-      }}
-      centered
-      footer={null}
-    >
+    <Modal open={open} onCancel={handleCancel} centered footer={null}>
       {success ? (
         <div className='text-center'>
           <h2 className='text-xl font-semibold'>
@@ -364,10 +362,7 @@ const ServiceRequestModal = ({ open, onCancel, translator }: Props) => {
                 className='w-full py-6 font-medium rounded-xl'
                 type='default'
                 htmlType='button'
-                onClick={() => {
-                  onCancel();
-                  form.resetFields();
-                }}
+                onClick={handleCancel}
               >
                 Cancel
               </Button>

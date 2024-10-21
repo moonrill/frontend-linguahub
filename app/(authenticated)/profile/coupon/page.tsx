@@ -131,7 +131,7 @@ const CouponCard = ({
           {coupon?.event?.name}
         </p>
         <p className='text-sm 2xl:text-xl font-semibold'>{coupon?.name}</p>
-        <p className='text-[10px] 2xl:text-sm line-clamp-2'>
+        <p className='text-[10px] 2xl:text-sm line-clamp-1'>
           {coupon?.description}
         </p>
         <p

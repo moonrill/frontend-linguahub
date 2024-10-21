@@ -1,6 +1,8 @@
 'use client';
 
 import LanguageFlag from '#/components/LanguageFlag';
+import ConfirmModal from '#/components/Modal/ConfirmModal';
+import EditServiceRequestModal from '#/components/Modal/EditServiceRequestModal';
 import StatusBadge from '#/components/StatusBadge';
 import { imgProfilePicture, statusColor } from '#/constants/general';
 import { serviceRequestRepository } from '#/repository/service-request';
@@ -8,14 +10,33 @@ import { Booking } from '#/types/BookingTypes';
 import { Language } from '#/types/LanguageTypes';
 import { capitalizeFirstLetter } from '#/utils/capitalizeFirstLetter';
 import { Icon } from '@iconify-icon/react';
-import { Button, Divider, Skeleton } from 'antd';
+import { Button, Divider, message, Skeleton } from 'antd';
 import dayjs from 'dayjs';
 import Image from 'next/image';
+import { useState } from 'react';
 
 const ServiceRequestDetail = ({ params }: { params: { id: string } }) => {
-  const { data, isLoading } =
+  const { data, isLoading, mutate } =
     serviceRequestRepository.hooks.useGetServiceRequestById(params.id);
   const serviceRequest: Booking = data?.data;
+
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+  const [isCancelLoading, setCancelLoading] = useState(false);
+
+  const handleCancelRequest = async () => {
+    setCancelLoading(true);
+    try {
+      await serviceRequestRepository.manipulateData.cancelRequest(params.id);
+      message.success('Request canceled successfully');
+      mutate();
+    } catch (error) {
+      message.error('Failed to cancel request');
+    } finally {
+      setCancelLoading(false);
+      setIsCancelModalOpen(false);
+    }
+  };
 
   return (
     <>
@@ -170,7 +191,8 @@ const ServiceRequestDetail = ({ params }: { params: { id: string } }) => {
               />
               <p className='text-sm 2xl:text-base font-medium'>
                 {serviceRequest?.startAt.slice(0, 5)} -{' '}
-                {serviceRequest?.endAt.slice(0, 5)}
+                {serviceRequest?.endAt.slice(0, 5)} ({serviceRequest?.duration}{' '}
+                hours)
               </p>
             </div>
             <p className='text-xs 2xl:text-sm font-medium mt-2'>Location</p>
@@ -266,18 +288,37 @@ const ServiceRequestDetail = ({ params }: { params: { id: string } }) => {
               <Button
                 type='default'
                 className='py-3 px-5 w-fit h-fit text-sm rounded-xl hover:!border-rose-600 hover:!text-rose-600'
+                onClick={() => setIsCancelModalOpen(true)}
               >
                 Cancel Request
               </Button>
+              <ConfirmModal
+                type='danger'
+                title='Cancel Request'
+                description='Are you sure you want to cancel this request? This action cannot be undone.'
+                confirmText='Yes, cancel it'
+                cancelText='No, keep it'
+                open={isCancelModalOpen}
+                onCancel={() => setIsCancelModalOpen(false)}
+                onConfirm={handleCancelRequest}
+                isLoading={isCancelLoading}
+              />
               <Button
                 type='primary'
                 className='py-3 px-5 w-fit h-fit text-sm rounded-xl'
+                onClick={() => setEditModalOpen(true)}
               >
                 <Icon icon={'hugeicons:pencil-edit-01'} className='text-xl' />
                 Edit
               </Button>
             </section>
           )}
+          <EditServiceRequestModal
+            open={editModalOpen}
+            onCancel={() => setEditModalOpen(false)}
+            serviceRequest={serviceRequest}
+            mutate={mutate}
+          />
         </div>
       )}
     </>

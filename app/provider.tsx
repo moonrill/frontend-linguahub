@@ -1,7 +1,7 @@
 'use client';
 
 import { TokenUtil } from '#/utils/token';
-import { ConfigProvider } from 'antd';
+import { App, ConfigProvider } from 'antd';
 import { Inter } from 'next/font/google';
 
 const inter = Inter({
@@ -47,7 +47,7 @@ export const Provider = ({ children }: any) => {
         },
       }}
     >
-      {children}
+      <App>{children}</App>
     </ConfigProvider>
   );
 };

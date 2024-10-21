@@ -15,6 +15,7 @@ import {
   Button,
   Card,
   Divider,
+  Result,
   Skeleton,
   Table,
   TableProps,
@@ -107,7 +108,7 @@ const TranslatorDetail = ({ params }: { params: { id: string } }) => {
   };
 
   return (
-    <div className='mt-6 flex gap-6'>
+    <div className='mt-6 flex gap-6 min-h-screen'>
       {isLoading ? (
         <>
           <div className='w-[280px] 2xl:w-[360px]'>
@@ -118,7 +119,7 @@ const TranslatorDetail = ({ params }: { params: { id: string } }) => {
             <Skeleton active className='mt-4' />
           </div>
         </>
-      ) : (
+      ) : translator ? (
         <>
           <Card className='my-card hover:!shadow-none overflow-hidden w-[280px] 2xl:w-[360px]'>
             <div className='relative w-full h-[280px] 2xl:h-[360px]'>
@@ -267,14 +268,32 @@ const TranslatorDetail = ({ params }: { params: { id: string } }) => {
             <Divider style={{ margin: 0 }} className='!my-2 2xl:!my-4' />
             <div>
               <p className='text-blue-900 font-medium text-base 2xl:text-lg mb-2'>
-                Reviews
+                Latest Reviews
               </p>
-              {translator?.reviews?.map((review) => (
-                <ReviewCard review={review} key={review.id} />
-              ))}
+              <div className='flex flex-col gap-3'>
+                {translator?.reviews?.map((review) => (
+                  <ReviewCard review={review} key={review.id} />
+                ))}
+              </div>
             </div>
           </Card>
         </>
+      ) : (
+        <Result
+          status='404'
+          title='404'
+          subTitle='Oops! Translator not found.'
+          className='mx-auto'
+          extra={
+            <Button
+              type='primary'
+              href='/translator'
+              className='py-3 px-5 w-fit h-fit text-sm rounded-xl'
+            >
+              Back
+            </Button>
+          }
+        />
       )}
       <ServiceRequestModal
         translator={translator}

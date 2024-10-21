@@ -1,6 +1,9 @@
 'use client';
 
 import LanguageFlag from '#/components/LanguageFlag';
+import ConfirmModal from '#/components/Modal/ConfirmModal';
+import ReviewModal from '#/components/Modal/ReviewModal';
+import ReviewCard from '#/components/ReviewCard';
 import StatusBadge from '#/components/StatusBadge';
 import { config } from '#/config/app';
 import { imgProfilePicture, statusColor } from '#/constants/general';
@@ -9,15 +12,75 @@ import { Booking } from '#/types/BookingTypes';
 import { Language } from '#/types/LanguageTypes';
 import { capitalizeFirstLetter } from '#/utils/capitalizeFirstLetter';
 import { Icon } from '@iconify-icon/react';
-import { Image as AntdImage, Button, Divider, Skeleton } from 'antd';
+import {
+  Image as AntdImage,
+  Button,
+  Divider,
+  message,
+  Result,
+  Skeleton,
+} from 'antd';
 import dayjs from 'dayjs';
 import Image from 'next/image';
+import { useState } from 'react';
 
 const BookingDetail = ({ params }: { params: { id: string } }) => {
-  const { data, isLoading } = bookingRepository.hooks.useGetBookingById(
+  const { data, isLoading, mutate } = bookingRepository.hooks.useGetBookingById(
     params.id
   );
   const booking: Booking = data?.data;
+
+  const [openComplete, setOpenComplete] = useState(false);
+  const [openCancel, setOpenCancel] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [showReviewModal, setShowReviewModal] = useState(false);
+
+  const handleBookingAction = async (
+    actionType: 'complete' | 'cancel',
+    successMessage: string,
+    errorMessage: string
+  ) => {
+    try {
+      setLoading(true);
+
+      if (actionType === 'complete') {
+        await bookingRepository.manipulateData.completeBooking(params.id);
+      } else {
+        await bookingRepository.manipulateData.cancelBooking(params.id);
+        await mutate();
+      }
+
+      message.success(successMessage);
+    } catch (error) {
+      message.error(errorMessage);
+    } finally {
+      setLoading(false);
+      setOpenComplete(false);
+      setOpenCancel(false);
+      if (actionType === 'complete') {
+        setShowReviewModal(true);
+      }
+    }
+  };
+
+  if (!isLoading && !booking) {
+    return (
+      <Result
+        status='404'
+        title='404'
+        subTitle='Sorry, the booking you visited does not exist.'
+        extra={
+          <Button
+            type='primary'
+            href='/profile/booking'
+            className='py-3 px-5 w-fit h-fit text-sm rounded-xl'
+          >
+            Back
+          </Button>
+        }
+      />
+    );
+  }
 
   return (
     <>
@@ -163,7 +226,8 @@ const BookingDetail = ({ params }: { params: { id: string } }) => {
                 className='text-xl 2xl:text-2xl text-blue-600'
               />
               <p className='text-sm 2xl:text-base font-medium'>
-                {booking?.startAt.slice(0, 5)} - {booking?.endAt.slice(0, 5)}
+                {booking?.startAt.slice(0, 5)} - {booking?.endAt.slice(0, 5)} (
+                {booking?.duration} hours)
               </p>
             </div>
             <p className='text-xs 2xl:text-sm font-medium mt-2'>Location</p>
@@ -250,20 +314,68 @@ const BookingDetail = ({ params }: { params: { id: string } }) => {
               />
             </section>
           )}
+          {booking?.review && (
+            <section className='flex flex-col gap-2 border p-4 rounded-lg'>
+              <p className='text-xs 2xl:text-sm font-medium'>Review</p>
+              <ReviewCard border={false} review={booking?.review} />
+            </section>
+          )}
           {booking?.bookingStatus === 'in_progress' && (
             <section className='flex justify-end gap-3'>
               <Button
                 type='default'
                 className='py-3 px-5 w-fit h-fit text-sm rounded-xl hover:!border-rose-600 hover:!text-rose-600'
+                onClick={() => setOpenCancel(true)}
               >
                 Cancel Booking
               </Button>
+              <ConfirmModal
+                open={openCancel}
+                onCancel={() => setOpenCancel(false)}
+                onConfirm={() =>
+                  handleBookingAction(
+                    'cancel',
+                    'Successfully canceled booking',
+                    'Failed to cancel booking'
+                  )
+                }
+                type='danger'
+                title='Cancel Booking'
+                description='Are you sure you want to cancel this booking?'
+                cancelText='No, cancel'
+                confirmText="Yes, I'm sure"
+                isLoading={loading}
+              />
               <Button
                 type='primary'
                 className='py-3 px-5 w-fit h-fit text-sm rounded-xl'
+                onClick={() => setOpenComplete(true)}
               >
                 Complete Booking
               </Button>
+              <ConfirmModal
+                open={openComplete}
+                onCancel={() => setOpenComplete(false)}
+                onConfirm={() =>
+                  handleBookingAction(
+                    'complete',
+                    'Booking completed successfully',
+                    'Failed to complete booking'
+                  )
+                }
+                type='success'
+                title='Complete Booking'
+                description='Are you sure you want to complete this booking?'
+                cancelText='No, cancel'
+                confirmText='Yes, Complete'
+                isLoading={loading}
+              />
+              <ReviewModal
+                bookingId={booking?.id}
+                open={showReviewModal}
+                onCancel={() => setShowReviewModal(false)}
+                mutate={mutate}
+              />
             </section>
           )}
         </div>
