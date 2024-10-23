@@ -17,7 +17,9 @@ const HeaderComponent: React.FC<HeaderComponentProps> = ({ title, user }) => {
   return (
     <Header style={{ padding: 0, margin: 0 }}>
       <div className='flex items-center justify-between'>
-        <h1 className='mb-0 text-4xl text-blue-950 font-semibold'>{title}</h1>
+        <h1 className='mb-0 text-2xl 2xl:text-4xl text-blue-950 font-semibold'>
+          {title}
+        </h1>
         <div className='flex items-center gap-4'>
           <div className='flex flex-col items-end'>
             <p className='text-base font-semibold m-0'>

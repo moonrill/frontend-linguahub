@@ -3,11 +3,13 @@
 import LanguageFlag from '#/components/LanguageFlag';
 import Pagination from '#/components/Pagination';
 import StatusBadge from '#/components/StatusBadge';
-import { imgProfilePicture, statusColor } from '#/constants/general';
+import { imgProfilePicture } from '#/constants/general';
 import { bookingRepository } from '#/repository/booking';
 import { Booking } from '#/types/BookingTypes';
 import { capitalizeFirstLetter } from '#/utils/capitalizeFirstLetter';
-import { Table, TableProps, Tooltip } from 'antd';
+import { Icon } from '@iconify-icon/react';
+import { Dropdown, Input, Table, TableProps, Tooltip } from 'antd';
+import { MenuItemType } from 'antd/es/menu/interface';
 import dayjs from 'dayjs';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -16,10 +18,10 @@ const TranslatorBooking = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const page = Number(searchParams?.get('page')) || 1;
-  const { data: response } = bookingRepository.hooks.useTranslatorBookings(
-    page,
-    10
-  );
+  const status = searchParams?.get('status') || 'all';
+  const statusParam = status === 'all' ? undefined : status;
+  const { data: bookingLists, isLoading } =
+    bookingRepository.hooks.useTranslatorBookings(page, 10, statusParam);
 
   const columns: TableProps['columns'] = [
     {
@@ -27,6 +29,7 @@ const TranslatorBooking = () => {
       dataIndex: 'client',
       key: 'client',
       minWidth: 150,
+      fixed: 'left',
     },
     {
       title: 'Service',
@@ -50,16 +53,13 @@ const TranslatorBooking = () => {
     },
     {
       title: 'Status',
-      dataIndex: 'requestStatus',
-      key: 'requestStatus',
+      dataIndex: 'bookingStatus',
+      key: 'bookingStatus',
       align: 'center',
       width: 150,
       render: (text) => (
         <div className='w-fit m-auto'>
-          <StatusBadge
-            text={capitalizeFirstLetter(text)}
-            color={statusColor['request'][text]}
-          />
+          <StatusBadge text={capitalizeFirstLetter(text)} status={text} />
         </div>
       ),
     },
@@ -69,7 +69,7 @@ const TranslatorBooking = () => {
       key: 'location',
       minWidth: 200,
       render: (text) => (
-        <Tooltip title={text}>
+        <Tooltip title={text} placement='topLeft'>
           <p className='text-xs 2xl:text-sm line-clamp-1'>{text}</p>
         </Tooltip>
       ),
@@ -78,7 +78,7 @@ const TranslatorBooking = () => {
       title: 'Price',
       dataIndex: 'price',
       key: 'price',
-      minWidth: 100,
+      minWidth: 120,
       align: 'right',
       render: (text) => (
         <p className='text-xs 2xl:text-sm font-semibold'>Rp{text}</p>
@@ -86,7 +86,7 @@ const TranslatorBooking = () => {
     },
   ];
 
-  const data = response?.data?.map((booking: Booking) => ({
+  const data = bookingLists?.data?.map((booking: Booking) => ({
     key: booking?.id,
     client: (
       <div className='flex gap-3 items-center'>
@@ -143,33 +143,104 @@ const TranslatorBooking = () => {
         </div>
       </div>
     ),
-    requestStatus: booking?.requestStatus,
+    bookingStatus: booking?.bookingStatus,
     bookingDate: booking?.bookingDate,
     location: booking?.location,
     price: booking?.serviceFee.toLocaleString('id-ID'),
   }));
 
   const handlePageChange = (page: number) => {
-    router.push(`/dashboard/translator/service-request?page=${page}`);
+    router.push(`/dashboard/translator/booking?page=${page}`);
+  };
+
+  const statusOptions: MenuItemType[] = [
+    {
+      key: 'all',
+      label: 'All',
+    },
+    {
+      key: 'unpaid',
+      label: 'Unpaid',
+    },
+    {
+      key: 'in_progress',
+      label: 'In Progress',
+    },
+    {
+      key: 'completed',
+      label: 'Completed',
+    },
+    {
+      key: 'cancelled',
+      label: 'Cancelled',
+    },
+  ];
+
+  const handleSelect = (value: string) => {
+    router.push(
+      `/dashboard/translator/booking?status=${value}&page=${bookingLists?.page}`
+    );
   };
 
   return (
-    <main className='bg-white w-full h-full rounded-3xl p-4 overflow-x-auto'>
+    <main className='bg-white w-full rounded-3xl p-4'>
+      <div className='flex justify-between items-center mb-4'>
+        {/* TODO: handle search */}
+        <Input
+          type='text'
+          placeholder='Search...'
+          prefix={
+            <Icon
+              icon={'iconamoon:search-light'}
+              height={24}
+              className='text-zinc-400'
+            />
+          }
+          className='h-12 w-fit'
+        />
+        <Dropdown
+          menu={{
+            items: statusOptions,
+            selectable: true,
+            onClick: ({ key }) => handleSelect(key),
+            selectedKeys: [status],
+          }}
+          trigger={['click']}
+          className='cursor-pointer h-12 bg-zinc-100 px-4 py-2 rounded-xl text-sm 2xl:text-base text-zinc-400 font-medium hover:bg-zinc-200 transition-all duration-500'
+          placement='bottomRight'
+        >
+          <div className='flex items-center justify-between gap-4'>
+            <p>Status</p>
+            <Icon
+              icon='weui:arrow-outlined'
+              height={24}
+              className='rotate-90'
+            />
+          </div>
+        </Dropdown>
+      </div>
       <Table
         columns={columns}
         dataSource={data}
         pagination={false}
         scroll={{ x: 768 }}
+        rowClassName={'cursor-pointer'}
+        onRow={(row) => ({
+          onClick: () => {
+            router.push(`/dashboard/translator/booking/${row.key}`);
+          },
+        })}
+        loading={isLoading}
         footer={() => (
           <div className='flex justify-between items-center'>
             <p className='text-xs 2xl:text-sm'>
-              <span className='font-bold'>{response?.page}</span> of{' '}
-              {response?.totalPages} from {response?.total} result
+              <span className='font-bold'>{bookingLists?.page}</span> of{' '}
+              {bookingLists?.totalPages} from {bookingLists?.total} result
             </p>
             <Pagination
-              current={response?.page}
-              total={response?.total}
-              pageSize={response?.limit}
+              current={bookingLists?.page}
+              total={bookingLists?.total}
+              pageSize={bookingLists?.limit}
               onChange={handlePageChange}
             />
           </div>

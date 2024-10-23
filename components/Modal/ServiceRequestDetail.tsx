@@ -1,4 +1,4 @@
-import { imgProfilePicture, statusColor } from '#/constants/general';
+import { imgProfilePicture } from '#/constants/general';
 import { Booking } from '#/types/BookingTypes';
 import { capitalizeFirstLetter } from '#/utils/capitalizeFirstLetter';
 import { Icon } from '@iconify-icon/react';
@@ -69,7 +69,7 @@ const ServiceRequestDetailModal = ({
               </div>
             </div>
             <StatusBadge
-              color={statusColor['request'][serviceRequest?.requestStatus]}
+              status={serviceRequest?.requestStatus}
               text={capitalizeFirstLetter(serviceRequest?.requestStatus)}
             />
           </div>

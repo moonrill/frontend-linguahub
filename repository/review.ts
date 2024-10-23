@@ -42,7 +42,7 @@ const hooks = {
   },
 };
 
-const manipulateData = {
+const api = {
   createReview: (bookingId: string, data: any) => {
     return http.post(url.createReview(bookingId)).send(data);
   },
@@ -51,5 +51,5 @@ const manipulateData = {
 export const reviewRepository = {
   url,
   hooks,
-  manipulateData,
+  api,
 };

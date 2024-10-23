@@ -30,7 +30,7 @@ const ReviewModal = ({ bookingId, open, onCancel, mutate }: Props) => {
     try {
       setLoading(true);
 
-      await reviewRepository.manipulateData.createReview(bookingId, data);
+      await reviewRepository.api.createReview(bookingId, data);
       message.success('Review submitted');
       mutate();
     } catch (error) {

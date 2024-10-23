@@ -9,7 +9,7 @@ import Dragger from 'antd/es/upload/Dragger';
 import Link from 'next/link';
 import { useState } from 'react';
 
-const MAX_SIZE = 5 * 1024 * 1024;
+const MAX_SIZE = 10 * 1024 * 1024;
 
 type DocumentsUploadProps = {
   nextStep: () => void;
@@ -71,14 +71,10 @@ const DocumentsUpload = ({
     try {
       let response;
       if (type === 'cv') {
-        response = await uploadRepository.manipulateData.useCvUpload(
-          file as any
-        );
+        response = await uploadRepository.api.useCvUpload(file as any);
         setCvFile(file);
       } else {
-        response = await uploadRepository.manipulateData.useCertificateUpload(
-          file as any
-        );
+        response = await uploadRepository.api.useCertificateUpload(file as any);
         setCertificateFile(file);
       }
       message.success(`${type.toWellFormed()} uploaded successfully`);
@@ -113,7 +109,7 @@ const DocumentsUpload = ({
         return;
       }
 
-      await authRepository.manipulateData.register(formData);
+      await authRepository.api.register(formData);
       nextStep();
     } catch (error) {
       message.error('Something went wrong');

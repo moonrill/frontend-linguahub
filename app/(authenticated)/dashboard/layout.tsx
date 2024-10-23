@@ -75,7 +75,12 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       <SidebarComponent user={user} />
       <Layout className='bg-transparent'>
         <HeaderComponent title={getTitle()} user={user} />
-        {!isDashboardPage && <Breadcrumb items={getBreadcrumbItems()} />}
+        {!isDashboardPage && (
+          <Breadcrumb
+            items={getBreadcrumbItems()}
+            className='text-sm 2xl:text-base'
+          />
+        )}
         <Content className='mt-4 2xl:mt-6 h-full'>{children}</Content>
       </Layout>
     </Layout>

@@ -49,7 +49,7 @@ const EditServiceRequestModal = ({
     };
 
     try {
-      await serviceRequestRepository.manipulateData.updateServiceRequest(
+      await serviceRequestRepository.api.updateServiceRequest(
         serviceRequest.id,
         data
       );

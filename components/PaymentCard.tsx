@@ -1,5 +1,5 @@
 import { config } from '#/config/app';
-import { imgProfilePicture, statusColor } from '#/constants/general';
+import { imgProfilePicture } from '#/constants/general';
 import { Booking } from '#/types/BookingTypes';
 import { Payment } from '#/types/PaymentTypes';
 import { capitalizeFirstLetter } from '#/utils/capitalizeFirstLetter';
@@ -93,8 +93,6 @@ const PaymentCard = ({ payment }: Props) => {
     };
   }, []);
 
-  const badgeColor = statusColor['payment'][payment.status];
-
   const handleExport = async () => {
     try {
       const response = await fetch(
@@ -133,7 +131,7 @@ const PaymentCard = ({ payment }: Props) => {
           </span>
         </p>
         <StatusBadge
-          color={badgeColor}
+          status={payment.status}
           text={capitalizeFirstLetter(payment.status)}
         />
       </div>
@@ -217,7 +215,7 @@ const PaymentCard = ({ payment }: Props) => {
             title='Payment Details'
             extra={
               <StatusBadge
-                color={badgeColor}
+                status={payment.status}
                 text={capitalizeFirstLetter(payment.status)}
               />
             }

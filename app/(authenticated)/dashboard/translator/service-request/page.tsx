@@ -5,7 +5,7 @@ import ConfirmModal from '#/components/Modal/ConfirmModal';
 import ServiceRequestDetailModal from '#/components/Modal/ServiceRequestDetail';
 import Pagination from '#/components/Pagination';
 import StatusBadge from '#/components/StatusBadge';
-import { imgProfilePicture, statusColor } from '#/constants/general';
+import { imgProfilePicture } from '#/constants/general';
 import { serviceRequestRepository } from '#/repository/service-request';
 import { Booking } from '#/types/BookingTypes';
 import { capitalizeFirstLetter } from '#/utils/capitalizeFirstLetter';
@@ -62,6 +62,7 @@ const TranslatorServiceRequest = () => {
       dataIndex: 'client',
       key: 'client',
       minWidth: 150,
+      fixed: 'left',
     },
     {
       title: 'Service',
@@ -73,7 +74,7 @@ const TranslatorServiceRequest = () => {
       title: 'Booking Date',
       dataIndex: 'bookingDate',
       key: 'bookingDate',
-      minWidth: 180,
+      minWidth: 170,
       sortDirections: ['descend', 'ascend'],
       sorter: (a, b) =>
         dayjs(a.bookingDate).unix() - dayjs(b.bookingDate).unix(),
@@ -91,10 +92,7 @@ const TranslatorServiceRequest = () => {
       width: 150,
       render: (text) => (
         <div className='w-fit m-auto'>
-          <StatusBadge
-            text={capitalizeFirstLetter(text)}
-            color={statusColor['request'][text]}
-          />
+          <StatusBadge text={capitalizeFirstLetter(text)} status={text} />
         </div>
       ),
     },
@@ -104,7 +102,7 @@ const TranslatorServiceRequest = () => {
       key: 'location',
       minWidth: 150,
       render: (text) => (
-        <Tooltip title={text}>
+        <Tooltip title={text} placement='topLeft'>
           <p className='text-xs 2xl:text-sm line-clamp-1'>{text}</p>
         </Tooltip>
       ),
@@ -114,7 +112,7 @@ const TranslatorServiceRequest = () => {
       dataIndex: 'action',
       key: 'action',
       align: 'right',
-      width: 100,
+      width: 120,
     },
   ];
 
@@ -122,9 +120,7 @@ const TranslatorServiceRequest = () => {
     if (!selectedRequestId) return;
     setLoading(true);
     try {
-      await serviceRequestRepository.manipulateData.approveRequest(
-        selectedRequestId
-      );
+      await serviceRequestRepository.api.approveRequest(selectedRequestId);
       setOpenApprove(false);
       message.success('Service request approved successfully');
       mutate();
@@ -139,7 +135,7 @@ const TranslatorServiceRequest = () => {
     if (!selectedRequestId) return;
     setLoading(true);
     try {
-      await serviceRequestRepository.manipulateData.rejectRequest(
+      await serviceRequestRepository.api.rejectRequest(
         selectedRequestId,
         values
       );

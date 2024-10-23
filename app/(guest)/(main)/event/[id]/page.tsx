@@ -37,7 +37,7 @@ const EventDetail = ({ params }: { params: { id: string } }) => {
 
     setIsClaiming(true);
     try {
-      await couponRepository.manipulateData.claimCoupon(couponId);
+      await couponRepository.api.claimCoupon(couponId);
       mutate();
       message.success('Coupon claimed successfully!');
     } catch (error) {

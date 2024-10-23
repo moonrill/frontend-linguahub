@@ -9,7 +9,7 @@ const url = {
   updatePassword: () => '/auth/change-password',
 };
 
-const manipulateData = {
+const api = {
   login: (data: any) => {
     return http.post(url.login()).send(data);
   },
@@ -33,5 +33,5 @@ const hooks = {
 export const authRepository = {
   url,
   hooks,
-  manipulateData,
+  api,
 };

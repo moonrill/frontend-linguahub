@@ -65,6 +65,8 @@ const url = {
   getBookingById: (id: string) => `/bookings/${id}`,
   completeBooking: (id: string) => `/bookings/${id}/complete`,
   cancelBooking: (id: string) => `/bookings/${id}/cancel`,
+  updateProof: (id: string) => `/bookings/${id}/proof`,
+  removeProof: (id: string) => `/bookings/${id}/proof`,
 };
 
 const hooks = {
@@ -97,17 +99,23 @@ const hooks = {
   },
 };
 
-const manipulateData = {
+const api = {
   completeBooking: (id: string) => {
     return http.put(url.completeBooking(id));
   },
   cancelBooking: (id: string) => {
     return http.put(url.cancelBooking(id));
   },
+  updateProof: (id: string, data: any) => {
+    return http.put(url.updateProof(id)).send(data);
+  },
+  removeProof: (id: string) => {
+    return http.del(url.removeProof(id));
+  },
 };
 
 export const bookingRepository = {
   url,
   hooks,
-  manipulateData,
+  api,
 };

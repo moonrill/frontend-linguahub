@@ -5,7 +5,7 @@ const url = {
   certificate: () => '/translators/upload/certificate',
 };
 
-const manipulateData = {
+const api = {
   useCvUpload(cv: any) {
     const formData = new FormData();
     formData.append('cv', cv);
@@ -22,5 +22,5 @@ const manipulateData = {
 
 export const uploadRepository = {
   url,
-  manipulateData,
+  api,
 };

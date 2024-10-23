@@ -107,7 +107,7 @@ const hooks = {
   },
 };
 
-const manipulateData = {
+const api = {
   cancelRequest: (id: string) => {
     return http.put(url.cancelRequest(id));
   },
@@ -125,5 +125,5 @@ const manipulateData = {
 export const serviceRequestRepository = {
   url,
   hooks,
-  manipulateData,
+  api,
 };

@@ -123,7 +123,7 @@ const EditProfileModal = ({ open, onCancel, user, mutate }: Props) => {
           ? dayjs(values.dateOfBirth).format('YYYY-MM-DD')
           : null,
       };
-      await authRepository.manipulateData.updateProfile(user?.id, data);
+      await authRepository.api.updateProfile(user?.id, data);
 
       message.success('Profile updated successfully');
       onCancel();

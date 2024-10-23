@@ -115,7 +115,7 @@ const AddressInfo = ({
           street: values.street,
         };
 
-        await authRepository.manipulateData.register(clientData);
+        await authRepository.api.register(clientData);
 
         nextStep();
       } catch (error) {

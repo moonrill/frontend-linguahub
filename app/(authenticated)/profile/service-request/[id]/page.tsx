@@ -4,7 +4,7 @@ import LanguageFlag from '#/components/LanguageFlag';
 import ConfirmModal from '#/components/Modal/ConfirmModal';
 import EditServiceRequestModal from '#/components/Modal/EditServiceRequestModal';
 import StatusBadge from '#/components/StatusBadge';
-import { imgProfilePicture, statusColor } from '#/constants/general';
+import { imgProfilePicture } from '#/constants/general';
 import { serviceRequestRepository } from '#/repository/service-request';
 import { Booking } from '#/types/BookingTypes';
 import { Language } from '#/types/LanguageTypes';
@@ -27,7 +27,7 @@ const ServiceRequestDetail = ({ params }: { params: { id: string } }) => {
   const handleCancelRequest = async () => {
     setCancelLoading(true);
     try {
-      await serviceRequestRepository.manipulateData.cancelRequest(params.id);
+      await serviceRequestRepository.api.cancelRequest(params.id);
       message.success('Request canceled successfully');
       mutate();
     } catch (error) {
@@ -59,7 +59,7 @@ const ServiceRequestDetail = ({ params }: { params: { id: string } }) => {
               </p>
             </div>
             <StatusBadge
-              color={statusColor['request'][serviceRequest?.requestStatus]}
+              status={serviceRequest?.requestStatus}
               text={capitalizeFirstLetter(serviceRequest?.requestStatus)}
             />
           </div>

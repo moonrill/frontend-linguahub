@@ -42,7 +42,7 @@ const hooks = {
   },
 };
 
-const manipulateData = {
+const api = {
   claimCoupon: (couponId: string) => {
     return http.post(url.claimCoupon(couponId));
   },
@@ -51,5 +51,5 @@ const manipulateData = {
 export const couponRepository = {
   url,
   hooks,
-  manipulateData,
+  api,
 };

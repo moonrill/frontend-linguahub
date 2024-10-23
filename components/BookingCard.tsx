@@ -1,4 +1,4 @@
-import { imgProfilePicture, statusColor } from '#/constants/general';
+import { imgProfilePicture } from '#/constants/general';
 import { Booking } from '#/types/BookingTypes';
 import { capitalizeFirstLetter } from '#/utils/capitalizeFirstLetter';
 import { http } from '#/utils/http';
@@ -64,8 +64,6 @@ const BookingCard = ({ booking, type }: Props) => {
     booking: booking.bookingStatus,
   };
 
-  const badgeColor = statusColor[type][status[type]];
-
   return (
     <div className='flex flex-col gap-3 pb-4 border-b mb-4'>
       <div className='flex justify-between items-center bg-zinc-50 rounded-lg py-2 px-4 w-full'>
@@ -76,7 +74,7 @@ const BookingCard = ({ booking, type }: Props) => {
           </span>
         </p>
         <StatusBadge
-          color={badgeColor}
+          status={status[type]}
           text={
             status[type] !== null
               ? capitalizeFirstLetter(status[type])

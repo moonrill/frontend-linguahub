@@ -18,7 +18,7 @@ const Profile = () => {
 
   const handleUpdatePassword = async (values: any) => {
     try {
-      await authRepository.manipulateData.updatePassword(values);
+      await authRepository.api.updatePassword(values);
 
       message.success('Password updated successfully');
       form.resetFields();
