@@ -18,6 +18,10 @@ p {
   margin-bottom: 16px;
 }
 
+.ant-input-prefix {
+  @apply mr-2 !important;
+}
+
 .ant-input-affix-wrapper {
   border: none;
   @apply bg-zinc-100 !important;
@@ -258,7 +262,7 @@ p {
 }
 
 .ant-dropdown-menu {
-  @apply w-[200px] flex flex-col gap-0.5 rounded-xl p-2 !important;
+  @apply w-[200px] flex flex-col gap-0.5 rounded-xl p-1.5 !important;
 }
 
 .ant-dropdown-menu-item {
@@ -286,7 +290,7 @@ p {
 }
 
 .ant-table-thead > tr > th {
-  @apply bg-blue-50 text-blue-600 uppercase text-xs 2xl:text-sm !important;
+  @apply bg-blue-50 text-blue-600 uppercase text-[10px] !important;
 }
 
 .ant-table-cell {
@@ -303,22 +307,6 @@ p {
 
 .ant-table-wrapper {
   @apply h-full !important;
-}
-
-.ant-dropdown-menu {
-  @apply w-[200px] flex flex-col gap-0.5 rounded-xl p-2 !important;
-}
-
-.ant-dropdown-menu-item {
-  @apply text-sm py-2 rounded-lg !important;
-}
-
-.ant-dropdown-menu-item-danger:hover {
-  @apply text-rose-600 bg-rose-50 !important;
-}
-
-.dashboard-sidebar > .ant-layout-sider-children {
-  @apply flex flex-col justify-between !important;
 }
 
 .ant-btn-dangerous {
@@ -334,7 +322,7 @@ p {
 }
 
 .ant-table-thead > tr > th {
-  @apply bg-blue-50 text-blue-600 uppercase text-xs 2xl:text-sm !important;
+  @apply bg-blue-50 text-blue-600 font-bold uppercase 2xl:text-sm !important;
 }
 
 .ant-table-cell {
@@ -351,6 +339,10 @@ p {
 
 .ant-table-wrapper {
   @apply h-full !important;
+}
+
+.ant-table-footer {
+  @apply bg-transparent text-xs !important;
 }
 
 .ant-layout-footer {
@@ -359,10 +351,6 @@ p {
 
 .language-select {
   @apply text-gray-400 !important;
-}
-
-.search-btn {
-  @apply rounded-2xl !important;
 }
 
 .ant-dropdown .ant-dropdown-menu .ant-dropdown-menu-item-selected {

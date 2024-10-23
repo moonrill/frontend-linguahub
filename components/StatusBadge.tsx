@@ -17,7 +17,7 @@ const StatusBadge = ({ color, text, icon }: Props) => {
 
   return (
     <Tag
-      className={`rounded-full px-3 py-0.5 2xl:px-4 text-xs 2xl:text-sm font-medium flex items-center justify-center border-none ${variants[color]}`}
+      className={`rounded-full px-3 py-0.5 2xl:px-4 text-xs 2xl:text-sm font-medium flex items-center justify-center border-none m-0 ${variants[color]}`}
     >
       {text}
     </Tag>

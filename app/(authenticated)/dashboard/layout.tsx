@@ -3,6 +3,7 @@
 import HeaderComponent from '#/components/Dashboard/Header';
 import SidebarComponent from '#/components/Dashboard/Sidebar';
 import { Payload } from '#/types/UserType';
+import { TokenUtil } from '#/utils/token';
 import { Breadcrumb, Layout } from 'antd';
 import { Content } from 'antd/es/layout/layout';
 import Link from 'next/link';
@@ -12,6 +13,8 @@ import { useEffect, useState } from 'react';
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
+
+TokenUtil.loadToken();
 
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const pathname = usePathname();
@@ -73,7 +76,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       <Layout className='bg-transparent'>
         <HeaderComponent title={getTitle()} user={user} />
         {!isDashboardPage && <Breadcrumb items={getBreadcrumbItems()} />}
-        <Content className='mt-4 2xl:mt-6'>{children}</Content>
+        <Content className='mt-4 2xl:mt-6 h-full'>{children}</Content>
       </Layout>
     </Layout>
   );

@@ -96,7 +96,7 @@ const RoleSelection = ({
                 }`}
               >
                 <Icon
-                  icon={'mdi:users-group'}
+                  icon={'mdi:account-tie-voice'}
                   className='text-[30px] md:text-[40px]'
                 />
               </div>

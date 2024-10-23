@@ -7,9 +7,11 @@ import Image from 'next/image';
 const ReviewCard = ({
   review,
   border = true,
+  comment = true,
 }: {
   review: Review;
   border?: boolean;
+  comment?: boolean;
 }) => {
   return (
     <div
@@ -49,8 +51,10 @@ const ReviewCard = ({
           <Rate disabled defaultValue={review.rating} />
         </div>
       </div>
-      {review?.comment && (
-        <p className='text-xs 2xl:text-sm font-light'>{review?.comment}</p>
+      {comment && review?.comment && (
+        <div className='flex justify-between'>
+          <p className='text-xs 2xl:text-sm font-light'>{review?.comment}</p>
+        </div>
       )}
     </div>
   );

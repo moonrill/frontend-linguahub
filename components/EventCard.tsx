@@ -1,3 +1,4 @@
+import { eventPoster } from '#/constants/general';
 import { Event } from '#/types/EventTypes';
 import { Icon } from '@iconify-icon/react';
 import { Card } from 'antd';
@@ -13,14 +14,14 @@ const EventCard = ({ event }: EventCardProps) => {
   const { id, name, poster, description, endDate } = event;
   return (
     <Link href={`/event/${id}`}>
-      <Card className='my-card event-card overflow-hidden h-full'>
+      <Card className='my-card event-card overflow-hidden h-full group'>
         <div className='relative w-full h-52 2xl:h-64'>
           <Image
-            src={'/images/event-placeholder.svg'}
+            src={poster ? eventPoster(poster) : '/images/event-placeholder.svg'}
             alt={'slide-2'}
             fill
             sizes='(max-width: 400px)'
-            className='object-cover'
+            className='object-cover group-hover:scale-105 transition-all duration-500'
           />
         </div>
         <div className='p-4 2xl:p-6 flex flex-col gap-4 flex-1'>

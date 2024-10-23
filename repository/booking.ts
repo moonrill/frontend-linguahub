@@ -32,6 +32,36 @@ const url = {
 
     return url;
   },
+  getTranslatorBookings: (
+    status: string | undefined,
+    page: number,
+    limit: number,
+    sortBy?: string,
+    order?: string
+  ) => {
+    const params = new URLSearchParams();
+
+    if (status) {
+      params.append('status', status);
+    }
+    if (page) {
+      params.append('page', page.toString());
+    }
+    if (limit) {
+      params.append('limit', limit.toString());
+    }
+    if (sortBy) {
+      params.append('sortBy', sortBy);
+    }
+    if (order) {
+      params.append('order', order);
+    }
+
+    const queryString = params.toString();
+    const url = `/translators/bookings${queryString ? `?${queryString}` : ''}`;
+
+    return url;
+  },
   getBookingById: (id: string) => `/bookings/${id}`,
   completeBooking: (id: string) => `/bookings/${id}/complete`,
   cancelBooking: (id: string) => `/bookings/${id}/cancel`,
@@ -47,6 +77,18 @@ const hooks = {
   ) => {
     return useSWR(
       url.getUserBookings(status, page, limit, sortBy, order),
+      http.fetcher
+    );
+  },
+  useTranslatorBookings: (
+    page: number,
+    limit: number,
+    status?: string,
+    sortBy?: string,
+    order?: string
+  ) => {
+    return useSWR(
+      url.getTranslatorBookings(status, page, limit, sortBy, order),
       http.fetcher
     );
   },

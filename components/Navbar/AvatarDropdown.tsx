@@ -126,7 +126,7 @@ const translatorDropdownItems = (
     key: '2',
     label: (
       <DropdownLabel
-        link='/dashboard/profile'
+        link='/dashboard/translator/profile'
         name='Profile'
         icon='hugeicons:user'
       />

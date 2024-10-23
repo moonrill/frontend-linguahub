@@ -44,6 +44,9 @@ export const Provider = ({ children }: any) => {
             itemSelectedBg: '#2563eb',
             itemSelectedColor: '#ffffff',
           },
+          Table: {
+            headerSplitColor: 'transparent',
+          },
         },
       }}
     >

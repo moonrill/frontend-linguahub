@@ -1,6 +1,8 @@
+import { imgProfilePicture } from '#/constants/general';
 import { Payload } from '#/types/UserType';
 import { Avatar } from 'antd';
 import { Header } from 'antd/es/layout/layout';
+import Image from 'next/image';
 
 interface HeaderComponentProps {
   title: string;
@@ -26,13 +28,26 @@ const HeaderComponent: React.FC<HeaderComponentProps> = ({ title, user }) => {
             </p>
           </div>
           <div
-            className='flex items-center p-[2px] rounded-full'
+            className='flex items-center p-[2px] 2xl:p-0.5 rounded-full'
             style={{ border: '2px solid #2563eb' }}
           >
-            <Avatar className='w-10 h-10 2xl:w-12 2xl:h-12'>
-              {user?.fullName?.charAt(0).toUpperCase() ||
-                user?.email.charAt(0).toUpperCase()}
-            </Avatar>
+            {user?.profilePicture ? (
+              <div className='relative w-10 h-10 2xl:w-12 2xl:h-12'>
+                <Image
+                  src={imgProfilePicture(user?.profilePicture)}
+                  alt={'user avatar'}
+                  fill
+                  sizes='(max-width: 50px)'
+                  className='object-cover rounded-full'
+                  quality={100}
+                />
+              </div>
+            ) : (
+              <Avatar className='w-10 h-10 2xl:w-12 2xl:h-12'>
+                {user?.fullName?.charAt(0).toUpperCase() ||
+                  user?.email?.charAt(0).toUpperCase()}
+              </Avatar>
+            )}
           </div>
         </div>
       </div>

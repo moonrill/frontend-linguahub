@@ -2,7 +2,38 @@ import { http } from '#/utils/http';
 import useSWR from 'swr';
 
 const url = {
-  getTranslatorNewServiceRequest: () => `/translators/service-requests`,
+  getTranslatorServiceRequest: (
+    status: string | undefined,
+    page: number,
+    limit: number,
+    sortBy?: string,
+    order?: string
+  ) => {
+    const params = new URLSearchParams();
+
+    if (status) {
+      params.append('status', status);
+    }
+    if (page) {
+      params.append('page', page.toString());
+    }
+    if (limit) {
+      params.append('limit', limit.toString());
+    }
+    if (sortBy) {
+      params.append('sortBy', sortBy);
+    }
+    if (order) {
+      params.append('order', order);
+    }
+
+    const queryString = params.toString();
+    const url = `/translators/service-requests${
+      queryString ? `?${queryString}` : ''
+    }`;
+
+    return url;
+  },
   getUserServiceRequest: (
     status: string | undefined,
     page: number,
@@ -42,11 +73,22 @@ const url = {
     return `/service-requests/${id}/cancel`;
   },
   updateServiceRequestStatus: (id: string) => `/service-requests/${id}`,
+  approveRequest: (id: string) => `/service-requests/${id}/approve`,
+  rejectRequest: (id: string) => `/service-requests/${id}/reject`,
 };
 
 const hooks = {
-  useTranslatorNewServiceRequest: () => {
-    return useSWR(url.getTranslatorNewServiceRequest(), http.fetcher);
+  useTranslatorServiceRequest: (
+    page: number,
+    limit: number,
+    sortBy?: string,
+    order?: string,
+    status?: string
+  ) => {
+    return useSWR(
+      url.getTranslatorServiceRequest(status, page, limit, sortBy, order),
+      http.fetcher
+    );
   },
   useUserServiceRequest: (
     status: string | undefined,
@@ -71,6 +113,12 @@ const manipulateData = {
   },
   updateServiceRequest(id: string, data: any) {
     return http.put(url.updateServiceRequestStatus(id)).send(data);
+  },
+  approveRequest: (id: string) => {
+    return http.put(url.approveRequest(id));
+  },
+  rejectRequest: (id: string, data: any) => {
+    return http.put(url.rejectRequest(id)).send(data);
   },
 };
 

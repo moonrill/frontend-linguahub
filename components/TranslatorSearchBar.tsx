@@ -2,9 +2,10 @@ import { imgLanguage } from '#/constants/general';
 import { languagesRepository } from '#/repository/language';
 import { Language } from '#/types/LanguageTypes';
 import { Icon } from '@iconify-icon/react';
-import { Button, MenuProps } from 'antd';
+import { MenuProps } from 'antd';
 import { MenuItemType } from 'antd/es/menu/interface';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import CustomDropdown from './CustomDropdown';
@@ -170,12 +171,12 @@ const TranslatorSearchBar = ({
         {/* Search Button */}
         {isHome && (
           <div className='flex justify-end'>
-            <Button
-              type='primary'
-              onClick={() => handleSearch(selectedValue)}
-              icon={<Icon icon='iconamoon:search-light' height={26} />}
-              className='h-full !w-[64px] 2xl:!w-[75px] search-btn'
-            ></Button>
+            <Link
+              href={`/translator?sourceLanguage=${selectedValue.sourceLanguage}&targetLanguage=${selectedValue.targetLanguage}&sortBy=${selectedValue.sortBy}`}
+              className='h-full !w-[64px] 2xl:!w-[75px] bg-blue-600 text-white rounded-2xl flex items-center justify-center hover:text-white hover:bg-blue-500 transition-all duration-300'
+            >
+              <Icon icon='iconamoon:search-light' height={26} />
+            </Link>
           </div>
         )}
       </div>

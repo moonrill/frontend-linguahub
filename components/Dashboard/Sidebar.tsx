@@ -4,6 +4,7 @@ import { Payload } from '#/types/UserType';
 import { Icon } from '@iconify-icon/react';
 import { Button, Layout } from 'antd';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -44,16 +45,18 @@ const SidebarComponent: React.FC<SidebarComponentProps> = ({ user }) => {
         }}
       >
         <div>
-          <div className='w-[177px] h-[43px] xl:w-[120px] xl:h-[30px] relative mb-16'>
-            <Image
-              src={'/images/logo.png'}
-              alt={'logo'}
-              className='object-cover'
-              fill
-              sizes='(max-width: 177px)'
-              priority
-            />
-          </div>
+          <Link href={'/'}>
+            <div className='w-[177px] h-[43px] xl:w-[130px] xl:h-[30px] relative mb-16'>
+              <Image
+                src={'/images/logo.png'}
+                alt={'logo'}
+                className='object-cover'
+                fill
+                sizes='(max-width: 177px)'
+                priority
+              />
+            </div>
+          </Link>
 
           {user?.role === 'admin' ? <AdminMenu /> : <TranslatorMenu />}
         </div>
@@ -62,14 +65,14 @@ const SidebarComponent: React.FC<SidebarComponentProps> = ({ user }) => {
           type='primary'
           danger
           onClick={handleLogout}
-          loading={loading} // Show loading spinner when logging out
+          loading={loading}
           disabled={loading}
         >
           {loading ? (
             'Logging out...'
           ) : (
             <div className='flex items-center gap-2'>
-              <Icon icon='mdi:logout' height={24} /> Logout
+              <Icon icon='solar:logout-2-outline' height={24} /> Logout
             </div>
           )}
         </Button>

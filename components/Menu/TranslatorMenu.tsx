@@ -9,12 +9,12 @@ const translatorItems = [
   {
     key: '/dashboard/translator',
     label: <Link href={'/dashboard/translator'}>Dashboard</Link>,
-    icon: <Icon icon='bxs:dashboard' height={24} />,
+    icon: <Icon icon='streamline:dashboard-circle' height={24} />,
   },
   {
     key: '/dashboard/translator/profile',
     label: <Link href={'/dashboard/translator/profile'}>Profile</Link>,
-    icon: <Icon icon='mdi:account' height={24} />,
+    icon: <Icon icon='solar:user-linear' height={24} />,
   },
   {
     key: '/dashboard/translator/service-request',
@@ -23,27 +23,27 @@ const translatorItems = [
         Service Request
       </Link>
     ),
-    icon: <Icon icon='mdi:email-newsletter' height={24} />,
+    icon: <Icon icon='proicons:mail' height={24} />,
   },
   {
     key: '/dashboard/translator/booking',
     label: <Link href={'/dashboard/translator/booking'}>Booking</Link>,
-    icon: <Icon icon='mdi:book-open-variant' height={24} />,
+    icon: <Icon icon='fluent:calendar-edit-32-regular' height={24} />,
   },
   {
     key: '/dashboard/translator/service',
     label: <Link href={'/dashboard/translator/service'}>Service</Link>,
-    icon: <Icon icon='mingcute:service-fill' height={24} />,
+    icon: <Icon icon='cuida:translate-outline' height={24} />,
   },
   {
     key: '/dashboard/translator/payment',
     label: <Link href={'/dashboard/translator/payment'}>Payment</Link>,
-    icon: <Icon icon='mdi:credit-card-outline' height={24} />,
+    icon: <Icon icon='proicons:credit-card' height={24} />,
   },
   {
     key: '/dashboard/translator/review',
     label: <Link href={'/dashboard/translator/review'}>Review</Link>,
-    icon: <Icon icon='mingcute:comment-2-fill' height={24} />,
+    icon: <Icon icon='iconamoon:comment-dots-light' height={24} />,
   },
 ];
 

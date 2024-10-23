@@ -6,7 +6,9 @@ import { imgSpecialization } from '#/constants/general';
 import { specializationRepository } from '#/repository/specialization';
 import { Specialization } from '#/types/SpecializationTypes';
 import { Translator } from '#/types/TranslatorTypes';
-import { Button, Skeleton } from 'antd';
+import { Icon } from '@iconify-icon/react';
+import { Button, Dropdown, Skeleton } from 'antd';
+import { MenuItemType } from 'antd/es/menu/interface';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -18,10 +20,11 @@ const Specializations = () => {
   // Get specialization name and page from the URL
   const name = searchParams?.get('name') || 'general';
   const page = Number(searchParams?.get('page')) || 1;
+  const sortBy = searchParams?.get('sortBy') || 'mostReviewed';
 
-  // State for managing current page and limit
   const [currentPage, setCurrentPage] = useState(page);
   const [limit, setLimit] = useState(10);
+  const [selectedSortBy, setSelectedSortBy] = useState(sortBy);
 
   // Fetch all specializations
   const { data: specializations, isLoading } =
@@ -29,20 +32,23 @@ const Specializations = () => {
 
   // Fetch specialization details and translators for current page
   const { data: specialization, isLoading: loadingSpecialization } =
-    specializationRepository.hooks.useSpecialization(name, limit, currentPage);
+    specializationRepository.hooks.useSpecialization(
+      name,
+      limit,
+      currentPage,
+      sortBy
+    );
 
   const handleClick = (key: string) => {
     setCurrentPage(1);
     router.push(`/specialization?name=${key}&page=1`);
   };
 
-  // Handle page change
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    router.push(`/specialization?name=${name}&page=${page}`);
+    router.push(`/specialization?name=${name}&page=${page}&sortBy=${sortBy}`);
   };
 
-  // Effect to update limit based on screen size
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth <= 1440) {
@@ -52,13 +58,10 @@ const Specializations = () => {
       }
     };
 
-    // Call once to set initial limit
     handleResize();
 
-    // Add event listener for window resize
     window.addEventListener('resize', handleResize);
 
-    // Cleanup event listener on component unmount
     return () => {
       window.removeEventListener('resize', handleResize);
     };
@@ -68,12 +71,60 @@ const Specializations = () => {
     setCurrentPage(page);
   }, [page]);
 
+  const sortByOptions: MenuItemType[] = [
+    {
+      key: 'mostReviewed',
+      label: 'Most Reviewed',
+    },
+    {
+      key: 'rating',
+      label: 'Rating',
+    },
+    {
+      key: 'price',
+      label: 'Price',
+    },
+  ];
+
+  const handleSelect = (value: string) => {
+    setSelectedSortBy(value);
+    router.push(
+      `/specialization?name=${name}&sortBy=${value}&page=${currentPage}`
+    );
+  };
+
   return (
     <div className='min-h-screen mt-6'>
       <div className='flex flex-col gap-4'>
-        <h1 className='font-medium text-xl 2xl:text-2xl'>
-          Search Translator by Their Specialization
-        </h1>
+        <div className='flex justify-between items-center'>
+          <h1 className='font-medium text-xl 2xl:text-2xl'>
+            Search Translator by Their Specialization
+          </h1>
+          <div className='flex gap-2 items-center'>
+            <p className='text-sm font-medium text-gray-600'>Sort By : </p>
+            <Dropdown
+              menu={{
+                items: sortByOptions,
+                selectable: true,
+                onClick: ({ key }) => handleSelect(key),
+              }}
+              trigger={['click']}
+              className='cursor-pointer min-w-[155px] border px-4 py-2 rounded-lg text-sm font-medium'
+              placement='bottomRight'
+            >
+              <div className='flex items-center justify-between gap-2'>
+                <p>
+                  {sortByOptions.find((s) => s.key === selectedSortBy)?.label}
+                </p>
+                <Icon
+                  icon='weui:arrow-outlined'
+                  height={24}
+                  className='rotate-90'
+                />
+              </div>
+            </Dropdown>
+          </div>
+        </div>
         <div className='flex flex-wrap gap-4'>
           {isLoading
             ? Array.from({ length: 8 }).map((_, index) => (
