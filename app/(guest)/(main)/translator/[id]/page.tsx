@@ -4,12 +4,13 @@ import CardSkeleton from '#/components/CardSkeleton';
 import LanguageFlag from '#/components/LanguageFlag';
 import ServiceRequestModal from '#/components/Modal/ServiceRequestModal';
 import ReviewCard from '#/components/ReviewCard';
+import { config } from '#/config/app';
 import { imgProfilePicture } from '#/constants/general';
 import { translatorRepository } from '#/repository/translator';
 import { Language } from '#/types/LanguageTypes';
 import { Specialization } from '#/types/SpecializationTypes';
 import { Translator } from '#/types/TranslatorTypes';
-import { Payload } from '#/types/UserType';
+import { User } from '#/types/UserType';
 import { Icon } from '@iconify-icon/react';
 import {
   Button,
@@ -30,7 +31,7 @@ import { useEffect, useState } from 'react';
 const TranslatorDetail = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
   const [modalOpen, setModalOpen] = useState(false);
-  const [user, setUser] = useState<Payload | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const { data: result, isLoading } =
     translatorRepository.hooks.useGetTranslatorById(params.id);
 
@@ -44,10 +45,16 @@ const TranslatorDetail = ({ params }: { params: { id: string } }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch('/api/user');
-        const data = await response.json();
+        const response = await fetch(`${config.baseUrl}/auth/profile`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+          },
+        });
 
-        setUser(data);
+        if (response.ok) {
+          const { data } = await response.json();
+          setUser(data);
+        }
       } catch (error) {
         console.error(error);
       }
@@ -101,6 +108,13 @@ const TranslatorDetail = ({ params }: { params: { id: string } }) => {
 
   const handleClick = () => {
     if (user) {
+      if (!user.googleCalendarToken) {
+        const authUrl = `${
+          config.baseUrl
+        }/auth/google?email=${encodeURIComponent(user.email)}`;
+        window.location.href = authUrl;
+        return;
+      }
       setModalOpen(!modalOpen);
       return;
     }
@@ -191,7 +205,7 @@ const TranslatorDetail = ({ params }: { params: { id: string } }) => {
                     {translator?.user?.userDetail?.province}
                   </p>
                 </div>
-                {(!user || user?.role === 'client') && (
+                {(!user || user?.role?.name === 'client') && (
                   <Button
                     type='primary'
                     onClick={handleClick}

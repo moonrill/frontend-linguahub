@@ -2,7 +2,8 @@
 
 import HeaderComponent from '#/components/Dashboard/Header';
 import SidebarComponent from '#/components/Dashboard/Sidebar';
-import { Payload } from '#/types/UserType';
+import { config } from '#/config/app';
+import { User } from '#/types/UserType';
 import { TokenUtil } from '#/utils/token';
 import { Breadcrumb, Layout } from 'antd';
 import { Content } from 'antd/es/layout/layout';
@@ -18,21 +19,36 @@ TokenUtil.loadToken();
 
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const pathname = usePathname();
-  const [user, setUser] = useState<Payload | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch('/api/user');
-        const data = await response.json();
+        const response = await fetch(`${config.baseUrl}/auth/profile`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+          },
+        });
 
-        setUser(data);
+        if (response.ok) {
+          const { data } = await response.json();
+          setUser(data);
+        }
       } catch (error) {
         console.error(error);
       }
     };
     fetchUser();
   }, []);
+
+  useEffect(() => {
+    if (user && !user.googleCalendarToken) {
+      const authUrl = `${config.baseUrl}/auth/google?email=${encodeURIComponent(
+        user?.email
+      )}`;
+      window.location.href = authUrl;
+    }
+  }, [user]);
 
   const pathSegments = pathname?.split('/').filter(Boolean) || [];
   const isDashboardPage =
@@ -72,7 +88,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       style={{ minHeight: '100vh' }}
       className='p-6 flex gap-6 bg-slate-100'
     >
-      <SidebarComponent user={user} />
+      <SidebarComponent role={user?.role?.name} />
       <Layout className='bg-transparent'>
         <HeaderComponent title={getTitle()} user={user} />
         {!isDashboardPage && (

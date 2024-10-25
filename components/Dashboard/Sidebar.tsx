@@ -1,6 +1,5 @@
 import AdminMenu from '#/components/Menu/AdminMenu';
 import TranslatorMenu from '#/components/Menu/TranslatorMenu';
-import { Payload } from '#/types/UserType';
 import { Icon } from '@iconify-icon/react';
 import { Button, Layout } from 'antd';
 import Image from 'next/image';
@@ -11,10 +10,10 @@ import { useState } from 'react';
 const { Sider } = Layout;
 
 interface SidebarComponentProps {
-  user: Payload | null;
+  role: string | undefined;
 }
 
-const SidebarComponent: React.FC<SidebarComponentProps> = ({ user }) => {
+const SidebarComponent: React.FC<SidebarComponentProps> = ({ role }) => {
   const router = useRouter();
   const [loading, setLoading] = useState(false); // Loading state for logout
 
@@ -58,7 +57,7 @@ const SidebarComponent: React.FC<SidebarComponentProps> = ({ user }) => {
             </div>
           </Link>
 
-          {user?.role === 'admin' ? <AdminMenu /> : <TranslatorMenu />}
+          {role === 'admin' ? <AdminMenu /> : <TranslatorMenu />}
         </div>
         <Button
           className='w-full flex justify-start h-[56px] px-4 rounded-[0.75rem]'

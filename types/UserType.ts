@@ -14,10 +14,20 @@ export type User = {
   id: string;
   email: string;
   salt: string;
+  googleCalendarToken: string | null;
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
   userDetail: UserDetail;
+  role: Role;
+};
+
+export type Role = {
+  id: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
 };
 
 export type UserDetail = {

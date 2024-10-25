@@ -5,6 +5,10 @@
  * @returns The formatted sentence with the first letter of each word capitalized, except for Roman numerals.
  */
 export function capitalizeFirstLetter(sentence: string): string {
+  if (!sentence) {
+    return '';
+  }
+
   const romanNumerals = [
     'I',
     'II',
