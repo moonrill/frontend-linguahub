@@ -43,6 +43,7 @@ const TranslatorBooking = () => {
       key: 'bookingDate',
       minWidth: 100,
       sortDirections: ['descend', 'ascend'],
+      align: 'center',
       sorter: (a, b) =>
         dayjs(a.bookingDate).unix() - dayjs(b.bookingDate).unix(),
       render: (text) => (
@@ -206,7 +207,7 @@ const TranslatorBooking = () => {
             selectedKeys: [status],
           }}
           trigger={['click']}
-          className='cursor-pointer h-12 bg-zinc-100 px-4 py-2 rounded-xl text-sm 2xl:text-base text-zinc-400 font-medium hover:bg-zinc-200 transition-all duration-500'
+          className='cursor-pointer h-12 bg-zinc-100 px-4 py-2 rounded-xl text-sm 2xl:text-base text-zinc-500 font-medium hover:bg-zinc-200 transition-all duration-500'
           placement='bottomRight'
         >
           <div className='flex items-center justify-between gap-4'>

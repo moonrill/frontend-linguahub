@@ -27,7 +27,7 @@ const clientDropdownItems = (handleLogout: () => void): MenuProps['items'] => [
   {
     key: '1',
     label: (
-      <DropdownLabel link='/profile' name='Profile' icon='hugeicons:user' />
+      <DropdownLabel link='/profile' name='Profile' icon='solar:user-linear' />
     ),
   },
   {
@@ -46,7 +46,7 @@ const clientDropdownItems = (handleLogout: () => void): MenuProps['items'] => [
       <DropdownLabel
         link='/profile/service-request'
         name='Service Request'
-        icon='hugeicons:mail-01'
+        icon='proicons:mail'
       />
     ),
   },
@@ -56,7 +56,7 @@ const clientDropdownItems = (handleLogout: () => void): MenuProps['items'] => [
       <DropdownLabel
         link='/profile/booking'
         name='Booking'
-        icon='hugeicons:customer-service-01'
+        icon='fluent:calendar-edit-32-regular'
       />
     ),
   },
@@ -66,7 +66,7 @@ const clientDropdownItems = (handleLogout: () => void): MenuProps['items'] => [
       <DropdownLabel
         link='/profile/payment'
         name='Payment'
-        icon='hugeicons:credit-card'
+        icon='proicons:credit-card'
       />
     ),
   },
@@ -76,7 +76,7 @@ const clientDropdownItems = (handleLogout: () => void): MenuProps['items'] => [
       <DropdownLabel
         link='#' // Prevent default link behavior
         name='Logout'
-        icon='hugeicons:logout-02'
+        icon='solar:logout-2-outline'
         onClick={handleLogout} // Call handleLogout
       />
     ),
@@ -101,7 +101,7 @@ const adminDropdownItems = (handleLogout: () => void): MenuProps['items'] => [
       <DropdownLabel
         link='#' // Prevent default link behavior
         name='Logout'
-        icon='hugeicons:logout-02'
+        icon='solar:logout-2-outline'
         onClick={handleLogout} // Call handleLogout
       />
     ),
@@ -128,7 +128,7 @@ const translatorDropdownItems = (
       <DropdownLabel
         link='/dashboard/translator/profile'
         name='Profile'
-        icon='hugeicons:user'
+        icon='solar:user-linear'
       />
     ),
   },
@@ -138,7 +138,7 @@ const translatorDropdownItems = (
       <DropdownLabel
         link='#' // Prevent default link behavior
         name='Logout'
-        icon='hugeicons:logout-02'
+        icon='solar:logout-2-outline'
         onClick={handleLogout} // Call handleLogout
       />
     ),

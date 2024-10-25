@@ -11,7 +11,7 @@ const url = {
     page: number,
     limit: number
   ) =>
-    `/translators/service?sourceLanguage=${sourceLanguage}&targetLanguage=${targetLanguage}&sortBy=${sortBy}&page=${page}&limit=${limit}`,
+    `/translators/search/service?sourceLanguage=${sourceLanguage}&targetLanguage=${targetLanguage}&sortBy=${sortBy}&page=${page}&limit=${limit}`,
   getById: (id: string) => `/translators/${id}`,
 };
 

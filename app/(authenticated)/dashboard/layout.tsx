@@ -41,14 +41,14 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     fetchUser();
   }, []);
 
-  useEffect(() => {
-    if (user && !user.googleCalendarToken) {
-      const authUrl = `${config.baseUrl}/auth/google?email=${encodeURIComponent(
-        user?.email
-      )}`;
-      window.location.href = authUrl;
-    }
-  }, [user]);
+  // useEffect(() => {
+  //   if (user && !user.googleCalendarToken) {
+  //     const authUrl = `${config.baseUrl}/auth/google?email=${encodeURIComponent(
+  //       user?.email
+  //     )}`;
+  //     window.location.href = authUrl;
+  //   }
+  // }, [user]);
 
   const pathSegments = pathname?.split('/').filter(Boolean) || [];
   const isDashboardPage =

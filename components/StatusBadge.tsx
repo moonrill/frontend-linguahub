@@ -14,6 +14,7 @@ const StatusBadge = ({ status, text }: Props) => {
       case 'approved':
       case 'completed':
       case 'paid':
+      case 'Active':
         return 'bg-green-50 text-green-600';
       case 'in_progress':
       case 'translator':
@@ -21,6 +22,7 @@ const StatusBadge = ({ status, text }: Props) => {
       case 'rejected':
       case 'cancelled':
       case 'failed':
+      case 'Inactive':
         return 'bg-red-50 text-red-600';
       case 'refund':
       case 'client':
