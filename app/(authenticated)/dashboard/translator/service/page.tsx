@@ -5,6 +5,7 @@ import ServiceModal from '#/components/Modal/ServiceModal';
 import Pagination from '#/components/Pagination';
 import StatusBadge from '#/components/StatusBadge';
 import { serviceRepository } from '#/repository/service';
+import { translatorRepository } from '#/repository/translator';
 import { Service } from '#/types/ServiceTypes';
 import { Icon } from '@iconify-icon/react';
 import {
@@ -25,12 +26,16 @@ const TranslatorService = () => {
   const page = Number(searchParams?.get('page')) || 1;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState<Service | null>(null);
 
   const {
     data: listServices,
     isLoading,
     mutate,
   } = serviceRepository.hooks.useTranslatorServices(page, 10);
+
+  const { data: listLanguages } =
+    translatorRepository.hooks.useGetTranslatorLanguages();
 
   const columns: TableProps['columns'] = [
     {
@@ -40,6 +45,8 @@ const TranslatorService = () => {
       fixed: 'left',
       minWidth: 200,
       render: (text) => <p className='font-medium'>{text}</p>,
+      sortDirections: ['ascend', 'descend'],
+      sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
       title: 'Source',
@@ -86,6 +93,8 @@ const TranslatorService = () => {
       render: (text) => (
         <p className='font-semibold'>Rp{text.toLocaleString('id-ID')}</p>
       ),
+      sortDirections: ['ascend', 'descend'],
+      sorter: (a, b) => a.pricePerHour - b.pricePerHour,
     },
     {
       title: 'Action',
@@ -123,6 +132,10 @@ const TranslatorService = () => {
             <span className='ml-2 text-xs 2xl:text-sm'>Edit</span>
           </div>
         ),
+        onClick: () => {
+          setSelectedService(service);
+          setIsModalOpen(true);
+        },
       },
       {
         key: '2',
@@ -214,7 +227,16 @@ const TranslatorService = () => {
           </div>
         )}
       />
-      <ServiceModal open={isModalOpen} onCancel={() => setIsModalOpen(false)} />
+      <ServiceModal
+        open={isModalOpen}
+        onCancel={() => {
+          setIsModalOpen(false);
+          setSelectedService(null);
+        }}
+        languages={listLanguages?.data}
+        mutate={mutate}
+        service={selectedService}
+      />
     </main>
   );
 };

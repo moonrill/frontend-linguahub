@@ -1,26 +1,102 @@
+'use client';
+
+import { imgLanguage } from '#/constants/general';
+import { serviceRepository } from '#/repository/service';
+import { Language } from '#/types/LanguageTypes';
+import { Service } from '#/types/ServiceTypes';
 import { Icon } from '@iconify-icon/react';
-import { Button, Form, Input, Modal } from 'antd';
+import { Button, Form, Input, message, Modal, Select } from 'antd';
 import { useForm } from 'antd/es/form/Form';
+import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
 interface Props {
   open: boolean;
   onCancel: () => void;
+  languages: Language[];
+  mutate: () => void;
+  service?: Service | null;
 }
 
-const ServiceModal = ({ open, onCancel }: Props) => {
+const ServiceModal = ({
+  open,
+  onCancel,
+  languages,
+  mutate,
+  service,
+}: Props) => {
   const [form] = useForm();
+  const [loading, setLoading] = useState(false);
+
+  const languageOptions = languages?.map((language) => ({
+    value: language.id,
+    label: (
+      <div className='flex items-center gap-2 my-2 rounded-full'>
+        <div>
+          <Image
+            src={imgLanguage(language.flagImage)}
+            width={24}
+            height={24}
+            alt={language.name}
+          />
+        </div>
+        <p>{language.name}</p>
+      </div>
+    ),
+  }));
 
   const handleFinish = async (values: any) => {
-    console.log(values);
+    setLoading(true);
+    try {
+      const data = {
+        ...values,
+        pricePerHour: Number(values.pricePerHour.replace(/\./g, '')),
+      };
+      let response;
+
+      if (service) {
+        response = await serviceRepository.api.updateService(service.id, data);
+      } else {
+        response = await serviceRepository.api.createService(data);
+      }
+      message.success(response.body.message);
+      mutate();
+      onCancel();
+      form.resetFields();
+    } catch (error: any) {
+      message.error(error?.response?.body?.message || 'Error creating service');
+    } finally {
+      setLoading(false);
+    }
   };
 
+  const handleCancel = () => {
+    form.resetFields();
+    onCancel();
+  };
+
+  useEffect(() => {
+    if (service) {
+      form.setFieldsValue({
+        name: service.name,
+        pricePerHour: service.pricePerHour
+          .toString()
+          .replace(/\B(?=(\d{3})+(?!\d))/g, '.'),
+        sourceLanguageId: service.sourceLanguage.id,
+        targetLanguageId: service.targetLanguage.id,
+      });
+    }
+  }, [form, service]);
+
   return (
-    <Modal open={open} onCancel={onCancel} centered footer={null}>
+    <Modal open={open} onCancel={handleCancel} centered footer={null}>
       <div className='flex items-center gap-2'>
         <div className='p-2 bg-blue-600 rounded-full flex items-center justify-center text-white'>
           <Icon icon={'lets-icons:edit'} className='text-2xl' />
         </div>
-        <h1 className='text-lg 2xl:text-xl font-semibold'>Create Service</h1>
+        <h1 className='text-lg 2xl:text-xl font-semibold'>
+          {service ? 'Edit' : 'Create'} Service
+        </h1>
       </div>
       <Form
         form={form}
@@ -50,6 +126,56 @@ const ServiceModal = ({ open, onCancel }: Props) => {
                 />
               }
               className='h-14'
+            />
+          </Form.Item>
+        </div>
+        <div className='flex flex-col gap-1 2xl:gap-2'>
+          <p className='text-xs 2xl:text-sm font-medium'>Source Language</p>
+          <Form.Item
+            name={'sourceLanguageId'}
+            rules={[
+              {
+                required: true,
+                message: 'Please select service source language',
+              },
+            ]}
+          >
+            <Select
+              placeholder='Select Source Language'
+              className='h-14'
+              options={languageOptions}
+              suffixIcon={
+                <Icon
+                  icon={'mdi:chevron-down'}
+                  height={32}
+                  className='text-zinc-400'
+                />
+              }
+            />
+          </Form.Item>
+        </div>
+        <div className='flex flex-col gap-1 2xl:gap-2'>
+          <p className='text-xs 2xl:text-sm font-medium'>Target Language</p>
+          <Form.Item
+            name={'targetLanguageId'}
+            rules={[
+              {
+                required: true,
+                message: 'Please select service target language',
+              },
+            ]}
+          >
+            <Select
+              placeholder='Select target Language'
+              className='h-14'
+              options={languageOptions}
+              suffixIcon={
+                <Icon
+                  icon={'mdi:chevron-down'}
+                  height={32}
+                  className='text-zinc-400'
+                />
+              }
             />
           </Form.Item>
         </div>
@@ -108,7 +234,7 @@ const ServiceModal = ({ open, onCancel }: Props) => {
             className='w-full py-6 font-medium rounded-xl'
             type='default'
             htmlType='button'
-            onClick={onCancel}
+            onClick={handleCancel}
           >
             Cancel
           </Button>
@@ -116,7 +242,7 @@ const ServiceModal = ({ open, onCancel }: Props) => {
             className='w-full py-6 font-medium rounded-xl'
             type='primary'
             htmlType='submit'
-            // loading={loading}
+            loading={loading}
           >
             Save
           </Button>

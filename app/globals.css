@@ -30,6 +30,10 @@ p {
   min-height: 2.5rem;
 }
 
+.ant-input-affix-wrapper {
+  @apply hover:bg-zinc-200 !important;
+}
+
 .ant-input-affix-wrapper-focused {
   border: none;
   box-shadow: 0 0 0 2px white !important;
@@ -162,6 +166,10 @@ p {
   padding: 0 24px !important;
   border-radius: 1rem !important;
   box-shadow: 0 0 0 2px white !important;
+}
+
+.ant-select-selector {
+  @apply hover:bg-zinc-200 !important;
 }
 
 .ant-select-arrow {

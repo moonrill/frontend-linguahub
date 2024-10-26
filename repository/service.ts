@@ -7,6 +7,8 @@ const url = {
       limit && `&limit=${limit}`
     }`,
   updateStatus: (id: string) => `/services/${id}/status`,
+  createService: () => '/services',
+  updateService: (id: string) => `/services/${id}`,
 };
 
 const hooks = {
@@ -17,6 +19,9 @@ const hooks = {
 
 const api = {
   toggleStatus: (id: string) => http.put(url.updateStatus(id)),
+  createService: (data: any) => http.post(url.createService()).send(data),
+  updateService: (id: string, data: any) =>
+    http.put(url.updateService(id)).send(data),
 };
 
 export const serviceRepository = {
