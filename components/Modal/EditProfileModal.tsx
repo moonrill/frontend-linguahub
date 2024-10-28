@@ -349,7 +349,6 @@ const EditProfileModal = ({ open, onCancel, user, mutate }: Props) => {
             htmlType='button'
             onClick={() => {
               onCancel();
-              form.resetFields();
             }}
           >
             Cancel

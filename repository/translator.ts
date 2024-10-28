@@ -14,6 +14,7 @@ const url = {
     `/translators/search/service?sourceLanguage=${sourceLanguage}&targetLanguage=${targetLanguage}&sortBy=${sortBy}&page=${page}&limit=${limit}`,
   getById: (id: string) => `/translators/${id}`,
   translatorLanguages: () => `/translators/languages`,
+  updateProfessionalInfo: (id: string) => `/translators/${id}`,
 };
 
 const hooks = {
@@ -49,7 +50,14 @@ const hooks = {
   },
 };
 
+const api = {
+  updateProfessionalInfo: (id: string, data: any) => {
+    return http.put(url.updateProfessionalInfo(id)).send(data);
+  },
+};
+
 export const translatorRepository = {
   url,
+  api,
   hooks,
 };

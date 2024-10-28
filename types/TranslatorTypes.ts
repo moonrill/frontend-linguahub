@@ -1,3 +1,4 @@
+import { Booking } from './BookingTypes';
 import { Language } from './LanguageTypes';
 import { Service } from './ServiceTypes';
 import { Specialization } from './SpecializationTypes';
@@ -40,6 +41,7 @@ export type Review = {
   comment: string;
   translator?: Translator;
   user?: User;
+  booking?: Booking;
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;

@@ -18,7 +18,7 @@ const ProfilePayment = () => {
   const statusParam = status === 'All' ? undefined : status.toLowerCase();
 
   const { data: payments, isLoading } =
-    paymentRepository.hooks.useGetUserPayments(statusParam, page, 5);
+    paymentRepository.hooks.useGetUserPayments('client', statusParam, page, 5);
 
   const onChange = (e: any) => {
     router.push(`/profile/payment?status=${e}`);

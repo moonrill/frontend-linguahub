@@ -337,6 +337,7 @@ const BookingDetail = ({ params }: { params: { id: string } }) => {
               )
             )}
           </section>
+
           {booking?.review && (
             <section className='flex flex-col gap-2 border p-4 rounded-xl'>
               <p className='text-xs 2xl:text-sm font-medium'>Review</p>

@@ -15,17 +15,10 @@ const TranslatorReviews = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const page = Number(searchParams?.get('page')) || 1;
-
-  const defaultRatings = ['1', '2', '3', '4', '5'];
-  const urlRatings = searchParams?.get('ratings')?.split(',') || defaultRatings;
+  const rating = searchParams?.get('rating') || '';
 
   const { data: listReviews, isLoading } =
-    reviewRepository.hooks.useGetTranslatorReviews(
-      10,
-      page,
-      'desc',
-      urlRatings.join(',')
-    );
+    reviewRepository.hooks.useGetTranslatorReviews(10, page, 'desc', rating);
 
   const ratingOptions: MenuItemType[] = [
     {
@@ -91,7 +84,7 @@ const TranslatorReviews = () => {
   ];
 
   const handlePageChange = (page: number) => {
-    router.push(`/dashboard/translator/review?page=${page}`);
+    router.push(`/dashboard/translator/review?page=${page}&rating=${rating}`);
   };
 
   const columns: TableProps['columns'] = [
@@ -129,6 +122,10 @@ const TranslatorReviews = () => {
     },
   ];
 
+  const handleSelect = (key: string) => {
+    router.push(`/dashboard/translator/review?rating=${key}&page=${page}`);
+  };
+
   const data = listReviews?.data?.map((review: Review) => ({
     key: review.id,
     client: (
@@ -165,6 +162,7 @@ const TranslatorReviews = () => {
       </p>
     ),
     rating: review.rating,
+    bookingId: review?.booking?.id,
   }));
 
   return (
@@ -187,8 +185,8 @@ const TranslatorReviews = () => {
           menu={{
             items: ratingOptions,
             selectable: true,
-            // onClick: ({ key }) => handleSelect(key),
-            // selectedKeys: [status],
+            onClick: ({ key }) => handleSelect(key),
+            selectedKeys: [rating],
           }}
           trigger={['click']}
           className='cursor-pointer h-12 bg-zinc-100 px-4 py-2 rounded-xl text-sm 2xl:text-base text-zinc-500 font-medium hover:bg-zinc-200 transition-all duration-500'
@@ -210,6 +208,12 @@ const TranslatorReviews = () => {
         pagination={false}
         scroll={{ x: 768 }}
         loading={isLoading}
+        rowClassName={'cursor-pointer'}
+        onRow={(row) => ({
+          onClick: () => {
+            router.push(`/dashboard/translator/booking/${row.bookingId}`);
+          },
+        })}
         footer={() => (
           <div className='flex justify-between items-center'>
             <p className='text-xs 2xl:text-sm'>

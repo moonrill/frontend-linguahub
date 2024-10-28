@@ -3,6 +3,7 @@ import useSWR from 'swr';
 
 const url = {
   getUserPayments: (
+    type: 'client' | 'translator',
     status: string | undefined,
     page: number,
     limit: number,
@@ -28,7 +29,12 @@ const url = {
     }
 
     const queryString = params.toString();
-    const url = `/users/payments${queryString ? `?${queryString}` : ''}`;
+    let url;
+    if (type === 'client') {
+      url = `/users/payments${queryString ? `?${queryString}` : ''}`;
+    } else {
+      url = `/translators/payments${queryString ? `?${queryString}` : ''}`;
+    }
 
     return url;
   },
@@ -36,6 +42,7 @@ const url = {
 
 const hooks = {
   useGetUserPayments: (
+    type: 'client' | 'translator',
     status: string | undefined,
     page: number,
     limit: number,
@@ -43,7 +50,7 @@ const hooks = {
     order?: string
   ) => {
     return useSWR(
-      url.getUserPayments(status, page, limit, sortBy, order),
+      url.getUserPayments(type, status, page, limit, sortBy, order),
       http.fetcher
     );
   },

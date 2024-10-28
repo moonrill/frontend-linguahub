@@ -7,7 +7,7 @@ const url = {
     limit?: number,
     page?: number,
     date?: string,
-    ratings?: string
+    rating?: string
   ) => {
     const params = new URLSearchParams();
     if (page) {
@@ -19,8 +19,8 @@ const url = {
     if (date) {
       params.append('date', date);
     }
-    if (ratings) {
-      params.append('ratings', ratings.toString());
+    if (rating) {
+      params.append('rating', rating.toString());
     }
     const queryString = params.toString();
     const url = `/translators/reviews${queryString ? `?${queryString}` : ''}`;
@@ -33,10 +33,10 @@ const hooks = {
     limit?: number,
     page?: number,
     date?: string,
-    ratings?: string
+    rating?: string
   ) => {
     return useSWR(
-      url.translatorReviews(limit, page, date, ratings),
+      url.translatorReviews(limit, page, date, rating),
       http.fetcher
     );
   },
