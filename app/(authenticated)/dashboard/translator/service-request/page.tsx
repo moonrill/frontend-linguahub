@@ -364,7 +364,7 @@ const TranslatorServiceRequest = () => {
       />
       <ConfirmModal
         open={openApprove}
-        onCancel={() => setOpenApprove}
+        onCancel={() => setOpenApprove(false)}
         onConfirm={handleAccept}
         type='success'
         title='Approve Request?'

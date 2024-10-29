@@ -72,7 +72,9 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     ];
 
     pathSegments.slice(1).forEach((segment, index) => {
-      if (segment === 'translator') return;
+      if (user?.role?.name === 'translator') {
+        if (segment === 'translator') return;
+      }
 
       const href = `/dashboard/${pathSegments.slice(1, index + 2).join('/')}`;
       breadcrumbItems.push({

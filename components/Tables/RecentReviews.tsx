@@ -4,7 +4,7 @@ import ReviewCard from '../ReviewCard';
 
 const RecentReviews = () => {
   const { data: reviews, isLoading } =
-    reviewRepository.hooks.useGetTranslatorReviews(5, 1, 'desc');
+    reviewRepository.hooks.useGetTranslatorReviews(6, 1, 'desc');
   return (
     <div className='flex flex-col gap-5'>
       {isLoading ? (

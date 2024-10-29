@@ -2,7 +2,8 @@ import { http } from '#/utils/http';
 import useSWR from 'swr';
 
 const url = {
-  getTranslators: () => '/translators',
+  getTranslators: (page?: number, limit?: number) =>
+    `/translators?page=${page}&limit=${limit}`,
   getBestTranslator: () => '/translators/best',
   searchTranslatorByService: (
     sourceLanguage: string,
@@ -15,11 +16,21 @@ const url = {
   getById: (id: string) => `/translators/${id}`,
   translatorLanguages: () => `/translators/languages`,
   updateProfessionalInfo: (id: string) => `/translators/${id}`,
+  getRegistrations: (page?: number, limit?: number, status?: string) => {
+    const params = new URLSearchParams();
+    if (page) params.append('page', page.toString());
+    if (limit) params.append('limit', limit.toString());
+    if (status) params.append('status', status);
+    const queryString = params.toString();
+    return `/translators/registrations?${queryString}`;
+  },
+  approveTranslator: (id: string) => `/translators/${id}/approve`,
+  rejectTranslator: (id: string) => `/translators/${id}/reject`,
 };
 
 const hooks = {
-  useGetTranslators: () => {
-    return useSWR(url.getTranslators(), http.fetcher);
+  useGetTranslators: (page?: number, limit: number = 10) => {
+    return useSWR(url.getTranslators(page, limit), http.fetcher);
   },
   useGetBestTranslator: () => {
     return useSWR(url.getBestTranslator(), http.fetcher);
@@ -48,11 +59,20 @@ const hooks = {
   useGetTranslatorLanguages: () => {
     return useSWR(url.translatorLanguages(), http.fetcher);
   },
+  useGetRegistrations: (page?: number, limit?: number, status?: string) => {
+    return useSWR(url.getRegistrations(page, limit, status), http.fetcher);
+  },
 };
 
 const api = {
   updateProfessionalInfo: (id: string, data: any) => {
     return http.put(url.updateProfessionalInfo(id)).send(data);
+  },
+  approveTranslator: (id: string) => {
+    return http.put(url.approveTranslator(id));
+  },
+  rejectTranslator: (id: string, data: any) => {
+    return http.put(url.rejectTranslator(id)).send(data);
   },
 };
 

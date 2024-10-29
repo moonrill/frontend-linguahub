@@ -220,15 +220,17 @@ const TranslatorProfile = () => {
                         {profile?.translator?.yearsOfExperience} Years
                       </p>
                       <p className='text-xs 2xl:text-base font-semibold text-zinc-800'>
-                        <Link href={profile?.translator?.portfolioLink}>
-                          <Tag
-                            color='blue'
-                            className='text-xs 2xl:text-base border-none px-2 py-0.5 hover:bg-blue-100 rounded-lg flex items-center gap-2 w-fit'
-                          >
-                            See Portfolio
-                            <Icon icon={'akar-icons:link-out'} />
-                          </Tag>
-                        </Link>
+                        {profile?.translator?.portfolioLink && (
+                          <Link href={profile?.translator?.portfolioLink}>
+                            <Tag
+                              color='blue'
+                              className='text-xs 2xl:text-base font-medium border-none px-2 py-0.5 hover:bg-blue-100 rounded-lg flex items-center gap-2 w-fit'
+                            >
+                              See Portfolio
+                              <Icon icon={'akar-icons:link-out'} />
+                            </Tag>
+                          </Link>
+                        )}
                       </p>
                       <p className='text-xs 2xl:text-base font-semibold text-zinc-800'>
                         {profile?.translator?.bank}

@@ -32,7 +32,8 @@ const EventSection = () => {
   // Panggil hook dengan jumlah event sesuai ukuran layar
   const { data: events, isLoading } = eventRepository.hooks.useAllEvents(
     itemsPerPage,
-    1
+    1,
+    'ongoing'
   );
 
   return (

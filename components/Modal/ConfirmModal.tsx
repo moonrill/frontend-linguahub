@@ -50,7 +50,7 @@ const ConfirmModal = ({
           <Button
             type='default'
             onClick={onCancel}
-            className='text-sm h-fit py-2 px-4 rounded-lg border-zinc-300 text-gray-500 hover:!text-black font-medium hover:!bg-zinc-100 hover:!border-zinc-300'
+            className='text-sm h-fit py-3 px-4 rounded-xl border-zinc-300 text-gray-500 hover:!text-black font-medium hover:!bg-zinc-100 hover:!border-zinc-300'
           >
             {cancelText || 'Cancel'}
           </Button>
@@ -58,7 +58,7 @@ const ConfirmModal = ({
             type='primary'
             onClick={onConfirm}
             loading={isLoading}
-            className={`text-sm h-fit py-2 px-4 rounded-lg font-medium ${
+            className={`text-sm h-fit py-3 px-4 rounded-xl font-medium ${
               type === 'success'
                 ? 'bg-blue-600 hover:!bg-blue-700'
                 : 'bg-rose-600 hover:!bg-rose-700'

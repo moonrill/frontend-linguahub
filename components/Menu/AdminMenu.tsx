@@ -9,12 +9,12 @@ const adminItems = [
   {
     key: '/dashboard',
     label: <Link href={'/dashboard'}>Dashboard</Link>,
-    icon: <Icon icon='bxs:dashboard' height={24} />,
+    icon: <Icon icon='streamline:dashboard-circle' height={24} />,
   },
   {
     key: '/dashboard/account',
     label: 'Account',
-    icon: <Icon icon='mdi:users-group' height={24} />,
+    icon: <Icon icon='ph:users' height={24} />,
     children: [
       {
         key: '/dashboard/account/client',
@@ -25,10 +25,10 @@ const adminItems = [
         label: <Link href={'/dashboard/account/translator'}>Translator</Link>,
       },
       {
-        key: '/dashboard/account/translator-approval',
+        key: '/dashboard/account/translator-registration',
         label: (
-          <Link href={'/dashboard/account/translator-approval'}>
-            Translator Approval
+          <Link href={'/dashboard/account/translator-registration'}>
+            Translator Registration
           </Link>
         ),
       },
@@ -39,7 +39,7 @@ const adminItems = [
     label: 'Expertise',
     icon: (
       <Icon
-        icon='streamline:industry-innovation-and-infrastructure-solid'
+        icon='streamline:industry-innovation-and-infrastructure'
         height={24}
       />
     ),
@@ -61,7 +61,7 @@ const adminItems = [
   {
     key: '/dashboard/transaction',
     label: 'Transaction',
-    icon: <Icon icon='mdi:credit-card-outline' height={24} />,
+    icon: <Icon icon='proicons:credit-card' height={24} />,
     children: [
       {
         key: '/dashboard/transaction/service-request',
@@ -84,7 +84,7 @@ const adminItems = [
   {
     key: '/dashboard/promotion',
     label: 'Promotion',
-    icon: <Icon icon='mingcute:horn-2-line' height={24} />,
+    icon: <Icon icon='carbon:bullhorn' height={24} />,
     children: [
       {
         key: '/dashboard/promotion/event',
@@ -99,7 +99,7 @@ const adminItems = [
   {
     key: '/dashboard/quality',
     label: 'Quality',
-    icon: <Icon icon='mdi:filter-gear-outline' height={24} />,
+    icon: <Icon icon='bi:person-gear' height={24} />,
     children: [
       {
         key: '/dashboard/quality/service',

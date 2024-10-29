@@ -1,8 +1,9 @@
 'use client';
+import TranslatorChart from '#/components/Chart/TranslatorChart';
 import DashboardCard from '#/components/Dashboard/DashboardCard';
 import NewRequest from '#/components/Tables/NewRequest';
 import RecentReviews from '#/components/Tables/RecentReviews';
-import { Card, Col, Row } from 'antd';
+import { Col, Row } from 'antd';
 import Link from 'next/link';
 
 const TranslatorDashboard = () => {
@@ -50,7 +51,7 @@ const TranslatorDashboard = () => {
       </Row>
       <Row gutter={24}>
         <Col span={16}>
-          <Card className='h-full'>Translator Dashboard</Card>
+          <TranslatorChart />
         </Col>
         <Col
           span={8}

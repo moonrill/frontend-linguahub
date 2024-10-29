@@ -60,7 +60,7 @@ const SidebarComponent: React.FC<SidebarComponentProps> = ({ role }) => {
           {role === 'admin' ? <AdminMenu /> : <TranslatorMenu />}
         </div>
         <Button
-          className='w-full flex justify-start h-[56px] px-4 rounded-[0.75rem]'
+          className='w-full flex justify-start h-[56px] px-3.5 rounded-[0.75rem]'
           type='primary'
           danger
           onClick={handleLogout}
@@ -70,7 +70,7 @@ const SidebarComponent: React.FC<SidebarComponentProps> = ({ role }) => {
           {loading ? (
             'Logging out...'
           ) : (
-            <div className='flex items-center gap-2'>
+            <div className='flex items-center gap-2.5'>
               <Icon icon='solar:logout-2-outline' height={24} /> Logout
             </div>
           )}

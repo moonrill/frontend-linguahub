@@ -2,22 +2,29 @@
 
 import LanguageFlag from '#/components/LanguageFlag';
 import Pagination from '#/components/Pagination';
+import StatusBadge from '#/components/StatusBadge';
 import { translatorRepository } from '#/repository/translator';
 import { Language } from '#/types/LanguageTypes';
 import { Translator } from '#/types/TranslatorTypes';
 import { capitalizeFirstLetter } from '#/utils/capitalizeFirstLetter';
 import { Icon } from '@iconify-icon/react';
-import { Input, Table, TableProps, Tag } from 'antd';
+import { Input, Segmented, Table, TableProps, Tag } from 'antd';
+import dayjs from 'dayjs';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-const TranslatorAccount = () => {
+const TranslatorRegistration = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const page = Number(searchParams?.get('page') || 1);
+  const status = searchParams?.get('status') || 'Pending';
 
-  const { data: listTranslators, isLoading } =
-    translatorRepository.hooks.useGetTranslators(page);
+  const { data: listRegisters, isLoading } =
+    translatorRepository.hooks.useGetRegistrations(
+      page,
+      10,
+      status.toLowerCase()
+    );
 
   const columns: TableProps['columns'] = [
     {
@@ -76,6 +83,21 @@ const TranslatorAccount = () => {
       sorter: (a, b) => a.yearsOfExperience - b.yearsOfExperience,
     },
     {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      align: 'center',
+      width: 150,
+      render: (_, record) => (
+        <div className='w-fit m-auto'>
+          <StatusBadge
+            text={capitalizeFirstLetter(record?.status)}
+            status={record?.status}
+          />
+        </div>
+      ),
+    },
+    {
       title: 'Portfolio',
       dataIndex: 'portfolio',
       key: 'portfolio',
@@ -106,30 +128,33 @@ const TranslatorAccount = () => {
       ),
     },
     {
-      title: 'Rating',
-      dataIndex: 'rating',
-      key: 'rating',
+      title: 'Application Date',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
       render: (_, record) => (
-        <div className='flex gap-2 items-center'>
-          <Icon
-            icon={'ant-design:star-filled'}
-            className='text-2xl text-yellow-400'
-          />
-          <p className='font-semibold text-sm line-clamp-1'>{record?.rating}</p>
-        </div>
+        <p className='font-semibold text-sm line-clamp-1'>
+          {dayjs(record?.createdAt).format('DD MMMM YYYY, HH:mm')}
+        </p>
       ),
-      sortDirections: ['descend', 'ascend'],
-      sorter: (a, b) => a.rating - b.rating,
+      sortDirections: ['ascend', 'descend'],
+      sorter: (a, b) => dayjs(a?.createdAt).unix() - dayjs(b?.createdAt).unix(),
     },
   ];
 
-  const data = listTranslators?.data?.map((register: Translator) => ({
+  const data = listRegisters?.data?.map((register: Translator) => ({
     key: register.id,
     ...register,
   }));
 
   const handlePageChange = (page: number) => {
-    router.push(`/dashboard/account/translator?page=${page}`);
+    router.push(
+      `/dashboard/account/translator-registration?page=${page}&status=${status}`
+    );
+  };
+
+  const statusItems = ['Pending', 'Approved', 'Rejected'];
+  const onChange = (e: any) => {
+    router.push(`/dashboard/account/translator-registration?status=${e}`);
   };
 
   return (
@@ -148,6 +173,11 @@ const TranslatorAccount = () => {
           }
           className='h-12 w-fit'
         />
+        <Segmented
+          options={statusItems}
+          onChange={onChange}
+          defaultValue={status}
+        />
       </div>
       <Table
         columns={columns}
@@ -164,13 +194,13 @@ const TranslatorAccount = () => {
         footer={() => (
           <div className='flex justify-between items-center'>
             <p className='text-xs 2xl:text-sm'>
-              <span className='font-bold'>{listTranslators?.page}</span> of{' '}
-              {listTranslators?.totalPages} from {listTranslators?.total} result
+              <span className='font-bold'>{listRegisters?.page}</span> of{' '}
+              {listRegisters?.totalPages} from {listRegisters?.total} result
             </p>
             <Pagination
-              current={listTranslators?.page}
-              total={listTranslators?.total}
-              pageSize={listTranslators?.limit}
+              current={listRegisters?.page}
+              total={listRegisters?.total}
+              pageSize={listRegisters?.limit}
               onChange={handlePageChange}
             />
           </div>
@@ -180,4 +210,4 @@ const TranslatorAccount = () => {
   );
 };
 
-export default TranslatorAccount;
+export default TranslatorRegistration;
