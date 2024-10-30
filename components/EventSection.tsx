@@ -2,6 +2,7 @@ import { eventRepository } from '#/repository/event';
 import { Event } from '#/types/EventTypes';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import CardSkeleton from './CardSkeleton';
 import EventCard from './EventCard';
 
 const EventSection = () => {
@@ -39,23 +40,34 @@ const EventSection = () => {
   return (
     <section>
       <div className='flex justify-between items-end'>
-        <h1 className='text-[28px] 2xl:text-4xl font-bold text-blue-950'>
+        <h1
+          className='text-[28px] 2xl:text-4xl font-bold text-blue-950'
+          data-aos='fade-right'
+        >
           Events for you
         </h1>
         <Link
           href={'/event'}
           className='text-sm 2xl:text-lg text-blue-600 font-medium'
+          data-aos='fade-left'
         >
           View All
         </Link>
       </div>
 
       <div className='grid lg:grid-cols-3 2xl:grid-cols-4 gap-6 2xl:gap-10 mt-4 2xl:mt-8'>
-        {isLoading ? (
-          <div>Loading</div>
-        ) : (
-          events?.data?.map((e: Event) => <EventCard event={e} key={e.id} />)
-        )}
+        {isLoading
+          ? Array.from({ length: itemsPerPage }).map((_, index) => (
+              <CardSkeleton key={index} />
+            ))
+          : events?.data?.map((e: Event, index: number) => (
+              <EventCard
+                event={e}
+                key={e.id}
+                animation='zoom-in'
+                delay={index}
+              />
+            ))}
       </div>
     </section>
   );

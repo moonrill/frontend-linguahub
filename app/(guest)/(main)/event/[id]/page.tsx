@@ -1,4 +1,5 @@
 'use client';
+import { eventPoster } from '#/constants/general';
 import { couponRepository } from '#/repository/coupon';
 import { eventRepository } from '#/repository/event';
 import { Coupon, UserCoupon } from '#/types/CouponTypes';
@@ -92,11 +93,17 @@ const EventDetail = ({ params }: { params: { id: string } }) => {
       ) : (
         <>
           {event?.poster && (
-            <div className='h-[360px] rounded-lg shadow-lg relative'>
+            <div className='h-[250px] 2xl:h-[500px] h rounded-lg shadow-lg relative'>
               <Image
-                src='/images/2.png'
+                src={
+                  event?.poster
+                    ? eventPoster(event?.poster)
+                    : '/images/event-placeholder.svg'
+                }
                 alt='Poster'
                 fill
+                quality={100}
+                priority
                 className='rounded-lg object-cover'
               />
             </div>
@@ -117,58 +124,66 @@ const EventDetail = ({ params }: { params: { id: string } }) => {
           {/* Event Description */}
           <div className='text-gray-600 text-lg'>{event?.description}</div>
 
-          <h3 className='text-xl font-bold'>Event Coupons</h3>
-          <div className='grid grid-cols-1 md:grid-cols-2 gap-6 p-4 border rounded-xl'>
-            {sortedCoupons?.map((coupon: Coupon) => (
-              <div
-                key={coupon?.id}
-                className='bg-white border rounded-md flex justify-between transition-transform transform gap-8'
-              >
-                <div className='flex gap-4'>
-                  <div className='flex justify-center items-center p-3 border-r-2 border-gray-500 border-dashed'>
-                    <div
-                      className={`${
-                        isCouponClaimable(event?.startDate, event?.endDate) ||
-                        coupon?.status === 'Inactive'
-                          ? 'bg-blue-600 text-white'
-                          : 'bg-zinc-100 text-zinc-300'
-                      } p-3 w-[100px] 2xl:w-[120px] h-full rounded-lg flex flex-col items-center justify-center`}
-                    >
-                      <p className='text-2xl 2xl:text-4xl font-bold tracking-tight'>
-                        {coupon?.discountPercentage} %
-                      </p>
-                      <p className='text-sm'>Discount</p>
+          {event?.coupons?.length > 0 && (
+            <>
+              <h3 className='text-xl font-bold'>Event Coupons</h3>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-6 p-4 border rounded-xl'>
+                {sortedCoupons?.map((coupon: Coupon) => (
+                  <div
+                    key={coupon?.id}
+                    className='bg-white border rounded-md flex justify-between transition-transform transform gap-8'
+                  >
+                    <div className='flex gap-4'>
+                      <div className='flex justify-center items-center p-3 border-r-2 border-gray-500 border-dashed'>
+                        <div
+                          className={`${
+                            isCouponClaimable(
+                              event?.startDate,
+                              event?.endDate
+                            ) || coupon?.status === 'Inactive'
+                              ? 'bg-blue-600 text-white'
+                              : 'bg-zinc-100 text-zinc-300'
+                          } p-3 w-[100px] 2xl:w-[120px] h-full rounded-lg flex flex-col items-center justify-center`}
+                        >
+                          <p className='text-2xl 2xl:text-4xl font-bold tracking-tight'>
+                            {coupon?.discountPercentage} %
+                          </p>
+                          <p className='text-sm'>Discount</p>
+                        </div>
+                      </div>
+                      <div className='flex flex-col gap-1 py-3 h-fit'>
+                        <h2 className='text-xl font-semibold text-slate-800 line-clamp-1'>
+                          {coupon?.name}
+                        </h2>
+                        <p className='text-sm line-clamp-3'>
+                          {coupon?.description}
+                        </p>
+                        <p className='text-rose-600 text-sm'>
+                          Expires On:{' '}
+                          {dayjs(coupon?.expiredAt).format('DD MMMM YYYY')}
+                        </p>
+                      </div>
                     </div>
+                    <Button
+                      type='primary'
+                      className='mt-3 mr-3 text-sm'
+                      disabled={
+                        !isLoggedIn ||
+                        claimedCoupons?.includes(coupon?.id) ||
+                        !isCouponClaimable(event?.startDate, event?.endDate) ||
+                        coupon?.status === 'Inactive'
+                      }
+                      onClick={() => handleClaimCoupon(coupon?.id)}
+                    >
+                      {claimedCoupons?.includes(coupon?.id)
+                        ? 'Claimed'
+                        : 'Claim'}
+                    </Button>
                   </div>
-                  <div className='flex flex-col gap-1 py-3 h-fit'>
-                    <h2 className='text-xl font-semibold text-slate-800 line-clamp-1'>
-                      {coupon?.name}
-                    </h2>
-                    <p className='text-sm line-clamp-3'>
-                      {coupon?.description}
-                    </p>
-                    <p className='text-rose-600 text-sm'>
-                      Expires On:{' '}
-                      {dayjs(coupon?.expiredAt).format('DD MMMM YYYY')}
-                    </p>
-                  </div>
-                </div>
-                <Button
-                  type='primary'
-                  className='mt-3 mr-3 text-sm'
-                  disabled={
-                    !isLoggedIn ||
-                    claimedCoupons?.includes(coupon?.id) ||
-                    !isCouponClaimable(event?.startDate, event?.endDate) ||
-                    coupon?.status === 'Inactive'
-                  }
-                  onClick={() => handleClaimCoupon(coupon?.id)}
-                >
-                  {claimedCoupons?.includes(coupon?.id) ? 'Claimed' : 'Claim'}
-                </Button>
+                ))}
               </div>
-            ))}
-          </div>
+            </>
+          )}
         </>
       )}
     </section>

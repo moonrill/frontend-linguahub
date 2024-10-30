@@ -6,7 +6,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import LanguageFlag from '../LanguageFlag';
 
-const BestTranslatorCard = ({ translator }: { translator: BestTranslator }) => {
+const BestTranslatorCard = ({
+  translator,
+  delay,
+}: {
+  translator: BestTranslator;
+  delay: number;
+}) => {
   const {
     user: { userDetail },
     completedBookingsCount,
@@ -14,7 +20,7 @@ const BestTranslatorCard = ({ translator }: { translator: BestTranslator }) => {
     reviewsCount,
   } = translator;
   return (
-    <Card className='my-card'>
+    <Card className='my-card' data-aos='fade-up' data-aos-delay={delay * 100}>
       <div className='p-4 border-b'>
         <div className='relative w-52 h-52 2xl:w-80 2xl:h-80 rounded-full m-auto'>
           <Image

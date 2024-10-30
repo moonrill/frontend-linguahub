@@ -1,10 +1,11 @@
 'use client';
 
+import CardSkeleton from '#/components/CardSkeleton';
 import EventCard from '#/components/EventCard';
 import Pagination from '#/components/Pagination';
 import { eventRepository } from '#/repository/event';
 import { Event as EventType } from '#/types/EventTypes';
-import { Segmented } from 'antd';
+import { Empty, Segmented } from 'antd';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -55,60 +56,46 @@ const Event = () => {
   };
 
   return (
-    <>
-      <div className='bg-white text-slate-800 mt-6'>
-        {/* <section className='flex flex-col md:flex-row justify-between items-center py-20'>
-          <div className='max-w-xl mb-6 md:mb-0'>
-            <h1 className='text-5xl font-bold mb-4 text-blue-800'>
-              LinguaHub Events
-            </h1>
-            <p className='text-gray-600 mb-6'>
-              Discover exciting events and claim exclusive coupons to enhance
-              your translation experience.
-            </p>
-          </div>
+    <div className='bg-white text-slate-800 mt-6 min-h-screen'>
+      <section className='flex flex-col gap-6'>
+        <div className='flex flex-col md:flex-row justify-between items-center'>
+          <h2 className='2xl:text-xl font-semibold'>Discover Events</h2>
 
-          <Image
-            src='/images/2.png'
-            alt='Translator'
-            width={650}
-            height={350}
-            className='max-w-full h-auto'
+          <Segmented
+            options={items}
+            onChange={onChange}
+            defaultValue={status}
           />
-        </section> */}
+        </div>
 
-        <section className='flex flex-col gap-6'>
-          <div className='flex flex-col md:flex-row justify-between items-center'>
-            <h2 className='2xl:text-xl font-semibold'>Discover Events</h2>
-
-            <Segmented
-              options={items}
-              onChange={onChange}
-              defaultValue={status}
-            />
-          </div>
-
-          <section className='grid grid-cols-4 2xl:grid-cols-5 gap-4'>
-            {isLoading ? (
-              <div>Loading</div>
-            ) : (
-              events?.data?.map((e: EventType) => (
-                <EventCard event={e} key={e.id} />
-              ))
-            )}
-          </section>
-
-          {!isLoading && (
-            <Pagination
-              total={events?.total}
-              pageSize={events?.limit}
-              current={currentPage}
-              onChange={handlePageChange}
-            />
+        <section className='grid grid-cols-4 2xl:grid-cols-5 gap-4'>
+          {isLoading ? (
+            Array.from({ length: limit }).map((_, index) => (
+              <CardSkeleton key={index} />
+            ))
+          ) : events?.data?.length === 0 ? (
+            <Empty className='m-auto col-span-4 2xl:col-span-5' />
+          ) : (
+            events?.data?.map((e: EventType) => (
+              <EventCard
+                event={e}
+                key={e.id}
+                isUpcoming={status === 'Upcoming'}
+              />
+            ))
           )}
         </section>
-      </div>
-    </>
+
+        {!isLoading && (
+          <Pagination
+            total={events?.total}
+            pageSize={events?.limit}
+            current={currentPage}
+            onChange={handlePageChange}
+          />
+        )}
+      </section>
+    </div>
   );
 };
 

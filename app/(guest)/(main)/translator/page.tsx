@@ -74,7 +74,7 @@ const TranslatorPage = () => {
       />
       <div className='mt-6 grid grid-cols-4 2xl:grid-cols-5 gap-4 2xl:gap-6'>
         {isLoading ? (
-          Array.from({ length: 5 }).map((_, index) => (
+          Array.from({ length: limit }).map((_, index) => (
             <CardSkeleton key={index} />
           ))
         ) : translators?.data?.length === 0 ? (

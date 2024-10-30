@@ -1,8 +1,12 @@
 import { Icon } from '@iconify-icon/react';
 
-const StepCard = ({ icon, title, description }: any) => {
+const StepCard = ({ icon, title, description, number }: any) => {
   return (
-    <div className='flex flex-col gap-4 max-w-[200px] 2xl:max-w-[350px]'>
+    <div
+      className='flex flex-col gap-4 max-w-[200px] 2xl:max-w-[350px]'
+      data-aos='zoom-in'
+      data-aos-delay={number * 100}
+    >
       <div className='p-4 2xl:p-5 bg-blue-100 rounded-lg 2xl:rounded-xl flex justify-center w-fit'>
         <Icon icon={icon} className='text-blue-600 text-2xl 2xl:text-3xl' />
       </div>
@@ -15,7 +19,10 @@ const StepCard = ({ icon, title, description }: any) => {
 const StepSection = () => {
   return (
     <section className='flex flex-col gap-14 2xl:gap-24'>
-      <h1 className='text-[28px] 2xl:text-4xl font-bold text-blue-950 text-center'>
+      <h1
+        className='text-[28px] 2xl:text-4xl font-bold text-blue-950 text-center'
+        data-aos='fade-down'
+      >
         4 Easy Step and Get Your Translator
       </h1>
       <div className='flex justify-between 2xl:gap-10'>
@@ -23,21 +30,25 @@ const StepSection = () => {
           icon='mdi:language'
           title='Choose Your Language'
           description='Select the source and target languages for your translation needs.'
+          number={0}
         />
         <StepCard
           icon='iconamoon:search-light'
           title='Find & Select Translator'
           description='Use the search filters to find translators according to your language and specialization criteria.'
+          number={1}
         />
         <StepCard
           icon='lucide:notebook-pen'
           title='Request & Booking'
           description='Send a request to your chosen translator and proceed with the booking once confirmed.'
+          number={2}
         />
         <StepCard
           icon='heroicons:rocket-launch'
           title='Start Service'
           description='Begin your translation service with the selected translator.'
+          number={3}
         />
       </div>
     </section>

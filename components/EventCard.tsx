@@ -8,12 +8,24 @@ import Link from 'next/link';
 
 type EventCardProps = {
   event: Event;
+  isUpcoming?: boolean;
+  delay?: number;
+  animation?: string;
 };
 
-const EventCard = ({ event }: EventCardProps) => {
-  const { id, name, poster, description, endDate } = event;
+const EventCard = ({
+  event,
+  isUpcoming,
+  delay = 0,
+  animation,
+}: EventCardProps) => {
+  const { id, name, poster, description, endDate, startDate } = event;
   return (
-    <Link href={`/event/${id}`}>
+    <Link
+      href={`/event/${id}`}
+      data-aos={animation}
+      data-aos-delay={delay * 100}
+    >
       <Card className='my-card event-card overflow-hidden h-full group'>
         <div className='relative w-full h-52 2xl:h-64'>
           <Image
@@ -29,7 +41,11 @@ const EventCard = ({ event }: EventCardProps) => {
             <div className='flex flex-col gap-1.5 2xl:gap-2'>
               <h1 className='font-semibold text-lg 2xl:text-2xl'>{name}</h1>
               <p className='font-medium text-xs 2xl:text-sm text-gray-400'>
-                Ends at : {dayjs(endDate).format('DD MMMM YYYY, HH:mm')}
+                {isUpcoming
+                  ? `Starts at : ${dayjs(startDate).format(
+                      'DD MMMM YYYY, HH:mm'
+                    )}`
+                  : `Ends at : ${dayjs(endDate).format('DD MMMM YYYY, HH:mm')}`}
               </p>
             </div>
             <p className='text-sm 2xl:text-base font-light line-clamp-2 2xl:line-clamp-3'>
