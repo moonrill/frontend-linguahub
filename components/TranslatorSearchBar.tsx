@@ -2,7 +2,7 @@ import { imgLanguage } from '#/constants/general';
 import { languagesRepository } from '#/repository/language';
 import { Language } from '#/types/LanguageTypes';
 import { Icon } from '@iconify-icon/react';
-import { MenuProps } from 'antd';
+import { MenuProps, Skeleton } from 'antd';
 import { MenuItemType } from 'antd/es/menu/interface';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -100,23 +100,36 @@ const TranslatorSearchBar = ({
           />
           <div className='flex items-center gap-2'>
             <div className='relative w-8 h-8 2xl:w-[40px] 2xl:h-[40px]'>
-              {languages?.data && (
-                <Image
-                  src={imgLanguage(
-                    languages.data.find(
-                      (lang: Language) =>
-                        lang.name === selectedValue.sourceLanguage
-                    )?.flagImage || languages.data[0].flagImage
-                  )}
-                  alt='flag'
-                  fill
-                  sizes='(max-width: 40px)'
-                />
+              {isLoading ? (
+                <Skeleton.Avatar active shape='circle' size={'large'} />
+              ) : (
+                languages?.data && (
+                  <Image
+                    src={imgLanguage(
+                      languages.data.find(
+                        (lang: Language) =>
+                          lang.name === selectedValue.sourceLanguage
+                      )?.flagImage || languages.data[0].flagImage
+                    )}
+                    alt='flag'
+                    fill
+                    sizes='(max-width: 40px)'
+                  />
+                )
               )}
             </div>
-            <h1 className='font-semibold text-lg 2xl:text-2xl'>
-              {selectedValue.sourceLanguage || 'English'}
-            </h1>
+            {isLoading ? (
+              <Skeleton.Button
+                active
+                size='small'
+                shape={'square'}
+                style={{ width: '120px', height: '24px' }}
+              />
+            ) : (
+              <h1 className='font-semibold text-lg 2xl:text-2xl'>
+                {selectedValue.sourceLanguage || 'English'}
+              </h1>
+            )}
           </div>
         </div>
 
@@ -129,27 +142,36 @@ const TranslatorSearchBar = ({
           />
           <div className='flex items-center gap-2'>
             <div className='relative w-8 h-8 2xl:w-[40px] 2xl:h-[40px]'>
-              {languages?.data && (
-                <Image
-                  src={imgLanguage(
-                    languages.data.find(
-                      (lang: Language) =>
-                        lang.name === selectedValue.targetLanguage
-                    )?.flagImage ||
+              {isLoading ? (
+                <Skeleton.Avatar active shape='circle' size={'large'} />
+              ) : (
+                languages?.data && (
+                  <Image
+                    src={imgLanguage(
                       languages.data.find(
                         (lang: Language) =>
-                          lang.name !== selectedValue.sourceLanguage
-                      )?.flagImage
-                  )}
-                  alt='flag'
-                  fill
-                  sizes='(max-width: 40px)'
-                />
+                          lang.name === selectedValue.targetLanguage
+                      )?.flagImage || languages.data[0].flagImage
+                    )}
+                    alt='flag'
+                    fill
+                    sizes='(max-width: 40px)'
+                  />
+                )
               )}
             </div>
-            <h1 className='font-semibold text-lg 2xl:text-2xl'>
-              {selectedValue.targetLanguage || 'English'}
-            </h1>
+            {isLoading ? (
+              <Skeleton.Button
+                active
+                size='small'
+                shape={'square'}
+                style={{ width: '120px', height: '24px' }}
+              />
+            ) : (
+              <h1 className='font-semibold text-lg 2xl:text-2xl'>
+                {selectedValue.targetLanguage || 'English'}
+              </h1>
+            )}
           </div>
         </div>
 

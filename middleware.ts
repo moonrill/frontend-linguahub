@@ -98,4 +98,34 @@ export default async function middleware(request: NextRequest) {
       }
     }
   }
+
+  if (request.nextUrl.pathname === '/dashboard/account') {
+    return NextResponse.redirect(
+      new URL('/dashboard/account/client', request.url)
+    );
+  }
+
+  if (request.nextUrl.pathname === '/dashboard/expertise') {
+    return NextResponse.redirect(
+      new URL('/dashboard/expertise/language', request.url)
+    );
+  }
+
+  if (request.nextUrl.pathname === '/dashboard/transaction') {
+    return NextResponse.redirect(
+      new URL('/dashboard/transaction/service-request', request.url)
+    );
+  }
+
+  if (request.nextUrl.pathname === '/dashboard/promotion') {
+    return NextResponse.redirect(
+      new URL('/dashboard/promotion/event', request.url)
+    );
+  }
+
+  if (request.nextUrl.pathname === '/dashboard/quality') {
+    return NextResponse.redirect(
+      new URL('/dashboard/quality/service', request.url)
+    );
+  }
 }

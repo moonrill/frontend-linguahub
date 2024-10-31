@@ -17,9 +17,11 @@ const Navbar = ({ visible }: { visible: boolean }) => {
   };
 
   const [user, setUser] = useState<Payload | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUser = async () => {
+      setLoading(true);
       try {
         const response = await fetch('/api/user');
         const data = await response.json();
@@ -27,6 +29,8 @@ const Navbar = ({ visible }: { visible: boolean }) => {
         setUser(data);
       } catch (error) {
         console.error(error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchUser();
@@ -71,51 +75,55 @@ const Navbar = ({ visible }: { visible: boolean }) => {
           Translator
         </Link>
         <div className='flex gap-2 items-center'>
-          {!user && (
+          {!loading && (
             <>
-              <Link href={'/register'} className='flex'>
-                <Button
-                  type='primary'
-                  className='text-blue-600 rounded-[10px] 2xl:rounded-xl text-xs 2xl:text-base font-semibold bg-blue-100 h-[40px] 2xl:h-[50px] hover:!text-blue-600 hover:!bg-blue-200 shadow-none'
-                >
-                  Join as Translator
-                </Button>
-              </Link>
-              <Link href={'/login'} className='flex'>
-                <Button
-                  type='primary'
-                  className='bg-blue-600 rounded-[10px] 2xl:rounded-xl text-xs 2xl:text-base font-semibold text-white h-[40px] 2xl:h-[50px]'
-                >
-                  Sign in
-                </Button>
-              </Link>
-            </>
-          )}
-          {user && (
-            <AvatarDropdown role={user?.role}>
-              <div
-                className='flex items-center p-[2px] 2xl:p-0.5 rounded-full'
-                style={{ border: '2px solid #2563eb' }}
-              >
-                {user?.profilePicture ? (
-                  <div className='relative w-10 h-10 2xl:w-12 2xl:h-12'>
-                    <Image
-                      src={imgProfilePicture(user?.profilePicture)}
-                      alt={'user avatar'}
-                      fill
-                      sizes='(max-width: 50px)'
-                      className='object-cover rounded-full'
-                      quality={100}
-                    />
+              {!user && (
+                <>
+                  <Link href={'/register'} className='flex'>
+                    <Button
+                      type='primary'
+                      className='text-blue-600 rounded-[10px] 2xl:rounded-xl text-xs 2xl:text-base font-semibold bg-blue-100 h-[40px] 2xl:h-[50px] hover:!text-blue-600 hover:!bg-blue-200 shadow-none'
+                    >
+                      Join as Translator
+                    </Button>
+                  </Link>
+                  <Link href={'/login'} className='flex'>
+                    <Button
+                      type='primary'
+                      className='bg-blue-600 rounded-[10px] 2xl:rounded-xl text-xs 2xl:text-base font-semibold text-white h-[40px] 2xl:h-[50px]'
+                    >
+                      Sign in
+                    </Button>
+                  </Link>
+                </>
+              )}
+              {user && (
+                <AvatarDropdown role={user?.role}>
+                  <div
+                    className='flex items-center p-[2px] 2xl:p-0.5 rounded-full'
+                    style={{ border: '2px solid #2563eb' }}
+                  >
+                    {user?.profilePicture ? (
+                      <div className='relative w-10 h-10 2xl:w-12 2xl:h-12'>
+                        <Image
+                          src={imgProfilePicture(user?.profilePicture)}
+                          alt={'user avatar'}
+                          fill
+                          sizes='(max-width: 50px)'
+                          className='object-cover rounded-full'
+                          quality={100}
+                        />
+                      </div>
+                    ) : (
+                      <Avatar className='w-10 h-10 2xl:w-12 2xl:h-12'>
+                        {user?.fullName?.charAt(0).toUpperCase() ||
+                          user?.email?.charAt(0).toUpperCase()}
+                      </Avatar>
+                    )}
                   </div>
-                ) : (
-                  <Avatar className='w-10 h-10 2xl:w-12 2xl:h-12'>
-                    {user?.fullName?.charAt(0).toUpperCase() ||
-                      user?.email?.charAt(0).toUpperCase()}
-                  </Avatar>
-                )}
-              </div>
-            </AvatarDropdown>
+                </AvatarDropdown>
+              )}
+            </>
           )}
         </div>
       </div>

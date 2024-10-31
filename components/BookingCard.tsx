@@ -110,7 +110,7 @@ const BookingCard = ({ booking, type }: Props) => {
             <div className='flex gap-1.5 items-center text-gray-500'>
               <Icon icon={'ic:round-date-range'} className='2xl:text-xl' />
               <p className='text-xs 2xl:text-sm font-semibold'>
-                {new Date(booking?.createdAt).toLocaleDateString('en-UK', {
+                {new Date(booking?.bookingDate).toLocaleDateString('en-UK', {
                   day: '2-digit',
                   month: 'long',
                   year: 'numeric',

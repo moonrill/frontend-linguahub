@@ -3,6 +3,7 @@ import { http } from '#/utils/http';
 const url = {
   cv: () => '/translators/upload/cv',
   certificate: () => '/translators/upload/certificate',
+  uploadFlag: () => `/languages/upload/flagImage`,
 };
 
 const api = {
@@ -17,6 +18,12 @@ const api = {
     formData.append('certificate', certificate);
 
     return http.post(url.certificate()).send(formData);
+  },
+  useUploadFlag(flagImage: any) {
+    const formData = new FormData();
+    formData.append('flagImage', flagImage);
+
+    return http.post(url.uploadFlag()).send(formData);
   },
 };
 

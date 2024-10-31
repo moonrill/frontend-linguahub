@@ -2,12 +2,14 @@
 
 import LanguageFlag from '#/components/LanguageFlag';
 import Pagination from '#/components/Pagination';
+import { imgProfilePicture } from '#/constants/general';
 import { translatorRepository } from '#/repository/translator';
 import { Language } from '#/types/LanguageTypes';
 import { Translator } from '#/types/TranslatorTypes';
 import { capitalizeFirstLetter } from '#/utils/capitalizeFirstLetter';
 import { Icon } from '@iconify-icon/react';
 import { Input, Table, TableProps, Tag } from 'antd';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 
@@ -25,9 +27,25 @@ const TranslatorAccount = () => {
       dataIndex: 'name',
       key: 'name',
       render: (_, record) => (
-        <p className='font-semibold text-sm line-clamp-1'>
-          {record?.user?.userDetail?.fullName}
-        </p>
+        <div className='flex items-center gap-2'>
+          <div className='relative w-[50px] h-[50px] hidden 2xl:block'>
+            <Image
+              src={
+                record?.user?.userDetail.profilePicture
+                  ? imgProfilePicture(record?.user?.userDetail.profilePicture)
+                  : '/images/avatar-placeholder.png'
+              }
+              alt={'translator-profile-picture'}
+              fill
+              sizes='(max-width: 400px)'
+              className='object-cover rounded-lg'
+              priority
+            />
+          </div>
+          <p className='font-semibold text-xs 2xl:text-sm line-clamp-1'>
+            {record?.user?.userDetail?.fullName}
+          </p>
+        </div>
       ),
       sortDirections: ['ascend', 'descend'],
       sorter: (a, b) =>
@@ -38,7 +56,7 @@ const TranslatorAccount = () => {
       dataIndex: 'email',
       key: 'email',
       render: (_, record) => (
-        <p className='font-semibold text-gray-500 text-sm line-clamp-1'>
+        <p className='font-semibold text-gray-500 text-xs 2xl:text-sm line-clamp-1'>
           {record?.user?.email}
         </p>
       ),
@@ -47,8 +65,10 @@ const TranslatorAccount = () => {
       title: 'Gender',
       dataIndex: 'gender',
       key: 'gender',
+      align: 'center',
+      width: 120,
       render: (_, record) => (
-        <div className='flex items-center gap-1 text-sm'>
+        <div className='flex items-center gap-1 text-xs 2xl:text-sm'>
           <Icon
             icon={
               record?.user?.userDetail?.gender === 'male'
@@ -67,8 +87,9 @@ const TranslatorAccount = () => {
       title: 'Years of experience',
       dataIndex: 'yearsOfExperience',
       key: 'yearsOfExperience',
+      align: 'right',
       render: (_, record) => (
-        <p className='font-semibold text-sm line-clamp-1'>
+        <p className='font-semibold text-xs 2xl:text-sm line-clamp-1'>
           {record?.yearsOfExperience} Years
         </p>
       ),
@@ -83,7 +104,7 @@ const TranslatorAccount = () => {
         <Link href={record?.portfolioLink}>
           <Tag
             color='blue'
-            className='text-xs 2xl:text-base font-medium border-none px-2 py-0.5 hover:bg-blue-100 rounded-lg flex items-center gap-2 w-fit'
+            className='text-xs 2xl:text-sm font-medium border-none px-2 py-0.5 hover:bg-blue-100 rounded-lg flex items-center gap-2 w-fit'
           >
             See Portfolio
             <Icon icon={'akar-icons:link-out'} />
@@ -113,9 +134,11 @@ const TranslatorAccount = () => {
         <div className='flex gap-2 items-center'>
           <Icon
             icon={'ant-design:star-filled'}
-            className='text-2xl text-yellow-400'
+            className='text-lg 2xl:text-2xl text-yellow-400'
           />
-          <p className='font-semibold text-sm line-clamp-1'>{record?.rating}</p>
+          <p className='font-semibold text-xs 2xl:text-sm line-clamp-1'>
+            {record?.rating}
+          </p>
         </div>
       ),
       sortDirections: ['descend', 'ascend'],

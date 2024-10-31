@@ -378,6 +378,15 @@ const BookingDetail = ({ params }: { params: { id: string } }) => {
               />
             </section>
           )}
+          {booking?.bookingStatus === 'completed' && !booking?.review && (
+            <Button
+              type='primary'
+              className='py-3 px-5 w-fit h-fit text-sm rounded-xl'
+              onClick={() => setShowReviewModal(true)}
+            >
+              Review
+            </Button>
+          )}
         </div>
       )}
     </>

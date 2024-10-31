@@ -235,6 +235,7 @@ const ServiceModal = ({
             type='default'
             htmlType='button'
             onClick={handleCancel}
+            disabled={loading}
           >
             Cancel
           </Button>
@@ -243,6 +244,7 @@ const ServiceModal = ({
             type='primary'
             htmlType='submit'
             loading={loading}
+            disabled={loading}
           >
             Save
           </Button>

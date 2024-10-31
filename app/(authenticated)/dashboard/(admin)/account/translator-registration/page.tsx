@@ -32,7 +32,7 @@ const TranslatorRegistration = () => {
       dataIndex: 'name',
       key: 'name',
       render: (_, record) => (
-        <p className='font-semibold text-sm line-clamp-1'>
+        <p className='font-semibold text-xs 2xl:text-sm line-clamp-1'>
           {record?.user?.userDetail?.fullName}
         </p>
       ),
@@ -45,7 +45,7 @@ const TranslatorRegistration = () => {
       dataIndex: 'email',
       key: 'email',
       render: (_, record) => (
-        <p className='font-semibold text-gray-500 text-sm line-clamp-1'>
+        <p className='font-semibold text-gray-500 text-xs 2xl:text-sm line-clamp-1'>
           {record?.user?.email}
         </p>
       ),
@@ -54,8 +54,10 @@ const TranslatorRegistration = () => {
       title: 'Gender',
       dataIndex: 'gender',
       key: 'gender',
+      align: 'center',
+      width: 120,
       render: (_, record) => (
-        <div className='flex items-center gap-1 text-sm'>
+        <div className='flex items-center gap-1 text-xs 2xl:text-sm'>
           <Icon
             icon={
               record?.user?.userDetail?.gender === 'male'
@@ -74,8 +76,9 @@ const TranslatorRegistration = () => {
       title: 'Years of experience',
       dataIndex: 'yearsOfExperience',
       key: 'yearsOfExperience',
+      align: 'right',
       render: (_, record) => (
-        <p className='font-semibold text-sm line-clamp-1'>
+        <p className='font-semibold text-xs 2xl:text-sm line-clamp-1'>
           {record?.yearsOfExperience} Years
         </p>
       ),
@@ -105,7 +108,7 @@ const TranslatorRegistration = () => {
         <Link href={record?.portfolioLink}>
           <Tag
             color='blue'
-            className='text-xs 2xl:text-base font-medium border-none px-2 py-0.5 hover:bg-blue-100 rounded-lg flex items-center gap-2 w-fit'
+            className='text-xs 2xl:text-sm font-medium border-none px-2 py-0.5 hover:bg-blue-100 rounded-lg flex items-center gap-2 w-fit'
           >
             See Portfolio
             <Icon icon={'akar-icons:link-out'} />
@@ -132,7 +135,7 @@ const TranslatorRegistration = () => {
       dataIndex: 'createdAt',
       key: 'createdAt',
       render: (_, record) => (
-        <p className='font-semibold text-sm line-clamp-1'>
+        <p className='font-semibold text-xs 2xl:text-sm'>
           {dayjs(record?.createdAt).format('DD MMMM YYYY, HH:mm')}
         </p>
       ),

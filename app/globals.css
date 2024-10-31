@@ -282,7 +282,7 @@ p {
 }
 
 .dashboard-sidebar > .ant-layout-sider-children {
-  @apply flex flex-col justify-between !important;
+  @apply flex flex-col h-full !important;
 }
 
 .ant-btn-dangerous {
