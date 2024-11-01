@@ -26,6 +26,7 @@ const url = {
   },
   approveTranslator: (id: string) => `/translators/${id}/approve`,
   rejectTranslator: (id: string) => `/translators/${id}/reject`,
+  updateBio: (id: string) => `/translators/${id}/bio`,
 };
 
 const hooks = {
@@ -73,6 +74,9 @@ const api = {
   },
   rejectTranslator: (id: string, data: any) => {
     return http.put(url.rejectTranslator(id)).send(data);
+  },
+  updateBio: (id: string, data: any) => {
+    return http.put(url.updateBio(id)).send(data);
   },
 };
 

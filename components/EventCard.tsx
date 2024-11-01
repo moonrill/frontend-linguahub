@@ -34,6 +34,8 @@ const EventCard = ({
             fill
             sizes='(max-width: 400px)'
             className='object-cover group-hover:scale-105 transition-all duration-500'
+            priority
+            quality={100}
           />
         </div>
         <div className='p-4 2xl:p-6 flex flex-col gap-4 flex-1'>

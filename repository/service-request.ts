@@ -75,6 +75,7 @@ const url = {
   updateServiceRequestStatus: (id: string) => `/service-requests/${id}`,
   approveRequest: (id: string) => `/service-requests/${id}/approve`,
   rejectRequest: (id: string) => `/service-requests/${id}/reject`,
+  createServiceRequest: () => `/service-requests`,
 };
 
 const hooks = {
@@ -119,6 +120,9 @@ const api = {
   },
   rejectRequest: (id: string, data: any) => {
     return http.put(url.rejectRequest(id)).send(data);
+  },
+  createServiceRequest: (data: any) => {
+    return http.post(url.createServiceRequest()).send(data);
   },
 };
 

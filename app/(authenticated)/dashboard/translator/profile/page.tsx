@@ -1,6 +1,7 @@
 'use client';
 
 import LanguageFlag from '#/components/LanguageFlag';
+import BioModal from '#/components/Modal/BioModal';
 import EditProfessionalModal from '#/components/Modal/EditProfessionalModal';
 import EditProfileModal from '#/components/Modal/EditProfileModal';
 import { config } from '#/config/app';
@@ -18,6 +19,7 @@ import { useState } from 'react';
 const TranslatorProfile = () => {
   const [editProfileModal, setEditProfileModal] = useState(false);
   const [editProfessionalModal, setEditProfessionalModal] = useState(false);
+  const [bioModal, setBioModal] = useState(false);
   const { data, isLoading, mutate } = authRepository.hooks.useProfile();
 
   const profile = data?.data;
@@ -328,6 +330,33 @@ const TranslatorProfile = () => {
                     />
                   </div>
                 </Link>
+              </div>
+              <div className='flex flex-col gap-2 flex-1'>
+                <div className='flex justify-between'>
+                  <h1 className='text-sm 2xl:text-xl font-semibold text-zinc-600'>
+                    Bio
+                  </h1>
+                  <Button
+                    type='primary'
+                    className='py-3 text-xs 2xl:text-sm rounded-lg'
+                    onClick={() => setBioModal(true)}
+                  >
+                    <Icon
+                      icon={'hugeicons:pencil-edit-01'}
+                      className='text-xl'
+                    />
+                    Edit
+                  </Button>
+                  <BioModal
+                    open={bioModal}
+                    onCancel={() => setBioModal(false)}
+                    translator={profile?.translator}
+                    mutate={mutate}
+                  />
+                </div>
+                <div className='w-full h-full rounded-xl border p-2'>
+                  <p>{profile?.translator?.bio || '-'}</p>
+                </div>
               </div>
             </section>
           </>

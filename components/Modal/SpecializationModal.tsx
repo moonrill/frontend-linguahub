@@ -1,8 +1,8 @@
 'use client';
 
-import { languagesRepository } from '#/repository/language';
+import { specializationRepository } from '#/repository/specialization';
 import { uploadRepository } from '#/repository/upload';
-import { Language } from '#/types/LanguageTypes';
+import { Specialization } from '#/types/SpecializationTypes';
 import { Icon } from '@iconify-icon/react';
 import { Button, Form, Input, message, Modal, Upload, UploadProps } from 'antd';
 import { useForm } from 'antd/es/form/Form';
@@ -14,10 +14,15 @@ interface Props {
   open: boolean;
   onCancel: () => void;
   mutate: () => void;
-  language?: Language | null;
+  specialization?: Specialization | null;
 }
 
-const LanguageModal = ({ open, onCancel, language, mutate }: Props) => {
+const SpecializationModal = ({
+  open,
+  onCancel,
+  specialization,
+  mutate,
+}: Props) => {
   const [form] = useForm();
   const [loading, setLoading] = useState(false);
 
@@ -61,8 +66,8 @@ const LanguageModal = ({ open, onCancel, language, mutate }: Props) => {
 
   const handleUpload = async (file: any) => {
     try {
-      const response = await uploadRepository.api.useUploadFlag(file);
-      form.setFieldValue('flagImage', response?.body?.flagImage);
+      const response = await uploadRepository.api.useUploadLogo(file);
+      form.setFieldValue('logo', response?.body?.logo);
       message.success('Image uploaded successfully');
     } catch (error) {
       console.error(error);
@@ -75,22 +80,24 @@ const LanguageModal = ({ open, onCancel, language, mutate }: Props) => {
 
     try {
       let response;
-      if (language) {
-        response = await languagesRepository.api.updateLanguage(
-          language.id,
+      if (specialization) {
+        response = await specializationRepository.api.updateSpecialization(
+          specialization.id,
           values
         );
       } else {
-        response = await languagesRepository.api.createLanguage(values);
+        response = await specializationRepository.api.createSpecialization(
+          values
+        );
       }
       message.success(
-        response?.body?.message || 'Language created successfully'
+        response?.body?.message || 'Specialization created successfully'
       );
       mutate();
       handleCancel();
     } catch (error: any) {
       message.error(
-        error?.response?.body?.message || 'Error creating language'
+        error?.response?.body?.message || 'Error creating specialization'
       );
     } finally {
       setLoading(false);
@@ -98,15 +105,13 @@ const LanguageModal = ({ open, onCancel, language, mutate }: Props) => {
   };
 
   useEffect(() => {
-    if (language) {
-      console.log(language);
+    if (specialization) {
       form.setFieldsValue({
-        name: language.name,
-        code: language.code,
-        flagImage: language.flagImage,
+        name: specialization.name,
+        logo: specialization.logo,
       });
     }
-  }, [form, language]);
+  }, [form, specialization]);
 
   return (
     <Modal open={open} onCancel={handleCancel} centered footer={null}>
@@ -115,7 +120,7 @@ const LanguageModal = ({ open, onCancel, language, mutate }: Props) => {
           <Icon icon={'lets-icons:edit'} className='text-2xl' />
         </div>
         <h1 className='text-lg 2xl:text-xl font-semibold'>
-          {language ? 'Edit' : 'Create'} Language
+          {specialization ? 'Edit' : 'Create'} Specialization
         </h1>
       </div>
       <Form
@@ -123,67 +128,35 @@ const LanguageModal = ({ open, onCancel, language, mutate }: Props) => {
         className='mt-6 text-black flex flex-col'
         onFinish={handleFinish}
       >
-        <div className='flex gap-3 w-full'>
-          <div className='w-3/5'>
-            <Form.Item
-              name={'name'}
-              validateDebounce={500}
-              className='mb-0 w-full'
-              rules={[
-                {
-                  required: true,
-                  message: 'Please enter language name',
-                },
-              ]}
-            >
-              <Input
-                type='text'
-                placeholder='Name'
-                suffix={
-                  <Icon
-                    icon={'cuida:translate-outline'}
-                    height={24}
-                    className='text-zinc-400'
-                  />
-                }
-                className='h-14'
-              />
-            </Form.Item>
-          </div>
-          <div className='w-2/5'>
-            <Form.Item
-              name={'code'}
-              validateDebounce={500}
-              className='mb-0 w-full'
-              rules={[
-                {
-                  required: true,
-                  message: 'Please enter language code',
-                },
-                {
-                  max: 3,
-                  message: 'Code must be 3 characters',
-                },
-              ]}
-            >
-              <Input
-                type='text'
-                placeholder='Code'
-                suffix={
-                  <Icon
-                    icon={'mingcute:hashtag-line'}
-                    height={24}
-                    className='text-zinc-400'
-                  />
-                }
-                className='h-14'
-              />
-            </Form.Item>
-          </div>
-        </div>
         <Form.Item
-          name={'flagImage'}
-          rules={[{ required: true, message: 'Please upload language flag' }]}
+          name={'name'}
+          validateDebounce={500}
+          className='mb-0 w-full'
+          rules={[
+            {
+              required: true,
+              message: 'Please enter specialization name',
+            },
+          ]}
+        >
+          <Input
+            type='text'
+            placeholder='Name'
+            suffix={
+              <Icon
+                icon={'bi:alphabet'}
+                height={24}
+                className='text-zinc-400'
+              />
+            }
+            className='h-14'
+          />
+        </Form.Item>
+        <Form.Item
+          name={'logo'}
+          rules={[
+            { required: true, message: 'Please upload specialization logo' },
+          ]}
         >
           <Dragger
             {...uploadProps}
@@ -206,7 +179,8 @@ const LanguageModal = ({ open, onCancel, language, mutate }: Props) => {
               </p>
             </div>
           </Dragger>
-          {language && (
+          <p className='text-sm mt-2'>Use 24px x 24px image for best results</p>
+          {specialization && (
             <p className='text-sm mt-2 font-light'>
               Upload a new image to replace the current one or let it be blank.
             </p>
@@ -237,4 +211,4 @@ const LanguageModal = ({ open, onCancel, language, mutate }: Props) => {
   );
 };
 
-export default LanguageModal;
+export default SpecializationModal;

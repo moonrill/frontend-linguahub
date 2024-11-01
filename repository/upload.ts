@@ -4,6 +4,7 @@ const url = {
   cv: () => '/translators/upload/cv',
   certificate: () => '/translators/upload/certificate',
   uploadFlag: () => `/languages/upload/flagImage`,
+  uploadLogo: () => `/specializations/upload/logo`,
 };
 
 const api = {
@@ -24,6 +25,12 @@ const api = {
     formData.append('flagImage', flagImage);
 
     return http.post(url.uploadFlag()).send(formData);
+  },
+  useUploadLogo(logo: any) {
+    const formData = new FormData();
+    formData.append('logo', logo);
+
+    return http.post(url.uploadLogo()).send(formData);
   },
 };
 

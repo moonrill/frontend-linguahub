@@ -1,5 +1,6 @@
 'use client';
 
+import { TokenUtil } from '#/utils/token';
 import { Icon } from '@iconify-icon/react';
 import { Button, Form, Input } from 'antd';
 import Link from 'next/link';
@@ -30,16 +31,16 @@ const Login = () => {
       const data = await response.json();
       if (!response.ok) {
         setError(data.message);
+        throw new Error(data.message);
       }
 
-      localStorage.setItem('access_token', data?.accessToken);
+      TokenUtil.setAccessToken(data?.accessToken);
+      TokenUtil.persistToken();
 
       if (data?.role === 'admin') router.push('dashboard');
       if (data?.role === 'translator') router.push('dashboard/translator');
       if (data?.role === 'client') router.push('/');
-    } catch (error) {
-      setError('An error occurred. Please try again.');
-    } finally {
+    } catch (error: any) {
       setLoading(false);
     }
   };

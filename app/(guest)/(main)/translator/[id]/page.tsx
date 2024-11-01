@@ -211,7 +211,7 @@ const TranslatorDetail = ({ params }: { params: { id: string } }) => {
                     onClick={handleClick}
                     className='text-xs 2xl:text-sm py-5 2xl:py-6 !mt-3 2xl:!mt-4 rounded-xl font-medium flex-grow'
                   >
-                    Send a Request
+                    Create a Request
                   </Button>
                 )}
               </div>

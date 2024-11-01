@@ -1,8 +1,9 @@
 import { Icon } from '@iconify-icon/react';
-import { MenuProps } from 'antd';
+import { MenuProps, message } from 'antd';
 import Dropdown from 'antd/es/dropdown/dropdown';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 type DropdownLabelProps = {
   link: string;
@@ -23,12 +24,16 @@ export const DropdownLabel = ({
   </Link>
 );
 
-const clientDropdownItems = (handleLogout: () => void): MenuProps['items'] => [
+const clientDropdownItems = (
+  handleLogout: () => void,
+  loading: boolean
+): MenuProps['items'] => [
   {
     key: '1',
     label: (
       <DropdownLabel link='/profile' name='Profile' icon='solar:user-linear' />
     ),
+    disabled: loading,
   },
   {
     key: '2',
@@ -39,6 +44,7 @@ const clientDropdownItems = (handleLogout: () => void): MenuProps['items'] => [
         icon='hugeicons:coupon-percent'
       />
     ),
+    disabled: loading,
   },
   {
     key: '3',
@@ -49,6 +55,7 @@ const clientDropdownItems = (handleLogout: () => void): MenuProps['items'] => [
         icon='proicons:mail'
       />
     ),
+    disabled: loading,
   },
   {
     key: '4',
@@ -59,6 +66,7 @@ const clientDropdownItems = (handleLogout: () => void): MenuProps['items'] => [
         icon='fluent:calendar-edit-32-regular'
       />
     ),
+    disabled: loading,
   },
   {
     key: '5',
@@ -69,6 +77,7 @@ const clientDropdownItems = (handleLogout: () => void): MenuProps['items'] => [
         icon='proicons:credit-card'
       />
     ),
+    disabled: loading,
   },
   {
     key: '6',
@@ -81,10 +90,14 @@ const clientDropdownItems = (handleLogout: () => void): MenuProps['items'] => [
       />
     ),
     danger: true,
+    disabled: loading,
   },
 ];
 
-const adminDropdownItems = (handleLogout: () => void): MenuProps['items'] => [
+const adminDropdownItems = (
+  handleLogout: () => void,
+  loading: boolean
+): MenuProps['items'] => [
   {
     key: '1',
     label: (
@@ -94,6 +107,7 @@ const adminDropdownItems = (handleLogout: () => void): MenuProps['items'] => [
         icon='hugeicons:dashboard-speed-02'
       />
     ),
+    disabled: loading,
   },
   {
     key: '2',
@@ -106,11 +120,13 @@ const adminDropdownItems = (handleLogout: () => void): MenuProps['items'] => [
       />
     ),
     danger: true,
+    disabled: loading,
   },
 ];
 
 const translatorDropdownItems = (
-  handleLogout: () => void
+  handleLogout: () => void,
+  loading: boolean
 ): MenuProps['items'] => [
   {
     key: '1',
@@ -121,6 +137,7 @@ const translatorDropdownItems = (
         icon='hugeicons:dashboard-speed-02'
       />
     ),
+    disabled: loading,
   },
   {
     key: '2',
@@ -131,6 +148,7 @@ const translatorDropdownItems = (
         icon='solar:user-linear'
       />
     ),
+    disabled: loading,
   },
   {
     key: '3',
@@ -143,6 +161,7 @@ const translatorDropdownItems = (
       />
     ),
     danger: true,
+    disabled: loading,
   },
 ];
 
@@ -153,24 +172,31 @@ type AvatarDropdownProps = {
 
 const AvatarDropdown = ({ children, role }: AvatarDropdownProps) => {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   const handleLogout = async () => {
-    const response = await fetch('/api/logout', {
-      method: 'POST',
-    });
+    setLoading(true);
+    try {
+      const response = await fetch('/api/logout', {
+        method: 'POST',
+      });
 
-    if (response.ok) {
-      localStorage.clear();
-      router.push('/login');
-    } else {
-      // Optionally handle error here
+      if (response.ok) {
+        localStorage.clear();
+        router.push('/login');
+      } else {
+        // Optionally handle error here
+      }
+    } catch (error) {
+      message.error('An error occurred. Please try again.');
+      setLoading(false);
     }
   };
 
   const items = {
-    client: clientDropdownItems(handleLogout),
-    admin: adminDropdownItems(handleLogout),
-    translator: translatorDropdownItems(handleLogout),
+    client: clientDropdownItems(handleLogout, loading),
+    admin: adminDropdownItems(handleLogout, loading),
+    translator: translatorDropdownItems(handleLogout, loading),
   };
 
   return (

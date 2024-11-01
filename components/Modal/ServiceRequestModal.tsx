@@ -2,6 +2,7 @@
 
 import { imgProfilePicture } from '#/constants/general';
 import { couponRepository } from '#/repository/coupon';
+import { serviceRequestRepository } from '#/repository/service-request';
 import { UserCoupon } from '#/types/CouponTypes';
 import { Translator } from '#/types/TranslatorTypes';
 import { http } from '#/utils/http';
@@ -71,14 +72,9 @@ const ServiceRequestModal = ({ open, onCancel, translator }: Props) => {
         endAt: values.endAt ? dayjs(values.endAt).format('HH:mm') : null,
       };
 
-      const response = await fetch('http://localhost:3222/service-requests', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify(data),
-      });
+      const response = await serviceRequestRepository.api.createServiceRequest(
+        data
+      );
 
       if (response.ok) {
         setSuccess(true);
@@ -298,7 +294,10 @@ const ServiceRequestModal = ({ open, onCancel, translator }: Props) => {
               </Form.Item>
             </div>
             <div className='flex flex-col gap-2 '>
-              <p className='text-xs 2xl:text-sm font-medium'>Notes</p>
+              <p className='text-xs 2xl:text-sm font-medium'>
+                Notes{' '}
+                <span className='text-zinc-400 font-normal'>(Optional)</span>
+              </p>
               <Form.Item name={'notes'}>
                 <Input
                   type='text'
@@ -315,7 +314,10 @@ const ServiceRequestModal = ({ open, onCancel, translator }: Props) => {
               </Form.Item>
             </div>
             <div className='flex flex-col gap-1 2xl:gap-2'>
-              <p className='text-xs 2xl:text-sm font-medium'>Coupon</p>
+              <p className='text-xs 2xl:text-sm font-medium'>
+                Coupon{' '}
+                <span className='text-zinc-400 font-normal'>(Optional)</span>
+              </p>
               <Form.Item name='couponId'>
                 <Select
                   placeholder='Select a coupon'

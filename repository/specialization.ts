@@ -10,6 +10,9 @@ const url = {
     page?: number,
     sortBy?: string
   ) => `/specializations/${name}?limit=${limit}&page=${page}&sortBy=${sortBy}`,
+  createSpecialization: () => `/specializations`,
+  updateSpecialization: (id: string) => `/specializations/${id}`,
+  deleteSpecialization: (id: string) => `/specializations/${id}`,
 };
 
 const hooks = {
@@ -29,7 +32,20 @@ const hooks = {
   },
 };
 
+const api = {
+  createSpecialization(data: any) {
+    return http.post(url.createSpecialization()).send(data);
+  },
+  updateSpecialization(id: string, data: any) {
+    return http.put(url.updateSpecialization(id)).send(data);
+  },
+  deleteSpecialization(id: string) {
+    return http.del(url.deleteSpecialization(id));
+  },
+};
+
 export const specializationRepository = {
   url,
   hooks,
+  api,
 };

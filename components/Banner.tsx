@@ -1,5 +1,6 @@
 import { Icon } from '@iconify-icon/react';
 import { Button } from 'antd';
+import Link from 'next/link';
 
 const Banner = () => {
   return (
@@ -14,13 +15,15 @@ const Banner = () => {
             Whether it&apos;s a conference or a business meeting, find the
             perfect translator for your event.
           </p>
-          <Button
-            className='mt-2 bg-white text-blue-600 h-9 text-xs rounded-full w-fit font-medium py-5 px-6'
-            type='primary'
-            data-aos='fade-up'
-          >
-            Book Now
-          </Button>
+          <Link href={'/translator'}>
+            <Button
+              className='mt-2 bg-white text-blue-600 h-9 text-xs rounded-full w-fit font-medium py-5 px-6'
+              type='primary'
+              data-aos='fade-up'
+            >
+              Book Now
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

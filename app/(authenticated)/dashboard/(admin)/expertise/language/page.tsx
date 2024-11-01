@@ -50,6 +50,15 @@ const DashboardLanguage = () => {
       render: (_, record) => <p>{record.name}</p>,
     },
     {
+      title: 'Total Services',
+      dataIndex: 'serviceCount',
+      key: 'serviceCount',
+      align: 'center',
+      render: (_, record) => <p>{record.serviceCount}</p>,
+      sortDirections: ['ascend', 'descend'],
+      sorter: (a, b) => a.serviceCount - b.serviceCount,
+    },
+    {
       title: 'Action',
       dataIndex: 'action',
       key: 'action',
@@ -62,7 +71,7 @@ const DashboardLanguage = () => {
     flag: <LanguageFlag language={language} />,
     action: (
       <div
-        className='px-2 py-1 hover:bg-zinc-200 w-fit cursor-pointer rounded-lg transition-all duration-500 ml-auto'
+        className='p-2 flex justify-center items-center hover:bg-zinc-200 w-fit cursor-pointer rounded-lg transition-all duration-500 ml-auto'
         onClick={() => handleEdit(language)}
       >
         <Icon
@@ -128,7 +137,10 @@ const DashboardLanguage = () => {
       />
       <LanguageModal
         open={isModalOpen}
-        onCancel={() => setIsModalOpen(false)}
+        onCancel={() => {
+          setIsModalOpen(false);
+          setSelectedLanguage(null);
+        }}
         language={selectedLanguage}
         mutate={mutate}
       />
