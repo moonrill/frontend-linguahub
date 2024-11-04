@@ -8,6 +8,7 @@ const AdminDashboard = async () => {
   const user = await getUser();
 
   return (
+    
     <main className='flex flex-col gap-4 h-full'>
       <Row gutter={16}>
         <Col span={6}>

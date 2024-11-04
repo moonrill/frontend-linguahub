@@ -1,3 +1,4 @@
+// review.ts
 import { http } from '#/utils/http';
 import useSWR from 'swr';
 
@@ -7,6 +8,7 @@ const url = {
     limit?: number,
     page?: number,
     date?: string,
+    translator?: string,
     rating?: string
   ) => {
     const params = new URLSearchParams();
@@ -19,12 +21,14 @@ const url = {
     if (date) {
       params.append('date', date);
     }
+    if (translator) {
+      params.append('translator', translator);
+    }
     if (rating) {
       params.append('rating', rating.toString());
     }
     const queryString = params.toString();
-    const url = `/translators/reviews${queryString ? `?${queryString}` : ''}`;
-    return url;
+    return `/translators/reviews${queryString ? `?${queryString}` : ''}`;
   },
 };
 
@@ -33,12 +37,10 @@ const hooks = {
     limit?: number,
     page?: number,
     date?: string,
+    translator?: string,
     rating?: string
   ) => {
-    return useSWR(
-      url.translatorReviews(limit, page, date, rating),
-      http.fetcher
-    );
+    return useSWR(url.translatorReviews(limit, page, date, translator, rating), http.fetcher);
   },
 };
 
