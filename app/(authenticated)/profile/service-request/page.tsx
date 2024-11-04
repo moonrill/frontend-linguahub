@@ -18,7 +18,12 @@ const ProfileServiceRequest = () => {
   const statusParam = status === 'All' ? undefined : status.toLowerCase();
 
   const { data: serviceRequest, isLoading } =
-    serviceRequestRepository.hooks.useUserServiceRequest(statusParam, page, 5);
+    serviceRequestRepository.hooks.useGetServiceRequests(
+      'user',
+      statusParam,
+      page,
+      5
+    );
 
   const onChange = (e: any) => {
     router.push(`/profile/service-request?status=${e}`);

@@ -6,7 +6,7 @@ import { userRepository } from '#/repository/user';
 import { User } from '#/types/UserType';
 import { capitalizeFirstLetter } from '#/utils/capitalizeFirstLetter';
 import { Icon } from '@iconify-icon/react';
-import { Input, Table, TableProps } from 'antd';
+import { Input, Table, TableProps, Tooltip } from 'antd';
 import dayjs from 'dayjs';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -24,6 +24,7 @@ const ClientAccount = () => {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
+      ellipsis: true,
       render: (_, record) => (
         <div className='flex items-center gap-2'>
           <div className='relative w-[50px] h-[50px] hidden 2xl:block'>
@@ -58,20 +59,9 @@ const ClientAccount = () => {
       title: 'Gender',
       dataIndex: 'gender',
       key: 'gender',
-      align: 'center',
-      width: 80,
+      ellipsis: true,
       render: (_, record) => (
         <div className='flex items-center gap-1 text-xs 2xl:text-sm'>
-          <Icon
-            icon={
-              record?.userDetail?.gender === 'male'
-                ? 'mdi:gender-male'
-                : 'mdi:gender-female'
-            }
-            width={20}
-            height={20}
-            className='text-zinc-400'
-          />
           <p>{capitalizeFirstLetter(record?.userDetail?.gender)}</p>
         </div>
       ),
@@ -80,7 +70,7 @@ const ClientAccount = () => {
       title: 'Date of Birth',
       dataIndex: 'dateOfBirth',
       key: 'dateOfBirth',
-      width: 180,
+      ellipsis: true,
       render: (_, record) => (
         <p className='font-medium text-xs 2xl:text-sm'>
           {dayjs(record?.userDetail?.dateOfBirth).format('DD MMMM YYYY')}
@@ -95,8 +85,7 @@ const ClientAccount = () => {
       title: 'Phone number',
       dataIndex: 'phoneNumber',
       key: 'phoneNumber',
-      width: 180,
-      align: 'center',
+      ellipsis: true,
       render: (_, record) => (
         <p className='font-semibold text-xs 2xl:text-sm'>
           {record?.userDetail?.phoneNumber}
@@ -107,24 +96,29 @@ const ClientAccount = () => {
       title: 'Address',
       dataIndex: 'address',
       key: 'address',
-      minWidth: 200,
+      ellipsis: true,
+      render: (_, record) => (
+        <Tooltip
+          title={`${record?.userDetail?.street}, ${record?.userDetail?.subDistrict}, ${record?.userDetail?.city}, ${record?.userDetail?.province}`}
+        >
+          <p className='text-xs 2xl:text-sm truncate max-w-[50px] 2xl:max-w-[150px]'>
+            {record?.userDetail?.street}, {record?.userDetail?.subDistrict},{' '}
+            {record?.userDetail?.city}, {record?.userDetail?.province}
+          </p>
+        </Tooltip>
+      ),
+    },
+    {
+      title: 'Created at',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      ellipsis: true,
       render: (_, record) => (
         <p className='text-xs 2xl:text-sm'>
-          {record?.userDetail?.street}, {record?.userDetail?.subDistrict},{' '}
-          {record?.userDetail?.city}, {record?.userDetail?.province}
+          {dayjs(record?.createdAt).format('DD MMMM YYYY, HH:mm')}
         </p>
       ),
     },
-    // {
-    //   title: 'Created at',
-    //   dataIndex: 'createdAt',
-    //   key: 'createdAt',
-    //   render: (_, record) => (
-    //     <p className='font-semibold text-xs 2xl:text-sm'>
-    //       {dayjs(record?.createdAt).format('DD MMMM YYYY')}
-    //     </p>
-    //   ),
-    // },
   ];
 
   const data = listUsers?.data?.map((user: User) => ({
@@ -157,7 +151,7 @@ const ClientAccount = () => {
         columns={columns}
         dataSource={data}
         pagination={false}
-        scroll={{ x: 768 }}
+        scroll={{ x: 'max-content' }}
         loading={isLoading}
         footer={() => (
           <div className='flex justify-between items-center'>

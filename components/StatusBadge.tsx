@@ -1,11 +1,13 @@
+import { Icon } from '@iconify-icon/react';
 import { Tag } from 'antd';
 
 type Props = {
   status: string;
   text: string;
+  icon?: string;
 };
 
-const StatusBadge = ({ status, text }: Props) => {
+const StatusBadge = ({ status, text, icon }: Props) => {
   const getColor = (status: string) => {
     switch (status) {
       case 'pending':
@@ -38,6 +40,7 @@ const StatusBadge = ({ status, text }: Props) => {
         status
       )}`}
     >
+      {icon && <Icon icon={icon} className='mr-1 text-lg' />}
       {text}
     </Tag>
   );

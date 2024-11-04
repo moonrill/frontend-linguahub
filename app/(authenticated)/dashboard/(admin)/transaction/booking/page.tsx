@@ -8,26 +8,33 @@ import { bookingRepository } from '#/repository/booking';
 import { Booking } from '#/types/BookingTypes';
 import { capitalizeFirstLetter } from '#/utils/capitalizeFirstLetter';
 import { Icon } from '@iconify-icon/react';
-import { Dropdown, Input, Table, TableProps, Tooltip } from 'antd';
+import { Dropdown, Input, Table, TableProps } from 'antd';
 import { MenuItemType } from 'antd/es/menu/interface';
 import dayjs from 'dayjs';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-const TranslatorBooking = () => {
+const AdminBooking = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const page = Number(searchParams?.get('page')) || 1;
   const status = searchParams?.get('status') || 'all';
   const statusParam = status === 'all' ? undefined : status;
   const { data: bookingLists, isLoading } =
-    bookingRepository.hooks.useGetBookings('translator', statusParam, page, 10);
+    bookingRepository.hooks.useGetBookings('admin', statusParam, page, 10);
 
   const columns: TableProps['columns'] = [
     {
       title: 'Client',
       dataIndex: 'client',
       key: 'client',
+      ellipsis: true,
+      fixed: 'left',
+    },
+    {
+      title: 'Translator',
+      dataIndex: 'translator',
+      key: 'translator',
       ellipsis: true,
       fixed: 'left',
     },
@@ -63,33 +70,23 @@ const TranslatorBooking = () => {
       ),
     },
     {
-      title: 'Location',
-      dataIndex: 'location',
-      key: 'location',
+      title: 'Total Price',
+      dataIndex: 'totalPrice',
+      key: 'totalPrice',
       ellipsis: true,
-      render: (text) => (
-        <Tooltip title={text}>
-          <p className='text-xs 2xl:text-sm truncate max-w-[100px] 2xl:max-w-[150px]'>
-            {text}
-          </p>
-        </Tooltip>
-      ),
-    },
-    {
-      title: 'Price',
-      dataIndex: 'price',
-      key: 'price',
-      ellipsis: true,
-      render: (text) => (
-        <p className='text-xs 2xl:text-sm font-semibold'>Rp{text}</p>
+      render: (_, record) => (
+        <p className='text-xs 2xl:text-sm font-semibold'>
+          Rp{record?.totalPrice?.toLocaleString('id-ID')}
+        </p>
       ),
       sortDirections: ['descend', 'ascend'],
-      sorter: (a, b) => a.price - b.price,
+      sorter: (a, b) => a.totalPrice - b.totalPrice,
     },
   ];
 
   const data = bookingLists?.data?.map((booking: Booking) => ({
     key: booking?.id,
+    ...booking,
     client: (
       <div className='flex gap-3 items-center'>
         <div className='relative w-[40px] h-[40px] hidden 2xl:block'>
@@ -108,11 +105,40 @@ const TranslatorBooking = () => {
         </div>
 
         <div className='flex flex-col gap-1'>
-          <p className='font-medium text-sm line-clamp-1'>
+          <p className='font-medium text-xs 2xl:text-sm line-clamp-1'>
             {booking?.user?.userDetail?.fullName}
           </p>
-          <p className='text-[10px] 2xl:text-xs font-semibold text-gray-500'>
+          <p className='text-[10px] 2xl:text-xs font-semibold text-gray-500 max-w-[100px] 2xl:max-w-[300px] truncate'>
             {booking?.user?.email}
+          </p>
+        </div>
+      </div>
+    ),
+    translator: (
+      <div className='flex gap-3 items-center'>
+        <div className='relative w-[40px] h-[40px] hidden 2xl:block'>
+          <Image
+            src={
+              booking?.translator?.user?.userDetail.profilePicture
+                ? imgProfilePicture(
+                    booking?.translator?.user?.userDetail.profilePicture
+                  )
+                : '/images/avatar-placeholder.png'
+            }
+            alt={'translator-profile-picture'}
+            fill
+            sizes='(max-width: 400px)'
+            className='object-cover rounded-lg'
+            priority
+          />
+        </div>
+
+        <div className='flex flex-col gap-1'>
+          <p className='font-medium text-xs 2xl:text-sm line-clamp-1'>
+            {booking?.translator?.user?.userDetail?.fullName}
+          </p>
+          <p className='text-[10px] 2xl:text-xs font-semibold text-gray-500 max-w-[100px] 2xl:max-w-[300px] truncate'>
+            {booking?.translator?.user?.email}
           </p>
         </div>
       </div>
@@ -147,12 +173,10 @@ const TranslatorBooking = () => {
     ),
     bookingStatus: booking?.bookingStatus,
     bookingDate: booking?.bookingDate,
-    location: booking?.location,
-    price: booking?.serviceFee.toLocaleString('id-ID'),
   }));
 
   const handlePageChange = (page: number) => {
-    router.push(`/dashboard/translator/booking?page=${page}`);
+    router.push(`/dashboard/transaction/booking?page=${page}`);
   };
 
   const statusOptions: MenuItemType[] = [
@@ -180,7 +204,7 @@ const TranslatorBooking = () => {
 
   const handleSelect = (value: string) => {
     router.push(
-      `/dashboard/translator/booking?status=${value}&page=${bookingLists?.page}`
+      `/dashboard/transaction/booking?status=${value}&page=${bookingLists?.page}`
     );
   };
 
@@ -252,4 +276,4 @@ const TranslatorBooking = () => {
   );
 };
 
-export default TranslatorBooking;
+export default AdminBooking;

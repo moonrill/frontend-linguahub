@@ -117,7 +117,7 @@ const DashboardLanguage = () => {
         columns={columns}
         dataSource={data}
         pagination={false}
-        scroll={{ x: 768 }}
+        scroll={{ x: 'max-content' }}
         loading={isLoading}
         style={{ backgroundColor: 'unset' }}
         footer={() => (

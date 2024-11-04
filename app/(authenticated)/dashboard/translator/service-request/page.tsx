@@ -48,12 +48,13 @@ const TranslatorServiceRequest = () => {
     data: response,
     mutate,
     isLoading,
-  } = serviceRequestRepository.hooks.useTranslatorServiceRequest(
+  } = serviceRequestRepository.hooks.useGetServiceRequests(
+    'translator',
+    statusParam,
     page,
     10,
     'date',
-    'desc',
-    statusParam
+    'desc'
   );
 
   const columns: TableProps['columns'] = [
@@ -61,21 +62,20 @@ const TranslatorServiceRequest = () => {
       title: 'Client',
       dataIndex: 'client',
       key: 'client',
-      minWidth: 150,
       fixed: 'left',
+      ellipsis: true,
     },
     {
       title: 'Service',
       dataIndex: 'service',
       key: 'service',
-      minWidth: 200,
+      ellipsis: true,
     },
     {
       title: 'Booking Date',
       dataIndex: 'bookingDate',
       key: 'bookingDate',
-      minWidth: 170,
-      align: 'center',
+      ellipsis: true,
       sortDirections: ['descend', 'ascend'],
       sorter: (a, b) =>
         dayjs(a.bookingDate).unix() - dayjs(b.bookingDate).unix(),
@@ -89,10 +89,9 @@ const TranslatorServiceRequest = () => {
       title: 'Status',
       dataIndex: 'requestStatus',
       key: 'requestStatus',
-      align: 'center',
-      width: 150,
+      ellipsis: true,
       render: (text) => (
-        <div className='w-fit m-auto'>
+        <div className='w-fit'>
           <StatusBadge text={capitalizeFirstLetter(text)} status={text} />
         </div>
       ),
@@ -101,10 +100,12 @@ const TranslatorServiceRequest = () => {
       title: 'Location',
       dataIndex: 'location',
       key: 'location',
-      minWidth: 150,
+      ellipsis: true,
       render: (text) => (
-        <Tooltip title={text} placement='topLeft'>
-          <p className='text-xs 2xl:text-sm line-clamp-1'>{text}</p>
+        <Tooltip title={text}>
+          <p className='text-xs 2xl:text-sm truncate max-w-[120px] 2xl:max-w-[150px]'>
+            {text}
+          </p>
         </Tooltip>
       ),
     },
@@ -112,8 +113,8 @@ const TranslatorServiceRequest = () => {
       title: 'Action',
       dataIndex: 'action',
       key: 'action',
-      align: 'right',
-      width: 120,
+      ellipsis: true,
+      fixed: 'right',
     },
   ];
 
@@ -345,7 +346,7 @@ const TranslatorServiceRequest = () => {
         columns={columns}
         dataSource={data}
         pagination={false}
-        scroll={{ x: 768 }}
+        scroll={{ x: 'max-content' }}
         loading={isLoading}
         footer={() => (
           <div className='flex justify-between items-center'>

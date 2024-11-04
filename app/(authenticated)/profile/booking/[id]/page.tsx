@@ -346,13 +346,15 @@ const BookingDetail = ({ params }: { params: { id: string } }) => {
                 confirmText="Yes, I'm sure"
                 isLoading={loading}
               />
-              <Button
-                type='primary'
-                className='py-3 px-5 w-fit h-fit text-sm rounded-xl'
-                onClick={() => setOpenComplete(true)}
-              >
-                Complete Booking
-              </Button>
+              {booking?.proof && (
+                <Button
+                  type='primary'
+                  className='py-3 px-5 w-fit h-fit text-sm rounded-xl'
+                  onClick={() => setOpenComplete(true)}
+                >
+                  Complete Booking
+                </Button>
+              )}
               <ConfirmModal
                 open={openComplete}
                 onCancel={() => setOpenComplete(false)}

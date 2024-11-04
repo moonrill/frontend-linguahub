@@ -34,12 +34,13 @@ const NewRequest = () => {
   const router = useRouter();
   const [limit, setLimit] = useState(5);
   const { data: response } =
-    serviceRequestRepository.hooks.useTranslatorServiceRequest(
+    serviceRequestRepository.hooks.useGetServiceRequests(
+      'translator',
+      'pending',
       1,
       limit,
       'date',
-      'desc',
-      'pending'
+      'desc'
     );
 
   useEffect(() => {

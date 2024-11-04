@@ -43,7 +43,7 @@ const TranslatorService = () => {
       dataIndex: 'name',
       key: 'name',
       fixed: 'left',
-      minWidth: 200,
+      ellipsis: true,
       render: (text) => <p className='font-medium'>{text}</p>,
       sortDirections: ['ascend', 'descend'],
       sorter: (a, b) => a.name.localeCompare(b.name),
@@ -52,7 +52,7 @@ const TranslatorService = () => {
       title: 'Source',
       dataIndex: 'sourceLanguage',
       key: 'sourceLanguage',
-      minWidth: 200,
+      ellipsis: true,
       render: (_, record) => (
         <div className='flex items-center gap-2'>
           <LanguageFlag language={record.sourceLanguage} />
@@ -64,7 +64,7 @@ const TranslatorService = () => {
       title: 'Target',
       dataIndex: 'targetLanguage',
       key: 'targetLanguage',
-      minWidth: 200,
+      ellipsis: true,
       render: (_, record) => (
         <div className='flex items-center gap-2'>
           <LanguageFlag language={record.targetLanguage} />
@@ -76,10 +76,9 @@ const TranslatorService = () => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      align: 'center',
-      width: 120,
+      ellipsis: true,
       render: (text) => (
-        <div className='w-fit m-auto'>
+        <div className='w-fit'>
           <StatusBadge text={text} status={text} />
         </div>
       ),
@@ -88,8 +87,7 @@ const TranslatorService = () => {
       title: 'Price per hour',
       dataIndex: 'pricePerHour',
       key: 'pricePerHour',
-      align: 'right',
-      minWidth: 150,
+      ellipsis: true,
       render: (text) => (
         <p className='font-semibold'>Rp{text.toLocaleString('id-ID')}</p>
       ),
@@ -100,8 +98,8 @@ const TranslatorService = () => {
       title: 'Action',
       dataIndex: 'action',
       key: 'action',
-      align: 'right',
-      width: 110,
+      fixed: 'right',
+      ellipsis: true,
     },
   ];
 
@@ -210,7 +208,7 @@ const TranslatorService = () => {
         columns={columns}
         dataSource={data}
         pagination={false}
-        scroll={{ x: 768 }}
+        scroll={{ x: 'max-content' }}
         loading={isLoading}
         footer={() => (
           <div className='flex justify-between items-center'>

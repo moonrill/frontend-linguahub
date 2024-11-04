@@ -8,7 +8,7 @@ import { Language } from '#/types/LanguageTypes';
 import { Translator } from '#/types/TranslatorTypes';
 import { capitalizeFirstLetter } from '#/utils/capitalizeFirstLetter';
 import { Icon } from '@iconify-icon/react';
-import { Input, Table, TableProps, Tag } from 'antd';
+import { Input, Table, TableProps, Tag, Tooltip } from 'antd';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -26,6 +26,8 @@ const TranslatorAccount = () => {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
+      ellipsis: true,
+      fixed: 'left',
       render: (_, record) => (
         <div className='flex items-center gap-2'>
           <div className='relative w-[50px] h-[50px] hidden 2xl:block'>
@@ -42,7 +44,7 @@ const TranslatorAccount = () => {
               priority
             />
           </div>
-          <p className='font-semibold text-xs 2xl:text-sm line-clamp-1'>
+          <p className='font-semibold text-xs 2xl:text-sm'>
             {record?.user?.userDetail?.fullName}
           </p>
         </div>
@@ -55,39 +57,31 @@ const TranslatorAccount = () => {
       title: 'Email',
       dataIndex: 'email',
       key: 'email',
+      ellipsis: true,
       render: (_, record) => (
-        <p className='font-semibold text-gray-500 text-xs 2xl:text-sm line-clamp-1'>
-          {record?.user?.email}
-        </p>
+        <Tooltip title={record?.user?.email}>
+          <p className='font-semibold text-gray-500 text-xs 2xl:text-sm truncate max-w-[100px] 2xl:max-w-[300px]'>
+            {record?.user?.email}
+          </p>
+        </Tooltip>
       ),
     },
     {
       title: 'Gender',
       dataIndex: 'gender',
       key: 'gender',
-      align: 'center',
-      width: 120,
+      ellipsis: true,
       render: (_, record) => (
         <div className='flex items-center gap-1 text-xs 2xl:text-sm'>
-          <Icon
-            icon={
-              record?.user?.userDetail?.gender === 'male'
-                ? 'mdi:gender-male'
-                : 'mdi:gender-female'
-            }
-            width={20}
-            height={20}
-            className='text-zinc-400'
-          />
           <p>{capitalizeFirstLetter(record?.user?.userDetail?.gender)}</p>
         </div>
       ),
     },
     {
-      title: 'Years of experience',
+      title: 'Experience',
       dataIndex: 'yearsOfExperience',
       key: 'yearsOfExperience',
-      align: 'right',
+      ellipsis: true,
       render: (_, record) => (
         <p className='font-semibold text-xs 2xl:text-sm line-clamp-1'>
           {record?.yearsOfExperience} Years
@@ -100,6 +94,7 @@ const TranslatorAccount = () => {
       title: 'Portfolio',
       dataIndex: 'portfolio',
       key: 'portfolio',
+      ellipsis: true,
       render: (_, record) => (
         <Link href={record?.portfolioLink}>
           <Tag
@@ -116,6 +111,7 @@ const TranslatorAccount = () => {
       title: 'Language',
       dataIndex: 'language',
       key: 'language',
+      ellipsis: true,
       render: (_, record) => (
         <div className='flex gap-1 2xl:gap-2'>
           {record?.languages
@@ -130,6 +126,7 @@ const TranslatorAccount = () => {
       title: 'Rating',
       dataIndex: 'rating',
       key: 'rating',
+      ellipsis: true,
       render: (_, record) => (
         <div className='flex gap-2 items-center'>
           <Icon
@@ -176,7 +173,7 @@ const TranslatorAccount = () => {
         columns={columns}
         dataSource={data}
         pagination={false}
-        scroll={{ x: 768 }}
+        scroll={{ x: 'max-content' }}
         rowClassName={'cursor-pointer'}
         onRow={(row) => ({
           onClick: () => {

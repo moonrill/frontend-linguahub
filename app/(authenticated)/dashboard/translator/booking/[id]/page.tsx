@@ -301,7 +301,7 @@ const BookingDetail = ({ params }: { params: { id: string } }) => {
                     width={500}
                     height={300}
                     className='object-cover rounded-xl'
-                    src={`${config.baseUrl}/images/proof/${booking?.proof}`}
+                    src={`${config.baseUrl}/images/proof/booking/${booking?.proof}`}
                   />
                   {booking?.bookingStatus === 'in_progress' && (
                     <Button

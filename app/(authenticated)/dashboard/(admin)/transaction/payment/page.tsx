@@ -1,10 +1,8 @@
 'use client';
 
-import LanguageFlag from '#/components/LanguageFlag';
 import Pagination from '#/components/Pagination';
 import StatusBadge from '#/components/StatusBadge';
 import { config } from '#/config/app';
-import { imgProfilePicture } from '#/constants/general';
 import { paymentRepository } from '#/repository/payment';
 import { Payment } from '#/types/PaymentTypes';
 import { capitalizeFirstLetter } from '#/utils/capitalizeFirstLetter';
@@ -16,29 +14,38 @@ import {
   Drawer,
   Dropdown,
   Input,
+  Segmented,
   Table,
   TableProps,
+  Tooltip,
 } from 'antd';
 import { MenuItemType } from 'antd/es/menu/interface';
 import dayjs from 'dayjs';
-import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-const TranslatorPayment = () => {
+const AdminPayment = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const page = Number(searchParams?.get('page')) || 1;
   const status = searchParams?.get('status') || 'all';
   const statusParam = status === 'all' ? undefined : status;
+  const type = searchParams?.get('type') || 'All';
+  const typeParam = type === 'All' ? undefined : type.toLowerCase();
 
   const [drawerSize, setDrawerSize] = useState('large');
   const [showDrawer, setShowDrawer] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
 
   const { data: listPayments, isLoading } =
-    paymentRepository.hooks.useGetPayments('translator', statusParam, page, 10);
+    paymentRepository.hooks.useGetPayments(
+      'admin',
+      statusParam,
+      page,
+      10,
+      typeParam
+    );
 
   const columns: TableProps['columns'] = [
     {
@@ -49,23 +56,65 @@ const TranslatorPayment = () => {
       sortDirections: ['descend', 'ascend'],
       sorter: (a, b) => dayjs(a.createdAt).unix() - dayjs(b.createdAt).unix(),
       render: (text) => (
-        <p className='text-xs 2xl:text-sm font-medium'>
-          {dayjs(text).format('DD MMMM YYYY, HH:mm')}
-        </p>
+        <Tooltip title={dayjs(text).format('DD MMMM YYYY, HH:mm')}>
+          <p className='text-xs 2xl:text-sm font-medium whitespace-nowrap'>
+            {dayjs(text).format('DD MMMM YYYY, HH:mm')}
+          </p>
+        </Tooltip>
       ),
     },
     {
-      title: 'Client',
-      dataIndex: 'client',
-      key: 'client',
+      title: 'Booking ID',
+      dataIndex: 'bookingId',
+      key: 'bookingId',
       ellipsis: true,
-      fixed: 'left',
+      render: (_, record) => (
+        <Tooltip title={record.booking?.id}>
+          <p className='text-xs 2xl:text-sm font-medium truncate max-w-[120px]'>
+            {record.booking?.id}
+          </p>
+        </Tooltip>
+      ),
     },
     {
-      title: 'Service',
-      dataIndex: 'service',
-      key: 'service',
+      title: 'Type',
+      dataIndex: 'paymentType',
+      key: 'paymentType',
       ellipsis: true,
+      render: (_, record) => (
+        <div className='w-fit'>
+          <StatusBadge
+            text={capitalizeFirstLetter(record.paymentType)}
+            status={record.paymentType}
+            icon={
+              record.paymentType === 'client'
+                ? 'mdi:account'
+                : 'mdi:account-tie-voice'
+            }
+          />
+        </div>
+      ),
+    },
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+      ellipsis: true,
+      render: (_, record) => (
+        <Tooltip
+          title={
+            record?.paymentType === 'client'
+              ? record?.booking?.user?.userDetail?.fullName
+              : record?.booking?.translator?.user?.userDetail?.fullName
+          }
+        >
+          <p className='font-medium text-xs 2xl:text-sm truncate max-w-[150px]'>
+            {record?.paymentType === 'client'
+              ? record?.booking?.user?.userDetail?.fullName
+              : record?.booking?.translator?.user?.userDetail?.fullName}
+          </p>
+        </Tooltip>
+      ),
     },
     {
       title: 'Status',
@@ -83,8 +132,12 @@ const TranslatorPayment = () => {
       dataIndex: 'amount',
       key: 'amount',
       ellipsis: true,
-      render: (text) => (
-        <p className='text-xs 2xl:text-sm font-semibold'>Rp{text}</p>
+      render: (_, record) => (
+        <Tooltip title={`Rp${record.amount.toLocaleString('id-ID')}`}>
+          <p className='text-xs 2xl:text-sm font-semibold whitespace-nowrap'>
+            Rp{record.amount.toLocaleString('id-ID')}
+          </p>
+        </Tooltip>
       ),
       sortDirections: ['descend', 'ascend'],
       sorter: (a, b) => a.amount - b.amount,
@@ -93,65 +146,7 @@ const TranslatorPayment = () => {
 
   const data = listPayments?.data?.map((payment: Payment) => ({
     key: payment.id,
-    client: (
-      <div className='flex gap-3 items-center'>
-        <div className='relative w-[40px] h-[40px] hidden 2xl:block'>
-          <Image
-            src={
-              payment?.booking?.user?.userDetail.profilePicture
-                ? imgProfilePicture(
-                    payment?.booking?.user?.userDetail.profilePicture
-                  )
-                : '/images/avatar-placeholder.png'
-            }
-            alt={'translator-profile-picture'}
-            fill
-            sizes='(max-width: 400px)'
-            className='object-cover rounded-lg'
-            priority
-          />
-        </div>
-
-        <div className='flex flex-col gap-1'>
-          <p className='font-medium text-sm line-clamp-1'>
-            {payment?.booking?.user?.userDetail?.fullName}
-          </p>
-          <p className='text-[10px] 2xl:text-xs font-semibold text-gray-500'>
-            {payment?.booking?.user?.email}
-          </p>
-        </div>
-      </div>
-    ),
-    service: (
-      <div className='flex flex-col gap-1'>
-        <p className='text-xs 2xl:text-sm font-medium'>
-          {payment?.booking?.service?.name}
-        </p>
-        <div className='flex items-center gap-2'>
-          <div className='flex items-center gap-1'>
-            <LanguageFlag
-              language={payment?.booking?.service?.sourceLanguage}
-              size='sm'
-            />
-            <span className='text-[10px] 2xl:text-xs uppercase font-semibold text-gray-500'>
-              {payment?.booking?.service?.sourceLanguage?.code}
-            </span>
-          </div>
-          -
-          <div className='flex items-center gap-1'>
-            <LanguageFlag
-              language={payment?.booking?.service?.targetLanguage}
-              size='sm'
-            />
-            <span className='text-[10px] 2xl:text-xs uppercase font-semibold text-gray-500'>
-              {payment?.booking?.service?.targetLanguage?.code}
-            </span>
-          </div>
-        </div>
-      </div>
-    ),
     ...payment,
-    amount: payment?.amount.toLocaleString('id-ID'),
   }));
 
   const statusOptions: MenuItemType[] = [
@@ -173,12 +168,24 @@ const TranslatorPayment = () => {
     },
   ];
 
+  const statusItems = ['All', 'Client', 'Translator'];
+
+  const onChange = (e: any) => {
+    router.push(
+      `/dashboard/transaction/payment?status=${status}&page=${page}&type=${e}`
+    );
+  };
+
   const handleSelect = (key: string) => {
-    router.push(`/dashboard/translator/payment?status=${key}&page=${page}`);
+    router.push(
+      `/dashboard/transaction/payment?status=${key}&page=${page}&type=${type}`
+    );
   };
 
   const handlePageChange = (page: number) => {
-    router.push(`/dashboard/translator/payment?page=${page}&status=${status}`);
+    router.push(
+      `/dashboard/transaction/payment?page=${page}&status=${status}&type=${type}`
+    );
   };
 
   useEffect(() => {
@@ -218,26 +225,33 @@ const TranslatorPayment = () => {
           }
           className='h-12 w-fit'
         />
-        <Dropdown
-          menu={{
-            items: statusOptions,
-            selectable: true,
-            onClick: ({ key }) => handleSelect(key),
-            selectedKeys: [status],
-          }}
-          trigger={['click']}
-          className='cursor-pointer h-12 bg-zinc-100 px-4 py-2 rounded-xl text-sm 2xl:text-base text-zinc-500 font-medium hover:bg-zinc-200 transition-all duration-500'
-          placement='bottomRight'
-        >
-          <div className='flex items-center justify-between gap-4'>
-            <p>Status</p>
-            <Icon
-              icon='weui:arrow-outlined'
-              height={24}
-              className='rotate-90'
-            />
-          </div>
-        </Dropdown>
+        <div className='flex gap-3'>
+          <Segmented
+            options={statusItems}
+            onChange={onChange}
+            defaultValue={type}
+          />
+          <Dropdown
+            menu={{
+              items: statusOptions,
+              selectable: true,
+              onClick: ({ key }) => handleSelect(key),
+              selectedKeys: [status],
+            }}
+            trigger={['click']}
+            className='cursor-pointer h-11 2xl:h-12 bg-zinc-100 px-4 py-2 rounded-xl text-sm 2xl:text-base text-zinc-500 font-medium hover:bg-zinc-200 transition-all duration-500'
+            placement='bottomRight'
+          >
+            <div className='flex items-center justify-between gap-4'>
+              <p>Status</p>
+              <Icon
+                icon='weui:arrow-outlined'
+                height={24}
+                className='rotate-90'
+              />
+            </div>
+          </Dropdown>
+        </div>
       </div>
       <Table
         columns={columns}
@@ -296,6 +310,15 @@ const TranslatorPayment = () => {
                 <p className='font-medium text-slate-500'>Client</p>
                 <p className='font-semibold text-blue-950'>
                   {selectedPayment?.booking?.user?.userDetail?.fullName}
+                </p>
+              </div>
+              <div className='flex justify-between'>
+                <p className='font-medium text-slate-500'>Translator</p>
+                <p className='font-semibold text-blue-950'>
+                  {
+                    selectedPayment?.booking?.translator?.user?.userDetail
+                      ?.fullName
+                  }
                 </p>
               </div>
               <div className='flex justify-between'>
@@ -381,4 +404,4 @@ const TranslatorPayment = () => {
   );
 };
 
-export default TranslatorPayment;
+export default AdminPayment;

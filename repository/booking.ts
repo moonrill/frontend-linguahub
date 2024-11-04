@@ -2,7 +2,8 @@ import { http } from '#/utils/http';
 import useSWR from 'swr';
 
 const url = {
-  getUserBookings: (
+  getBookings: (
+    role: string,
     status: string | undefined,
     page: number,
     limit: number,
@@ -28,37 +29,18 @@ const url = {
     }
 
     const queryString = params.toString();
-    const url = `/users/bookings${queryString ? `?${queryString}` : ''}`;
+    let url;
 
-    return url;
-  },
-  getTranslatorBookings: (
-    status: string | undefined,
-    page: number,
-    limit: number,
-    sortBy?: string,
-    order?: string
-  ) => {
-    const params = new URLSearchParams();
-
-    if (status) {
-      params.append('status', status);
+    switch (role) {
+      case 'translator':
+        url = `/translators/bookings${queryString ? `?${queryString}` : ''}`;
+        break;
+      case 'user':
+        url = `/users/bookings${queryString ? `?${queryString}` : ''}`;
+        break;
+      default:
+        url = `/bookings${queryString ? `?${queryString}` : ''}`;
     }
-    if (page) {
-      params.append('page', page.toString());
-    }
-    if (limit) {
-      params.append('limit', limit.toString());
-    }
-    if (sortBy) {
-      params.append('sortBy', sortBy);
-    }
-    if (order) {
-      params.append('order', order);
-    }
-
-    const queryString = params.toString();
-    const url = `/translators/bookings${queryString ? `?${queryString}` : ''}`;
 
     return url;
   },
@@ -70,7 +52,8 @@ const url = {
 };
 
 const hooks = {
-  useUserBookings: (
+  useGetBookings: (
+    role: string,
     status: string | undefined,
     page: number,
     limit: number,
@@ -78,19 +61,7 @@ const hooks = {
     order?: string
   ) => {
     return useSWR(
-      url.getUserBookings(status, page, limit, sortBy, order),
-      http.fetcher
-    );
-  },
-  useTranslatorBookings: (
-    page: number,
-    limit: number,
-    status?: string,
-    sortBy?: string,
-    order?: string
-  ) => {
-    return useSWR(
-      url.getTranslatorBookings(status, page, limit, sortBy, order),
+      url.getBookings(role, status, page, limit, sortBy, order),
       http.fetcher
     );
   },

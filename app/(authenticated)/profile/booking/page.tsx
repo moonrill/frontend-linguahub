@@ -17,7 +17,8 @@ const ProfileBooking = () => {
   const [currentPage, setCurrentPage] = useState(page);
   const statusParam = status === 'All' ? undefined : status.toLowerCase();
 
-  const { data: bookings, isLoading } = bookingRepository.hooks.useUserBookings(
+  const { data: bookings, isLoading } = bookingRepository.hooks.useGetBookings(
+    'user',
     statusParam,
     page,
     5
