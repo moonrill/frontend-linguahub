@@ -307,10 +307,10 @@ const BookingDetail = ({ params }: { params: { id: string } }) => {
             <section className='flex flex-col gap-2 border p-4 rounded-lg'>
               <p className='text-xs 2xl:text-sm font-medium'>Proof</p>
               <AntdImage
-                width={300}
+                width={500}
                 height={300}
                 className='object-cover rounded-xl'
-                src={`${config.baseUrl}/images/proof/${booking?.proof}`}
+                src={`${config.baseUrl}/images/proof/booking/${booking?.proof}`}
               />
             </section>
           )}

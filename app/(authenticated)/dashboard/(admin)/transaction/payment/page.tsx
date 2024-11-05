@@ -14,11 +14,16 @@ import {
   Drawer,
   Dropdown,
   Input,
+  message,
   Segmented,
   TableProps,
   Tooltip,
+  Upload,
+  UploadProps,
 } from 'antd';
 import { MenuItemType } from 'antd/es/menu/interface';
+import { UploadChangeParam, UploadFile } from 'antd/es/upload';
+import Dragger from 'antd/es/upload/Dragger';
 import dayjs from 'dayjs';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -37,14 +42,17 @@ const AdminPayment = () => {
   const [showDrawer, setShowDrawer] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
 
-  const { data: listPayments, isLoading } =
-    paymentRepository.hooks.useGetPayments(
-      'admin',
-      statusParam,
-      page,
-      10,
-      typeParam
-    );
+  const {
+    data: listPayments,
+    isLoading,
+    mutate,
+  } = paymentRepository.hooks.useGetPayments(
+    'admin',
+    statusParam,
+    page,
+    10,
+    typeParam
+  );
 
   const columns: TableProps['columns'] = [
     {
@@ -169,6 +177,39 @@ const AdminPayment = () => {
 
   const statusItems = ['All', 'Client', 'Translator'];
 
+  const uploadProps: UploadProps = {
+    multiple: false,
+    maxCount: 1,
+    accept: '.jpg,.jpeg,.png',
+    listType: 'picture-card',
+    iconRender: (file) => (
+      <Icon
+        icon='basil:document-solid'
+        height={64}
+        className='text-blue-600 mb-4'
+      />
+    ),
+    progress: {
+      strokeColor: {
+        '0%': '#2563eb',
+        '100%': '#2563eb',
+      },
+    },
+    beforeUpload: (file) => {
+      if (file.size > 5 * 1024 * 1024) {
+        message.error('File too large');
+        return Upload.LIST_IGNORE;
+      }
+      return false;
+    },
+    showUploadList: {
+      showRemoveIcon: true,
+      removeIcon: (
+        <Icon icon='mynaui:trash' className='text-red-500' height={24} />
+      ),
+    },
+  };
+
   const onChange = (e: any) => {
     router.push(
       `/dashboard/transaction/payment?status=${status}&page=${page}&type=${e}`
@@ -186,6 +227,47 @@ const AdminPayment = () => {
       `/dashboard/transaction/payment?page=${page}&status=${status}&type=${type}`
     );
   };
+
+  const handleUploadProof = async (file: any) => {
+    if (!selectedPayment) {
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append('proof', file);
+      await paymentRepository.api.updateProof(selectedPayment?.id, formData);
+      message.success('Proof uploaded successfully');
+      mutate();
+    } catch (error) {
+      console.error(error);
+      message.error('Error uploading proof');
+    }
+  };
+
+  const handleRemoveProof = async () => {
+    if (!selectedPayment) {
+      return;
+    }
+
+    try {
+      await paymentRepository.api.removeProof(selectedPayment?.id);
+      message.success('Proof removed successfully');
+      mutate();
+    } catch (error) {
+      console.error(error);
+      message.error('Error removing proof');
+    }
+  };
+
+  useEffect(() => {
+    if (selectedPayment) {
+      const updatedPayment = listPayments?.data?.find(
+        (payment: Payment) => payment.id === selectedPayment.id
+      );
+      setSelectedPayment(updatedPayment || null);
+    }
+  }, [listPayments, selectedPayment]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -261,6 +343,12 @@ const AdminPayment = () => {
         totalData={listPayments?.total}
         totalPage={listPayments?.totalPages}
         handlePageChange={handlePageChange}
+        onClick={({ key }) => {
+          setSelectedPayment(
+            listPayments?.data.find((payment: Payment) => payment.id === key)
+          );
+          setShowDrawer(true);
+        }}
       />
       <Drawer
         onClose={() => {
@@ -325,55 +413,141 @@ const AdminPayment = () => {
                   )}
                 </p>
               </div>
+              {selectedPayment?.paymentType === 'client' && (
+                <div className='flex justify-between'>
+                  <p className='font-medium text-slate-500'>Duration</p>
+                  <p className='font-semibold text-blue-950'>
+                    {selectedPayment?.booking?.duration} Hours
+                  </p>
+                </div>
+              )}
             </div>
             <Divider />
             <h1 className='text-xl font-semibold'>Price Details</h1>
             <div className='text-sm mt-2 flex flex-col gap-1'>
-              <div className='flex justify-between'>
-                <p className='font-medium text-slate-500'>Service price</p>
-                <p className='font-medium text-blue-950'>
-                  Rp
-                  {selectedPayment?.booking?.service?.pricePerHour.toLocaleString(
-                    'id-ID'
+              {selectedPayment?.paymentType === 'client' ? (
+                <>
+                  <div className='flex justify-between'>
+                    <p className='font-medium text-slate-500'>Service fee</p>
+                    <p className='font-medium text-blue-950'>
+                      Rp
+                      {selectedPayment?.booking?.serviceFee.toLocaleString(
+                        'id-ID'
+                      )}
+                    </p>
+                  </div>
+                  <div className='flex justify-between'>
+                    <p className='font-medium text-slate-500'>System fee</p>
+                    <p className='font-medium text-blue-950'>
+                      Rp
+                      {selectedPayment?.booking?.systemFee.toLocaleString(
+                        'id-ID'
+                      )}
+                    </p>
+                  </div>
+                  {selectedPayment?.booking?.discountAmount && (
+                    <div className='flex justify-between'>
+                      <p className='font-medium text-slate-500'>
+                        Discount Amount
+                      </p>
+                      <p className='font-medium text-blue-950'>
+                        -Rp
+                        {selectedPayment?.booking?.discountAmount.toLocaleString(
+                          'id-ID'
+                        )}
+                      </p>
+                    </div>
                   )}
-                </p>
-              </div>
-              <div className='flex justify-between'>
-                <p className='font-medium text-slate-500'>Duration</p>
-                <p className='font-medium text-blue-950'>
-                  {selectedPayment?.booking.duration} Hours
-                </p>
-              </div>
+                </>
+              ) : (
+                <>
+                  <div className='flex justify-between'>
+                    <p className='font-medium text-slate-500'>Service price</p>
+                    <p className='font-medium text-blue-950'>
+                      Rp
+                      {selectedPayment?.booking?.service?.pricePerHour.toLocaleString(
+                        'id-ID'
+                      )}
+                    </p>
+                  </div>
+                  <div className='flex justify-between'>
+                    <p className='font-medium text-slate-500'>Duration</p>
+                    <p className='font-medium text-blue-950'>
+                      {selectedPayment?.booking.duration} Hours
+                    </p>
+                  </div>
+                </>
+              )}
             </div>
             <Divider />
             <div className='flex justify-between'>
               <h1 className='text-xl font-semibold'>Total</h1>
               <h1 className='text-xl font-semibold'>
-                Rp{selectedPayment?.booking.serviceFee.toLocaleString('id-ID')}
+                Rp
+                {selectedPayment?.paymentType === 'client'
+                  ? selectedPayment?.booking.totalPrice.toLocaleString('id-ID')
+                  : selectedPayment?.booking.serviceFee.toLocaleString('id-ID')}
               </h1>
             </div>
             <Divider />
-            <div className='flex flex-col gap-3'>
-              <h1 className='text-xl font-semibold'>Proof</h1>
-              {selectedPayment?.proof ? (
-                <>
-                  <AntdImage
-                    width={200}
-                    height={200}
-                    className='object-cover rounded-xl'
-                    src={`${config.baseUrl}/images/proof/payment/${selectedPayment?.proof}`}
-                  />
-                  <Button
-                    type='primary'
-                    className='py-3 px-5 w-fit h-fit text-sm rounded-xl'
-                  >
-                    Complete Payment
-                  </Button>
-                </>
-              ) : (
-                <p className='text-sm text-slate-500'>No proof uploaded yet</p>
+            {selectedPayment?.paymentType === 'translator' && (
+              <div className='flex flex-col gap-3'>
+                <h1 className='text-xl font-semibold'>Proof</h1>
+                {selectedPayment?.proof ? (
+                  <>
+                    <AntdImage
+                      width={200}
+                      height={200}
+                      className='object-cover rounded-xl'
+                      src={`${config.baseUrl}/images/proof/payment/${selectedPayment?.proof}`}
+                    />
+                    {selectedPayment?.status === 'pending' && (
+                      <Button
+                        className='w-fit py-6 font-medium rounded-xl hover:!border-rose-600 hover:!text-rose-600'
+                        type='default'
+                        htmlType='button'
+                        onClick={handleRemoveProof}
+                      >
+                        Remove Proof
+                      </Button>
+                    )}
+                  </>
+                ) : (
+                  selectedPayment?.status === 'pending' && (
+                    <Dragger
+                      {...uploadProps}
+                      style={{ width: 300, padding: '3rem 0' }}
+                      onChange={(info: UploadChangeParam<UploadFile>) => {
+                        const { file } = info;
+                        if (file.status !== 'removed') {
+                          handleUploadProof(file);
+                        }
+                      }}
+                    >
+                      <div className='flex flex-col justify-center items-center'>
+                        <Icon
+                          icon={'iwwa:upload'}
+                          height={64}
+                          className=' text-blue-600'
+                        />
+                        <p className='text-sm text-zinc-500'>
+                          Drag & drop or click to upload
+                        </p>
+                      </div>
+                    </Dragger>
+                  )
+                )}
+              </div>
+            )}
+            {selectedPayment?.paymentType === 'client' &&
+              selectedPayment?.paymentMethod && (
+                <div className='flex justify-between text-sm mt-4'>
+                  <p className='font-medium text-slate-500'>Payment Method</p>
+                  <p className='font-semibold text-blue-950'>
+                    {selectedPayment?.paymentMethod}
+                  </p>
+                </div>
               )}
-            </div>
           </div>
         )}
       </Drawer>

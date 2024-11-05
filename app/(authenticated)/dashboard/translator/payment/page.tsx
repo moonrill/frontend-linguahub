@@ -16,6 +16,7 @@ import {
   Drawer,
   Dropdown,
   Input,
+  message,
   TableProps,
 } from 'antd';
 import { MenuItemType } from 'antd/es/menu/interface';
@@ -35,9 +36,18 @@ const TranslatorPayment = () => {
   const [drawerSize, setDrawerSize] = useState('large');
   const [showDrawer, setShowDrawer] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const { data: listPayments, isLoading } =
-    paymentRepository.hooks.useGetPayments('translator', statusParam, page, 10);
+  const {
+    data: listPayments,
+    isLoading,
+    mutate,
+  } = paymentRepository.hooks.useGetPayments(
+    'translator',
+    statusParam,
+    page,
+    10
+  );
 
   const columns: TableProps['columns'] = [
     {
@@ -179,6 +189,34 @@ const TranslatorPayment = () => {
   const handlePageChange = (page: number) => {
     router.push(`/dashboard/translator/payment?page=${page}&status=${status}`);
   };
+
+  const handlePaymentComplete = async () => {
+    if (!selectedPayment) {
+      return;
+    }
+    setLoading(true);
+
+    try {
+      await paymentRepository.api.completePayment(selectedPayment.id);
+      message.success('Payment completed successfully');
+      mutate();
+    } catch (error: any) {
+      message.error(
+        error?.response?.body?.message || 'Error completing payment'
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedPayment) {
+      const updatedPayment = listPayments?.data?.find(
+        (payment: Payment) => payment.id === selectedPayment.id
+      );
+      setSelectedPayment(updatedPayment || null);
+    }
+  }, [listPayments, selectedPayment]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -347,12 +385,17 @@ const TranslatorPayment = () => {
                     className='object-cover rounded-xl'
                     src={`${config.baseUrl}/images/proof/payment/${selectedPayment?.proof}`}
                   />
-                  <Button
-                    type='primary'
-                    className='py-3 px-5 w-fit h-fit text-sm rounded-xl'
-                  >
-                    Complete Payment
-                  </Button>
+                  {selectedPayment?.status === 'pending' && (
+                    <Button
+                      type='primary'
+                      className='py-3 px-5 w-fit h-fit text-sm rounded-xl'
+                      onClick={handlePaymentComplete}
+                      loading={loading}
+                      disabled={loading}
+                    >
+                      Complete Payment
+                    </Button>
+                  )}
                 </>
               ) : (
                 <p className='text-sm text-slate-500'>No proof uploaded yet</p>

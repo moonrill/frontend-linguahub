@@ -48,6 +48,9 @@ const url = {
 
     return url;
   },
+  updateProof: (id: string) => `/payments/${id}/proof`,
+  removeProof: (id: string) => `/payments/${id}/proof`,
+  completePayment: (id: string) => `/payments/${id}/complete`,
 };
 
 const hooks = {
@@ -67,7 +70,20 @@ const hooks = {
   },
 };
 
+const api = {
+  updateProof: (id: string, data: any) => {
+    return http.put(url.updateProof(id)).send(data);
+  },
+  removeProof: (id: string) => {
+    return http.del(url.removeProof(id));
+  },
+  completePayment: (id: string) => {
+    return http.put(url.completePayment(id));
+  },
+};
+
 export const paymentRepository = {
   url,
+  api,
   hooks,
 };

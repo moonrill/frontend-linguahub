@@ -294,12 +294,14 @@ const PaymentCard = ({ payment }: Props) => {
                   Rp{booking.totalPrice.toLocaleString('id-ID')}
                 </h1>
               </div>
-              <div className='flex justify-between text-sm mt-4'>
-                <p className='font-medium text-slate-500'>Payment Method</p>
-                <p className='font-semibold text-blue-950'>
-                  {payment.paymentMethod}
-                </p>
-              </div>
+              {payment?.paymentMethod && (
+                <div className='flex justify-between text-sm mt-4'>
+                  <p className='font-medium text-slate-500'>Payment Method</p>
+                  <p className='font-semibold text-blue-950'>
+                    {payment.paymentMethod}
+                  </p>
+                </div>
+              )}
               <Button
                 type='primary'
                 onClick={handleExport}

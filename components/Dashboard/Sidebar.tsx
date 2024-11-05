@@ -20,19 +20,19 @@ const SidebarComponent: React.FC<SidebarComponentProps> = ({ role }) => {
 
   const handleLogout = async () => {
     setLoading(true);
-    const response = await fetch('/api/logout', {
-      method: 'POST',
-    });
+    try {
+      const response = await fetch('/api/logout', {
+        method: 'POST',
+      });
 
-    if (response.ok) {
-      TokenUtil.clearAccessToken();
-      TokenUtil.persistToken();
-      router.push('/login');
-    } else {
-      // Optionally handle error here
+      if (response.ok) {
+        TokenUtil.clearAccessToken();
+        TokenUtil.persistToken();
+        window.location.href = '/login';
+      }
+    } catch (error) {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
