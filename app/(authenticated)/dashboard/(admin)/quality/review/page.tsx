@@ -35,8 +35,8 @@ const AdminReviewPage = () => {
         <div className='flex items-center gap-2'>
           <div className='relative w-[50px] h-[50px] hidden 2xl:block'>
             <Image
-              src={record.user.userDetail.profilePicture ? imgProfilePicture(record.user.userDetail.profilePicture) : '/images/avatar-placeholder.png'}
-              alt='client-profile-picture'
+  src={record.user?.userDetail?.profilePicture ? imgProfilePicture(record.user.userDetail.profilePicture) : '/images/avatar-placeholder.png'}
+    alt='client-profile-picture'
               fill
               sizes='(max-width: 400px)'
               className='object-cover rounded-lg'
@@ -56,8 +56,8 @@ const AdminReviewPage = () => {
     <div className='flex items-center gap-2'>
       <div className='relative w-[50px] h-[50px] hidden 2xl:block'>
         <Image
-          src={record.translator.user.userDetail.profilePicture ? imgProfilePicture(record.translator.user.userDetail.profilePicture) : '/images/avatar-placeholder.png'}
-          alt='translator-profile-picture'
+  src={record.translator?.user?.userDetail?.profilePicture ? imgProfilePicture(record.translator.user.userDetail.profilePicture) : '/images/avatar-placeholder.png'}
+  alt='translator-profile-picture'
           fill
           sizes='(max-width: 400px)'
           className='object-cover rounded-lg'
@@ -85,12 +85,16 @@ const AdminReviewPage = () => {
     },
     {
       title: 'Description',
-      dataIndex: 'comment',
-      key: 'comment',
+      dataIndex: 'description',
+      key: 'description',
       render: (_, record) => (
-        <p className='text-xs 2xl:text-sm line-clamp-2'>{record.comment || 'N/A '}</p>
+        <div className='flex flex-col gap-2'>
+          <p className='text-xs 2xl:text-sm line-clamp-2'>{record.comment}</p>
+        </div>
       ),
     },
+    
+    
     {
       title: 'Rating',
       dataIndex: 'rating',
@@ -103,8 +107,8 @@ const AdminReviewPage = () => {
     },
   ];
 
-  const handlePageChange = (newPage: number) => {
-    router.push(`/dashboard/account/translator?page=${newPage}`);
+  const handlePageChange = (page: number) => {
+    router.push(`/dashboard/quality/review?page=${page}`);
   };
 
   const data = filteredData.map((review: Review) => ({

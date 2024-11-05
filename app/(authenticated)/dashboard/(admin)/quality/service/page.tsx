@@ -1,7 +1,7 @@
 'use client';
 
-import Image from 'next/image';
 import LanguageFlag from '#/components/LanguageFlag';
+import ServiceModal from '#/components/Modal/ServiceModal';
 import Pagination from '#/components/Pagination';
 import StatusBadge from '#/components/StatusBadge';
 import { serviceRepository } from '#/repository/service';
@@ -19,23 +19,24 @@ import {
 } from 'antd';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
+import Image from 'next/image';
 
-const AdminServicePages = () => {
+const AdminService = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const page = Number(searchParams?.get('page')) || 1;
 
-  const [searchTerm, setSearchTerm] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
 
   const {
     data: listServices,
     isLoading,
-    error,
     mutate,
-  } = serviceRepository.hooks.useTranslatorServices(page, 10);
+  } = serviceRepository.hooks.useGetAllServices(page, 10);
 
-  const { data: listLanguages } = translatorRepository.hooks.useGetTranslatorLanguages();
+  const { data: listLanguages } =
+    translatorRepository.hooks.useGetTranslatorLanguages();
 
   const columns: TableProps['columns'] = [
     {
@@ -46,26 +47,27 @@ const AdminServicePages = () => {
         <div className='flex items-center gap-2'>
           <div className='relative w-[50px] h-[50px] hidden 2xl:block'>
             <Image
-              src={record?.translator?.translatorDetail?.profilePicture || '/images/avatar-placeholder.png'}
-              alt='translator-profile-picture'
+              src={
+                record?.translator?.user?.userDetail?.profilePicture
+                  ? record?.translator.user.userDetail.profilePicture
+                  : '/images/avatar-placeholder.png'
+              }
               fill
+              alt='translator-profile-picture'
               sizes='(max-width: 400px)'
               className='object-cover rounded-lg'
               priority
+    
             />
           </div>
-          <div className='flex flex-col'>
-            <p className='font-semibold text-xs 2xl:text-sm line-clamp-1'>{record?.translator?.translatorDetail?.fullName || 'N/A'}</p>
-            <p className='font-semibold text-xs 2xl:text-sm line-clamp-1'>{record?.translator?.translatorDetail?.email || 'N/A'}</p>
+          <div>
+            <p>{record?.translator?.user?.userDetail?.fullName || 'N/A'}</p> 
+            <p className='text-zinc-500'>{record?.translator?.user?.email || 'N/A'}</p> 
           </div>
         </div>
       ),
-      sorter: (a, b) => {
-        const nameA = a.translator?.translatorDetail?.fullName || '';
-        const nameB = b.translator?.translatorDetail?.fullName || '';
-        return nameA.localeCompare(nameB);
-      },
     },
+
     {
       title: 'Service Name',
       dataIndex: 'name',
@@ -129,10 +131,14 @@ const AdminServicePages = () => {
   const toggleStatus = async (id: string) => {
     try {
       await serviceRepository.api.toggleStatus(id);
-      mutate(); // Re-fetch the data
+
+      mutate();
       message.success('Service status updated successfully');
     } catch (error: any) {
-      message.error(error.response?.body?.message || 'Error toggling service', 5);
+      message.error(
+        error.response.body?.message || 'Error toggling service',
+        5
+      );
     }
   };
 
@@ -142,10 +148,17 @@ const AdminServicePages = () => {
         key: '1',
         label: (
           <div className='flex items-center'>
-            <Icon icon={'hugeicons:pencil-edit-01'} className='text-lg 2xl:text-xl' />
+            <Icon
+              icon={'hugeicons:pencil-edit-01'}
+              className='text-lg 2xl:text-xl'
+            />
             <span className='ml-2 text-xs 2xl:text-sm'>Edit</span>
           </div>
         ),
+        onClick: () => {
+          setSelectedService(service);
+          setIsModalOpen(true);
+        },
       },
       {
         key: '2',
@@ -153,7 +166,9 @@ const AdminServicePages = () => {
           <div className='flex items-center'>
             <Icon
               icon={'tabler:circle-filled'}
-              className={`text-lg 2xl:text-xl ${service.status !== 'Active' ? 'text-green-500' : 'text-rose-500'}`}
+              className={`text-lg 2xl:text-xl ${
+                service.status !== 'Active' ? 'text-green-500' : 'text-rose-500'
+              }`}
             />
             <span className='ml-2 text-xs 2xl:text-sm'>
               {service.status !== 'Active' ? 'Activate' : 'Deactivate'}
@@ -167,11 +182,7 @@ const AdminServicePages = () => {
     return items;
   };
 
-  const filteredData = listServices?.data?.filter((service: Service) =>
-    service.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const data = filteredData?.map((service: any) => ({
+  const data = listServices?.data?.map((service: any) => ({
     key: service.id,
     ...service,
     action: (
@@ -193,21 +204,19 @@ const AdminServicePages = () => {
     router.push(`/dashboard/translator/service?page=${page}`);
   };
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error) {
-    console.error("Error fetching services:", error);
-    return <p>Error loading services. Please try again later.</p>;
-  }
-
   return (
     <main className='bg-white w-full rounded-3xl p-4'>
       <div className='flex justify-between items-center mb-4'>
         <Input
           type='text'
           placeholder='Search...'
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          prefix={<Icon icon={'iconamoon:search-light'} height={24} className='text-zinc-400' />}
+          prefix={
+            <Icon
+              icon={'iconamoon:search-light'}
+              height={24}
+              className='text-zinc-400'
+            />
+          }
           className='h-12 w-fit'
         />
       </div>
@@ -220,7 +229,8 @@ const AdminServicePages = () => {
         footer={() => (
           <div className='flex justify-between items-center'>
             <p className='text-xs 2xl:text-sm'>
-              <span className='font-bold'>{listServices?.page}</span> of {listServices?.totalPages} from {listServices?.total} results
+              <span className='font-bold'>{listServices?.page}</span> of{' '}
+              {listServices?.totalPages} from {listServices?.total} result
             </p>
             <Pagination
               current={listServices?.page}
@@ -231,8 +241,18 @@ const AdminServicePages = () => {
           </div>
         )}
       />
+      <ServiceModal
+        open={isModalOpen}
+        onCancel={() => {
+          setIsModalOpen(false);
+          setSelectedService(null);
+        }}
+        languages={listLanguages?.data}
+        mutate={mutate}
+        service={selectedService}
+      />
     </main>
   );
 };
 
-export default AdminServicePages;
+export default AdminService;

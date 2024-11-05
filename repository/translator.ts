@@ -2,7 +2,7 @@ import { http } from '#/utils/http';
 import useSWR from 'swr';
 
 const url = {
-  getTranslators: (page?: number, limit?: number) =>
+  getTranslators: (page?: number, limit: number = 10) =>
     `/translators?page=${page}&limit=${limit}`,
   getBestTranslator: () => '/translators/best',
   searchTranslatorByService: (
