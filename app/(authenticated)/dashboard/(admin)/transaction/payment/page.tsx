@@ -1,7 +1,7 @@
 'use client';
 
-import Pagination from '#/components/Pagination';
 import StatusBadge from '#/components/StatusBadge';
+import CustomTable from '#/components/Tables/CustomTable';
 import { config } from '#/config/app';
 import { paymentRepository } from '#/repository/payment';
 import { Payment } from '#/types/PaymentTypes';
@@ -15,7 +15,6 @@ import {
   Dropdown,
   Input,
   Segmented,
-  Table,
   TableProps,
   Tooltip,
 } from 'antd';
@@ -253,37 +252,15 @@ const AdminPayment = () => {
           </Dropdown>
         </div>
       </div>
-      <Table
+      <CustomTable
         columns={columns}
-        dataSource={data}
-        pagination={false}
-        scroll={{ x: 'max-content' }}
-        rowClassName={'cursor-pointer'}
-        onRow={(record) => ({
-          onClick: () => {
-            // Cari payment asli berdasarkan ID
-            const originalPayment = listPayments?.data?.find(
-              (payment: Payment) => payment.id === record.key
-            );
-            setSelectedPayment(originalPayment || null);
-            setShowDrawer(true);
-          },
-        })}
-        loading={isLoading}
-        footer={() => (
-          <div className='flex justify-between items-center'>
-            <p className='text-xs 2xl:text-sm'>
-              <span className='font-bold'>{listPayments?.page}</span> of{' '}
-              {listPayments?.totalPages} from {listPayments?.total} result
-            </p>
-            <Pagination
-              current={listPayments?.page}
-              total={listPayments?.total}
-              pageSize={listPayments?.limit}
-              onChange={handlePageChange}
-            />
-          </div>
-        )}
+        data={data}
+        isLoading={isLoading}
+        pageSize={listPayments?.limit}
+        currentPage={listPayments?.page}
+        totalData={listPayments?.total}
+        totalPage={listPayments?.totalPages}
+        handlePageChange={handlePageChange}
       />
       <Drawer
         onClose={() => {

@@ -1,14 +1,14 @@
 'use client';
 
 import LanguageFlag from '#/components/LanguageFlag';
-import Pagination from '#/components/Pagination';
 import StatusBadge from '#/components/StatusBadge';
+import CustomTable from '#/components/Tables/CustomTable';
 import { translatorRepository } from '#/repository/translator';
 import { Language } from '#/types/LanguageTypes';
 import { Translator } from '#/types/TranslatorTypes';
 import { capitalizeFirstLetter } from '#/utils/capitalizeFirstLetter';
 import { Icon } from '@iconify-icon/react';
-import { Input, Segmented, Table, TableProps, Tag, Tooltip } from 'antd';
+import { Input, Segmented, TableProps, Tag, Tooltip } from 'antd';
 import dayjs from 'dayjs';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -178,32 +178,16 @@ const TranslatorRegistration = () => {
           defaultValue={status}
         />
       </div>
-      <Table
+      <CustomTable
         columns={columns}
-        dataSource={data}
-        pagination={false}
-        scroll={{ x: 'max-content' }}
-        rowClassName={'cursor-pointer'}
-        onRow={(row) => ({
-          onClick: () => {
-            router.push(`/dashboard/account/translator/${row.key}`);
-          },
-        })}
-        loading={isLoading}
-        footer={() => (
-          <div className='flex justify-between items-center'>
-            <p className='text-xs 2xl:text-sm'>
-              <span className='font-bold'>{listRegisters?.page}</span> of{' '}
-              {listRegisters?.totalPages} from {listRegisters?.total} result
-            </p>
-            <Pagination
-              current={listRegisters?.page}
-              total={listRegisters?.total}
-              pageSize={listRegisters?.limit}
-              onChange={handlePageChange}
-            />
-          </div>
-        )}
+        data={data}
+        isLoading={isLoading}
+        pageSize={listRegisters?.limit}
+        currentPage={listRegisters?.page}
+        totalData={listRegisters?.total}
+        totalPage={listRegisters?.totalPages}
+        handlePageChange={handlePageChange}
+        onClick={(id) => router.push(`/dashboard/account/translator/${id}`)}
       />
     </main>
   );

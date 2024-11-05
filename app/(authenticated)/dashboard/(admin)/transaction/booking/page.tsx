@@ -1,14 +1,14 @@
 'use client';
 
 import LanguageFlag from '#/components/LanguageFlag';
-import Pagination from '#/components/Pagination';
 import StatusBadge from '#/components/StatusBadge';
+import CustomTable from '#/components/Tables/CustomTable';
 import { imgProfilePicture } from '#/constants/general';
 import { bookingRepository } from '#/repository/booking';
 import { Booking } from '#/types/BookingTypes';
 import { capitalizeFirstLetter } from '#/utils/capitalizeFirstLetter';
 import { Icon } from '@iconify-icon/react';
-import { Dropdown, Input, Table, TableProps } from 'antd';
+import { Dropdown, Input, TableProps } from 'antd';
 import { MenuItemType } from 'antd/es/menu/interface';
 import dayjs from 'dayjs';
 import Image from 'next/image';
@@ -245,32 +245,16 @@ const AdminBooking = () => {
           </div>
         </Dropdown>
       </div>
-      <Table
+      <CustomTable
         columns={columns}
-        dataSource={data}
-        pagination={false}
-        scroll={{ x: 'max-content' }}
-        rowClassName={'cursor-pointer'}
-        onRow={(row) => ({
-          onClick: () => {
-            router.push(`/dashboard/translator/booking/${row.key}`);
-          },
-        })}
-        loading={isLoading}
-        footer={() => (
-          <div className='flex justify-between items-center'>
-            <p className='text-xs 2xl:text-sm'>
-              <span className='font-bold'>{bookingLists?.page}</span> of{' '}
-              {bookingLists?.totalPages} from {bookingLists?.total} result
-            </p>
-            <Pagination
-              current={bookingLists?.page}
-              total={bookingLists?.total}
-              pageSize={bookingLists?.limit}
-              onChange={handlePageChange}
-            />
-          </div>
-        )}
+        data={data}
+        isLoading={isLoading}
+        pageSize={bookingLists?.limit}
+        currentPage={bookingLists?.page}
+        totalData={bookingLists?.total}
+        totalPage={bookingLists?.totalPages}
+        handlePageChange={handlePageChange}
+        onClick={({ id }) => router.push(`/dashboard/booking/${id}`)}
       />
     </main>
   );

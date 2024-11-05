@@ -2,11 +2,11 @@
 
 import LanguageFlag from '#/components/LanguageFlag';
 import LanguageModal from '#/components/Modal/LanguageModal';
-import Pagination from '#/components/Pagination';
+import CustomTable from '#/components/Tables/CustomTable';
 import { languagesRepository } from '#/repository/language';
 import { Language } from '#/types/LanguageTypes';
 import { Icon } from '@iconify-icon/react';
-import { Button, Input, Table, TableProps } from 'antd';
+import { Button, Input, TableProps } from 'antd';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 
@@ -113,27 +113,15 @@ const DashboardLanguage = () => {
           <Icon icon={'ph:plus'} className='text-xl' />
         </Button>
       </div>
-      <Table
+      <CustomTable
         columns={columns}
-        dataSource={data}
-        pagination={false}
-        scroll={{ x: 'max-content' }}
-        loading={isLoading}
-        style={{ backgroundColor: 'unset' }}
-        footer={() => (
-          <div className='flex justify-between items-center'>
-            <p className='text-xs 2xl:text-sm'>
-              <span className='font-bold'>{listLanguages?.page}</span> of{' '}
-              {listLanguages?.totalPages} from {listLanguages?.total} result
-            </p>
-            <Pagination
-              current={listLanguages?.page}
-              total={listLanguages?.total}
-              pageSize={listLanguages?.limit}
-              onChange={handlePageChange}
-            />
-          </div>
-        )}
+        data={data}
+        isLoading={isLoading}
+        pageSize={listLanguages?.limit}
+        currentPage={listLanguages?.page}
+        totalData={listLanguages?.total}
+        totalPage={listLanguages?.totalPages}
+        handlePageChange={handlePageChange}
       />
       <LanguageModal
         open={isModalOpen}

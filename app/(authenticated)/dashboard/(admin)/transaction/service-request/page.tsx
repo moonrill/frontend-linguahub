@@ -1,14 +1,14 @@
 'use client';
 
 import LanguageFlag from '#/components/LanguageFlag';
-import Pagination from '#/components/Pagination';
 import StatusBadge from '#/components/StatusBadge';
+import CustomTable from '#/components/Tables/CustomTable';
 import { imgProfilePicture } from '#/constants/general';
 import { serviceRequestRepository } from '#/repository/service-request';
 import { Booking } from '#/types/BookingTypes';
 import { capitalizeFirstLetter } from '#/utils/capitalizeFirstLetter';
 import { Icon } from '@iconify-icon/react';
-import { Dropdown, Input, Table, TableProps } from 'antd';
+import { Dropdown, Input, TableProps } from 'antd';
 import { MenuItemType } from 'antd/es/menu/interface';
 import dayjs from 'dayjs';
 import Image from 'next/image';
@@ -22,7 +22,7 @@ const AdminServiceRequest = () => {
   const statusParam = status === 'all' ? undefined : status;
 
   const {
-    data: response,
+    data: listServiceRequests,
     mutate,
     isLoading,
   } = serviceRequestRepository.hooks.useGetServiceRequests(
@@ -82,7 +82,7 @@ const AdminServiceRequest = () => {
     },
   ];
 
-  const data = response?.data?.map((sr: Booking) => ({
+  const data = listServiceRequests?.data?.map((sr: Booking) => ({
     key: sr?.id,
     client: (
       <div className='flex gap-3 items-center'>
@@ -193,7 +193,7 @@ const AdminServiceRequest = () => {
 
   const handleSelect = (value: string) => {
     router.push(
-      `/dashboard/transaction/service-request?status=${value}&page=${response?.page}`
+      `/dashboard/transaction/service-request?status=${value}&page=${listServiceRequests?.page}`
     );
   };
 
@@ -234,26 +234,15 @@ const AdminServiceRequest = () => {
           </div>
         </Dropdown>
       </div>
-      <Table
+      <CustomTable
         columns={columns}
-        dataSource={data}
-        pagination={false}
-        scroll={{ x: 'max-content' }}
-        loading={isLoading}
-        footer={() => (
-          <div className='flex justify-between items-center'>
-            <p className='text-xs 2xl:text-sm'>
-              <span className='font-bold'>{response?.page}</span> of{' '}
-              {response?.totalPages} from {response?.total} result
-            </p>
-            <Pagination
-              current={response?.page}
-              total={response?.total}
-              pageSize={response?.limit}
-              onChange={handlePageChange}
-            />
-          </div>
-        )}
+        data={data}
+        isLoading={isLoading}
+        pageSize={listServiceRequests?.limit}
+        currentPage={listServiceRequests?.page}
+        totalData={listServiceRequests?.total}
+        totalPage={listServiceRequests?.totalPages}
+        handlePageChange={handlePageChange}
       />
     </main>
   );

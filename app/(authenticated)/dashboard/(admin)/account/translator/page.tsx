@@ -1,14 +1,14 @@
 'use client';
 
 import LanguageFlag from '#/components/LanguageFlag';
-import Pagination from '#/components/Pagination';
+import CustomTable from '#/components/Tables/CustomTable';
 import { imgProfilePicture } from '#/constants/general';
 import { translatorRepository } from '#/repository/translator';
 import { Language } from '#/types/LanguageTypes';
 import { Translator } from '#/types/TranslatorTypes';
 import { capitalizeFirstLetter } from '#/utils/capitalizeFirstLetter';
 import { Icon } from '@iconify-icon/react';
-import { Input, Table, TableProps, Tag, Tooltip } from 'antd';
+import { Input, TableProps, Tag, Tooltip } from 'antd';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -169,32 +169,16 @@ const TranslatorAccount = () => {
           className='h-12 w-fit'
         />
       </div>
-      <Table
+      <CustomTable
         columns={columns}
-        dataSource={data}
-        pagination={false}
-        scroll={{ x: 'max-content' }}
-        rowClassName={'cursor-pointer'}
-        onRow={(row) => ({
-          onClick: () => {
-            router.push(`/dashboard/account/translator/${row.key}`);
-          },
-        })}
-        loading={isLoading}
-        footer={() => (
-          <div className='flex justify-between items-center'>
-            <p className='text-xs 2xl:text-sm'>
-              <span className='font-bold'>{listTranslators?.page}</span> of{' '}
-              {listTranslators?.totalPages} from {listTranslators?.total} result
-            </p>
-            <Pagination
-              current={listTranslators?.page}
-              total={listTranslators?.total}
-              pageSize={listTranslators?.limit}
-              onChange={handlePageChange}
-            />
-          </div>
-        )}
+        data={data}
+        isLoading={isLoading}
+        pageSize={listTranslators?.limit}
+        currentPage={listTranslators?.page}
+        totalData={listTranslators?.total}
+        totalPage={listTranslators?.totalPages}
+        handlePageChange={handlePageChange}
+        onClick={({ id }) => router.push(`/dashboard/account/translator/${id}`)}
       />
     </main>
   );

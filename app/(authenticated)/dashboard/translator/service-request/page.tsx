@@ -3,8 +3,8 @@
 import LanguageFlag from '#/components/LanguageFlag';
 import ConfirmModal from '#/components/Modal/ConfirmModal';
 import ServiceRequestDetailModal from '#/components/Modal/ServiceRequestDetail';
-import Pagination from '#/components/Pagination';
 import StatusBadge from '#/components/StatusBadge';
+import CustomTable from '#/components/Tables/CustomTable';
 import { imgProfilePicture } from '#/constants/general';
 import { serviceRequestRepository } from '#/repository/service-request';
 import { Booking } from '#/types/BookingTypes';
@@ -18,7 +18,6 @@ import {
   MenuProps,
   message,
   Modal,
-  Table,
   TableProps,
   Tooltip,
 } from 'antd';
@@ -45,7 +44,7 @@ const TranslatorServiceRequest = () => {
   const [loading, setLoading] = useState(false);
 
   const {
-    data: response,
+    data: serviceRequests,
     mutate,
     isLoading,
   } = serviceRequestRepository.hooks.useGetServiceRequests(
@@ -205,7 +204,7 @@ const TranslatorServiceRequest = () => {
     return items;
   };
 
-  const data = response?.data?.map((sr: Booking) => ({
+  const data = serviceRequests?.data?.map((sr: Booking) => ({
     key: sr?.id,
     client: (
       <div className='flex gap-3 items-center'>
@@ -301,7 +300,7 @@ const TranslatorServiceRequest = () => {
 
   const handleSelect = (value: string) => {
     router.push(
-      `/dashboard/translator/service-request?status=${value}&page=${response?.page}`
+      `/dashboard/translator/service-request?status=${value}&page=${serviceRequests?.page}`
     );
   };
 
@@ -342,26 +341,15 @@ const TranslatorServiceRequest = () => {
           </div>
         </Dropdown>
       </div>
-      <Table
+      <CustomTable
         columns={columns}
-        dataSource={data}
-        pagination={false}
-        scroll={{ x: 'max-content' }}
-        loading={isLoading}
-        footer={() => (
-          <div className='flex justify-between items-center'>
-            <p className='text-xs 2xl:text-sm'>
-              <span className='font-bold'>{response?.page}</span> of{' '}
-              {response?.totalPages} from {response?.total} result
-            </p>
-            <Pagination
-              current={response?.page}
-              total={response?.total}
-              pageSize={response?.limit}
-              onChange={handlePageChange}
-            />
-          </div>
-        )}
+        data={data}
+        isLoading={isLoading}
+        pageSize={serviceRequests?.limit}
+        currentPage={serviceRequests?.page}
+        totalData={serviceRequests?.total}
+        totalPage={serviceRequests?.totalPages}
+        handlePageChange={handlePageChange}
       />
       <ConfirmModal
         open={openApprove}

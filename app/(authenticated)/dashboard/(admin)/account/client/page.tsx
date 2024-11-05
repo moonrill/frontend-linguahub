@@ -1,12 +1,12 @@
 'use client';
 
-import Pagination from '#/components/Pagination';
+import CustomTable from '#/components/Tables/CustomTable';
 import { imgProfilePicture } from '#/constants/general';
 import { userRepository } from '#/repository/user';
 import { User } from '#/types/UserType';
 import { capitalizeFirstLetter } from '#/utils/capitalizeFirstLetter';
 import { Icon } from '@iconify-icon/react';
-import { Input, Table, TableProps, Tooltip } from 'antd';
+import { Input, TableProps, Tooltip } from 'antd';
 import dayjs from 'dayjs';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -147,26 +147,15 @@ const ClientAccount = () => {
           className='h-12 w-fit'
         />
       </div>
-      <Table
+      <CustomTable
         columns={columns}
-        dataSource={data}
-        pagination={false}
-        scroll={{ x: 'max-content' }}
-        loading={isLoading}
-        footer={() => (
-          <div className='flex justify-between items-center'>
-            <p className='text-xs 2xl:text-sm'>
-              <span className='font-bold'>{listUsers?.page}</span> of{' '}
-              {listUsers?.totalPages} from {listUsers?.total} result
-            </p>
-            <Pagination
-              current={listUsers?.page}
-              total={listUsers?.total}
-              pageSize={listUsers?.limit}
-              onChange={handlePageChange}
-            />
-          </div>
-        )}
+        data={data}
+        isLoading={isLoading}
+        pageSize={listUsers?.limit}
+        currentPage={listUsers?.page}
+        totalData={listUsers?.total}
+        totalPage={listUsers?.totalPages}
+        handlePageChange={handlePageChange}
       />
     </main>
   );

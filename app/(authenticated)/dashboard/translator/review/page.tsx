@@ -1,11 +1,11 @@
 'use client';
 
-import Pagination from '#/components/Pagination';
+import CustomTable from '#/components/Tables/CustomTable';
 import { imgProfilePicture } from '#/constants/general';
 import { reviewRepository } from '#/repository/review';
 import { Review } from '#/types/TranslatorTypes';
 import { Icon } from '@iconify-icon/react';
-import { Dropdown, Input, Table, TableProps, Tooltip } from 'antd';
+import { Dropdown, Input, TableProps, Tooltip } from 'antd';
 import { MenuItemType } from 'antd/es/menu/interface';
 import dayjs from 'dayjs';
 import Image from 'next/image';
@@ -224,32 +224,18 @@ const TranslatorReviews = () => {
           </div>
         </Dropdown>
       </div>
-      <Table
+      <CustomTable
         columns={columns}
-        dataSource={data}
-        pagination={false}
-        scroll={{ x: 'max-content' }}
-        loading={isLoading}
-        rowClassName={'cursor-pointer'}
-        onRow={(row) => ({
-          onClick: () => {
-            router.push(`/dashboard/translator/booking/${row.bookingId}`);
-          },
-        })}
-        footer={() => (
-          <div className='flex justify-between items-center'>
-            <p className='text-xs 2xl:text-sm'>
-              <span className='font-bold'>{listReviews?.page}</span> of{' '}
-              {listReviews?.totalPages} from {listReviews?.total} result
-            </p>
-            <Pagination
-              current={listReviews?.page}
-              total={listReviews?.total}
-              pageSize={listReviews?.limit}
-              onChange={handlePageChange}
-            />
-          </div>
-        )}
+        data={data}
+        isLoading={isLoading}
+        pageSize={listReviews?.limit}
+        currentPage={listReviews?.page}
+        totalData={listReviews?.total}
+        totalPage={listReviews?.totalPages}
+        handlePageChange={handlePageChange}
+        onClick={({ bookingId }) =>
+          router.push(`/dashboard/translator/booking/${bookingId}`)
+        }
       />
     </main>
   );
