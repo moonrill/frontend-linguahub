@@ -35,30 +35,40 @@ const AdminReviewPage = () => {
         <div className='flex items-center gap-2'>
           <div className='relative w-[50px] h-[50px] hidden 2xl:block'>
             <Image
-              src={record?.user?.userDetail.profilePicture ? imgProfilePicture(record?.user?.userDetail.profilePicture) : '/images/avatar-placeholder.png'}
-              alt='translator-profile-picture'
+              src={record.user.userDetail.profilePicture ? imgProfilePicture(record.user.userDetail.profilePicture) : '/images/avatar-placeholder.png'}
+              alt='client-profile-picture'
               fill
               sizes='(max-width: 400px)'
               className='object-cover rounded-lg'
               priority
             />
           </div>
-          <p className='font-semibold text-xs 2xl:text-sm line-clamp-1'>{record?.user?.userDetail?.fullName}</p>
+          <p className='font-semibold text-xs 2xl:text-sm line-clamp-1'>{record.user.userDetail.fullName}</p>
         </div>
       ),
-      sorter: (a, b) => a.user.userDetail.fullName.localeCompare(b.user.userDetail.fullName),
     },
-    {
-      title: 'Translator',
-      dataIndex: 'translator',
-      key: 'translator',
-      render: (_, record) => (
-        <div className='flex items-center gap-2'>
-          <p className='font-semibold text-xs 2xl:text-sm line-clamp-1'>{record?.translator?.name || 'N/A'}</p>
-        </div>
-      ),
-      sorter: (a, b) => (a.translator?.name || '').localeCompare(b.translator?.name || ''),
-    },
+
+   {
+  title: 'Translator',
+  dataIndex: 'translator',
+  key: 'translator',
+  render: (_, record) => (
+    <div className='flex items-center gap-2'>
+      <div className='relative w-[50px] h-[50px] hidden 2xl:block'>
+        <Image
+          src={record.translator.user.userDetail.profilePicture ? imgProfilePicture(record.translator.user.userDetail.profilePicture) : '/images/avatar-placeholder.png'}
+          alt='translator-profile-picture'
+          fill
+          sizes='(max-width: 400px)'
+          className='object-cover rounded-lg'
+          priority
+        />
+      </div>
+      <p className='font-semibold text-xs 2xl:text-sm line-clamp-1'>{record.translator.user.userDetail.fullName}</p>
+    </div>
+  ),
+},
+
     {
       title: 'Date',
       dataIndex: 'createdAt',
@@ -78,7 +88,7 @@ const AdminReviewPage = () => {
       dataIndex: 'comment',
       key: 'comment',
       render: (_, record) => (
-        <p className='text-xs 2xl:text-sm line-clamp-2'>{record.comment || '-'}</p>
+        <p className='text-xs 2xl:text-sm line-clamp-2'>{record.comment || 'N/A '}</p>
       ),
     },
     {
@@ -88,7 +98,7 @@ const AdminReviewPage = () => {
       align: 'center',
       width: 100,
       render: (rating: number) => (
-        <p className='text-xs 2xl:text-sm'>{rating ? `${rating} ⭐` : 'N/A'}</p> // Displaying rating with a star
+        <p className='text-xs 2xl:text-sm'>{rating ? `${rating} ` : 'N/A'}</p> 
       ),
     },
   ];
