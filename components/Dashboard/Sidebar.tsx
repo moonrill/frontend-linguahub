@@ -5,7 +5,6 @@ import { Icon } from '@iconify-icon/react';
 import { Button, Layout } from 'antd';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 const { Sider } = Layout;
@@ -15,7 +14,6 @@ interface SidebarComponentProps {
 }
 
 const SidebarComponent: React.FC<SidebarComponentProps> = ({ role }) => {
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   const handleLogout = async () => {

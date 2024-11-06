@@ -22,8 +22,10 @@ const Profile = () => {
 
       message.success('Password updated successfully');
       form.resetFields();
-    } catch (error) {
-      message.error('Failed to update password');
+    } catch (error: any) {
+      message.error(
+        error?.response?.body?.message || 'Failed to update password'
+      );
     }
   };
 

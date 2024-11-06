@@ -11,18 +11,39 @@ import { Language } from '#/types/LanguageTypes';
 import { Specialization } from '#/types/SpecializationTypes';
 import { capitalizeFirstLetter } from '#/utils/capitalizeFirstLetter';
 import { Icon } from '@iconify-icon/react';
-import { Button, Skeleton, Tag } from 'antd';
+import { Button, Form, Input, message, Skeleton, Tag } from 'antd';
+import { useForm } from 'antd/es/form/Form';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 
 const TranslatorProfile = () => {
+  const [form] = useForm();
+
   const [editProfileModal, setEditProfileModal] = useState(false);
   const [editProfessionalModal, setEditProfessionalModal] = useState(false);
   const [bioModal, setBioModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const { data, isLoading, mutate } = authRepository.hooks.useProfile();
 
   const profile = data?.data;
+
+  const handleUpdatePassword = async (values: any) => {
+    setLoading(true);
+    try {
+      await authRepository.api.updatePassword(values);
+
+      message.success('Password updated successfully');
+      form.resetFields();
+    } catch (error: any) {
+      message.error(
+        error?.response?.body?.message || 'Failed to update password'
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <main className='bg-white w-full h-full rounded-3xl p-4 flex flex-col gap-4'>
@@ -358,6 +379,136 @@ const TranslatorProfile = () => {
                   <p>{profile?.translator?.bio || '-'}</p>
                 </div>
               </div>
+            </section>
+            <section className='flex flex-col gap-3 border p-4 rounded-xl'>
+              <h1 className='text-sm 2xl:text-xl font-semibold text-zinc-600'>
+                Change Password
+              </h1>
+              <Form
+                className='flex flex-col'
+                onFinish={handleUpdatePassword}
+                form={form}
+              >
+                <Form.Item
+                  name={'oldPassword'}
+                  validateDebounce={500}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please enter your current password',
+                    },
+                  ]}
+                >
+                  <Input.Password
+                    type='password'
+                    placeholder='Current Password'
+                    iconRender={(visible) =>
+                      visible ? (
+                        <Icon
+                          icon={'solar:eye-closed-bold'}
+                          height={24}
+                          style={{ color: '#a1a1aa' }}
+                        />
+                      ) : (
+                        <Icon
+                          icon={'solar:eye-bold'}
+                          height={24}
+                          style={{ color: '#a1a1aa' }}
+                        />
+                      )
+                    }
+                    className='h-14'
+                  />
+                </Form.Item>
+                <div className='grid grid-cols-2 gap-4'>
+                  <Form.Item
+                    name={'newPassword'}
+                    validateDebounce={500}
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Please enter your new password',
+                      },
+                    ]}
+                  >
+                    <Input.Password
+                      type='password'
+                      placeholder='New Password'
+                      iconRender={(visible) =>
+                        visible ? (
+                          <Icon
+                            icon={'solar:eye-closed-bold'}
+                            height={24}
+                            style={{ color: '#a1a1aa' }}
+                          />
+                        ) : (
+                          <Icon
+                            icon={'solar:eye-bold'}
+                            height={24}
+                            style={{ color: '#a1a1aa' }}
+                          />
+                        )
+                      }
+                      className='h-14'
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    name={'confirmPassword'}
+                    validateDebounce={500}
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Please enter your confirm password',
+                      },
+                      ({ getFieldValue }) => ({
+                        validator(_, value) {
+                          if (
+                            !value ||
+                            getFieldValue('newPassword') === value
+                          ) {
+                            return Promise.resolve();
+                          }
+                          return Promise.reject(
+                            new Error(
+                              'The new password that you entered do not match!'
+                            )
+                          );
+                        },
+                      }),
+                    ]}
+                  >
+                    <Input.Password
+                      type='password'
+                      placeholder='Confirm Password'
+                      iconRender={(visible) =>
+                        visible ? (
+                          <Icon
+                            icon={'solar:eye-closed-bold'}
+                            height={24}
+                            style={{ color: '#a1a1aa' }}
+                          />
+                        ) : (
+                          <Icon
+                            icon={'solar:eye-bold'}
+                            height={24}
+                            style={{ color: '#a1a1aa' }}
+                          />
+                        )
+                      }
+                      className='h-14'
+                    />
+                  </Form.Item>
+                </div>
+                <Button
+                  className='w-fit p-4 text-xs 2xl:text-sm font-medium rounded-lg ml-auto'
+                  type='default'
+                  htmlType='submit'
+                  disabled={loading}
+                  loading={loading}
+                >
+                  Update Password
+                </Button>
+              </Form>
             </section>
           </>
         )

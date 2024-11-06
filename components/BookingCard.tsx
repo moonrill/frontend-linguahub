@@ -3,7 +3,7 @@ import { Booking } from '#/types/BookingTypes';
 import { capitalizeFirstLetter } from '#/utils/capitalizeFirstLetter';
 import { http } from '#/utils/http';
 import { Icon } from '@iconify-icon/react';
-import { Button, Divider } from 'antd';
+import { Button, Divider, Tooltip } from 'antd';
 import dayjs from 'dayjs';
 import Image from 'next/image';
 import { useState } from 'react';
@@ -107,16 +107,27 @@ const BookingCard = ({ booking, type }: Props) => {
                 {booking?.translator?.user?.userDetail?.fullName}
               </p>
             </div>
-            <div className='flex gap-1.5 items-center text-gray-500'>
-              <Icon icon={'ic:round-date-range'} className='2xl:text-xl' />
-              <p className='text-xs 2xl:text-sm font-semibold'>
-                {new Date(booking?.bookingDate).toLocaleDateString('en-UK', {
+            <Tooltip
+              title={new Date(booking?.bookingDate).toLocaleDateString(
+                'en-UK',
+                {
                   day: '2-digit',
                   month: 'long',
                   year: 'numeric',
-                })}
-              </p>
-            </div>
+                }
+              )}
+            >
+              <div className='flex gap-1.5 items-center text-gray-500'>
+                <Icon icon={'ic:round-date-range'} className='2xl:text-xl' />
+                <p className='text-xs 2xl:text-sm font-semibold truncate'>
+                  {new Date(booking?.bookingDate).toLocaleDateString('en-UK', {
+                    day: '2-digit',
+                    month: 'long',
+                    year: 'numeric',
+                  })}
+                </p>
+              </div>
+            </Tooltip>
             <div className='flex gap-1.5 items-center text-gray-500'>
               <Icon icon={'mdi:clock-outline'} className='2xl:text-xl' />
               <p className='text-xs 2xl:text-sm font-semibold'>
@@ -142,12 +153,14 @@ const BookingCard = ({ booking, type }: Props) => {
               />
               <p>{booking?.service?.targetLanguage.code.toUpperCase()}</p>
             </div>
-            <div className='flex gap-1.5 text-gray-500 w-[300px] items-center'>
-              <Icon icon={'mdi:map-marker'} className='2xl:text-xl' />
-              <p className='text-xs 2xl:text-sm font-medium line-clamp-1'>
-                {booking?.location}
-              </p>
-            </div>
+            <Tooltip title={booking?.location}>
+              <div className='flex gap-1.5 text-gray-500 w-[300px] items-center'>
+                <Icon icon={'mdi:map-marker'} className='2xl:text-xl' />
+                <p className='text-xs 2xl:text-sm font-medium truncate'>
+                  {booking?.location}
+                </p>
+              </div>
+            </Tooltip>
           </div>
         </div>
         <div className='flex flex-col justify-between items-end'>

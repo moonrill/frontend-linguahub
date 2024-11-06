@@ -5,7 +5,7 @@ import { Payment } from '#/types/PaymentTypes';
 import { capitalizeFirstLetter } from '#/utils/capitalizeFirstLetter';
 import { http } from '#/utils/http';
 import { Icon } from '@iconify-icon/react';
-import { Button, Divider, Drawer } from 'antd';
+import { Button, Divider, Drawer, Tooltip } from 'antd';
 import dayjs from 'dayjs';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
@@ -66,7 +66,7 @@ type Props = {
 const PaymentCard = ({ payment }: Props) => {
   const { booking } = payment;
   const [open, setOpen] = useState(false);
-  const [size, setSize] = useState('default');
+  const [drawerSize, setDrawerSize] = useState<'default' | 'large'>('large');
 
   const showDrawer = () => {
     setOpen(true);
@@ -75,9 +75,9 @@ const PaymentCard = ({ payment }: Props) => {
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth <= 1440) {
-        setSize('default');
+        setDrawerSize('default');
       } else {
-        setSize('large');
+        setDrawerSize('large');
       }
     };
 
@@ -160,16 +160,27 @@ const PaymentCard = ({ payment }: Props) => {
                 {booking?.translator?.user?.userDetail?.fullName}
               </p>
             </div>
-            <div className='flex gap-1.5 items-center text-gray-500'>
-              <Icon icon={'ic:round-date-range'} className='2xl:text-xl' />
-              <p className='text-xs 2xl:text-sm font-semibold'>
-                {new Date(booking?.createdAt).toLocaleDateString('en-UK', {
+            <Tooltip
+              title={new Date(booking?.bookingDate).toLocaleDateString(
+                'en-UK',
+                {
                   day: '2-digit',
                   month: 'long',
                   year: 'numeric',
-                })}
-              </p>
-            </div>
+                }
+              )}
+            >
+              <div className='flex gap-1.5 items-center text-gray-500'>
+                <Icon icon={'ic:round-date-range'} className='2xl:text-xl' />
+                <p className='text-xs 2xl:text-sm font-semibold truncate'>
+                  {new Date(booking?.bookingDate).toLocaleDateString('en-UK', {
+                    day: '2-digit',
+                    month: 'long',
+                    year: 'numeric',
+                  })}
+                </p>
+              </div>
+            </Tooltip>
             <div className='flex gap-1.5 items-center text-gray-500'>
               <Icon icon={'mdi:clock-outline'} className='2xl:text-xl' />
               <p className='text-xs 2xl:text-sm font-semibold'>
@@ -195,12 +206,14 @@ const PaymentCard = ({ payment }: Props) => {
               />
               <p>{booking?.service?.targetLanguage.code.toUpperCase()}</p>
             </div>
-            <div className='flex gap-1.5 text-gray-500 w-[300px] items-center'>
-              <Icon icon={'mdi:map-marker'} className='2xl:text-xl' />
-              <p className='text-xs 2xl:text-sm font-medium line-clamp-1'>
-                {booking?.location}
-              </p>
-            </div>
+            <Tooltip title={booking?.location}>
+              <div className='flex gap-1.5 text-gray-500 items-center'>
+                <Icon icon={'mdi:map-marker'} className='2xl:text-xl' />
+                <p className='text-xs 2xl:text-sm font-medium truncate'>
+                  {booking?.location}
+                </p>
+              </div>
+            </Tooltip>
           </div>
         </div>
         <div className='flex flex-col justify-between items-end'>
@@ -211,7 +224,7 @@ const PaymentCard = ({ payment }: Props) => {
           <Drawer
             onClose={() => setOpen(false)}
             open={open}
-            size={size}
+            size={drawerSize}
             title='Payment Details'
             extra={
               <StatusBadge

@@ -18,7 +18,7 @@ const ProfilePayment = () => {
   const statusParam = status === 'All' ? undefined : status.toLowerCase();
 
   const { data: payments, isLoading } = paymentRepository.hooks.useGetPayments(
-    'client',
+    'user',
     statusParam,
     page,
     5

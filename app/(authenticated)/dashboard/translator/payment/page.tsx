@@ -1,6 +1,7 @@
 'use client';
 
 import LanguageFlag from '#/components/LanguageFlag';
+import ExportModal from '#/components/Modal/ExportModal';
 import StatusBadge from '#/components/StatusBadge';
 import CustomTable from '#/components/Tables/CustomTable';
 import { config } from '#/config/app';
@@ -29,14 +30,15 @@ const TranslatorPayment = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const page = Number(searchParams?.get('page')) || 1;
   const status = searchParams?.get('status') || 'all';
+  const page = Number(searchParams?.get('page')) || 1;
   const statusParam = status === 'all' ? undefined : status;
 
-  const [drawerSize, setDrawerSize] = useState('large');
-  const [showDrawer, setShowDrawer] = useState(false);
-  const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showDrawer, setShowDrawer] = useState(false);
+  const [openExportModal, setOpenExportModal] = useState(false);
+  const [drawerSize, setDrawerSize] = useState<'default' | 'large'>('large');
+  const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
 
   const {
     data: listPayments,
@@ -255,26 +257,36 @@ const TranslatorPayment = () => {
           }
           className='h-12 w-fit'
         />
-        <Dropdown
-          menu={{
-            items: statusOptions,
-            selectable: true,
-            onClick: ({ key }) => handleSelect(key),
-            selectedKeys: [status],
-          }}
-          trigger={['click']}
-          className='cursor-pointer h-12 bg-zinc-100 px-4 py-2 rounded-xl text-sm 2xl:text-base text-zinc-500 font-medium hover:bg-zinc-200 transition-all duration-500'
-          placement='bottomRight'
-        >
-          <div className='flex items-center justify-between gap-4'>
-            <p>Status</p>
-            <Icon
-              icon='weui:arrow-outlined'
-              height={24}
-              className='rotate-90'
-            />
-          </div>
-        </Dropdown>
+        <div className='flex items-center gap-4'>
+          <Dropdown
+            menu={{
+              items: statusOptions,
+              selectable: true,
+              onClick: ({ key }) => handleSelect(key),
+              selectedKeys: [status],
+            }}
+            trigger={['click']}
+            className='cursor-pointer h-12 bg-zinc-100 px-4 py-2 rounded-xl text-sm 2xl:text-base text-zinc-500 font-medium hover:bg-zinc-200 transition-all duration-500'
+            placement='bottomRight'
+          >
+            <div className='flex items-center justify-between gap-4'>
+              <p>Status</p>
+              <Icon
+                icon='weui:arrow-outlined'
+                height={24}
+                className='rotate-90'
+              />
+            </div>
+          </Dropdown>
+          <Button
+            type='default'
+            className='py-3 px-5 w-fit h-fit text-sm font-medium text-blue-600 rounded-xl'
+            onClick={() => setOpenExportModal(true)}
+          >
+            <Icon icon={'uil:export'} height={18} />
+            Export
+          </Button>
+        </div>
       </div>
       <CustomTable
         columns={columns}
@@ -404,6 +416,11 @@ const TranslatorPayment = () => {
           </div>
         )}
       </Drawer>
+      <ExportModal
+        open={openExportModal}
+        onCancel={() => setOpenExportModal(false)}
+        role='translator'
+      />
     </main>
   );
 };

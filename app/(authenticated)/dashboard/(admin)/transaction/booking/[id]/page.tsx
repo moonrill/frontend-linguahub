@@ -9,18 +9,7 @@ import { bookingRepository } from '#/repository/booking';
 import { Booking } from '#/types/BookingTypes';
 import { capitalizeFirstLetter } from '#/utils/capitalizeFirstLetter';
 import { Icon } from '@iconify-icon/react';
-import {
-  Image as AntdImage,
-  Button,
-  Divider,
-  message,
-  Result,
-  Skeleton,
-  Upload,
-  UploadProps,
-} from 'antd';
-import { UploadChangeParam, UploadFile } from 'antd/es/upload';
-import Dragger from 'antd/es/upload/Dragger';
+import { Image as AntdImage, Button, Divider, Result, Skeleton } from 'antd';
 import dayjs from 'dayjs';
 import Image from 'next/image';
 
@@ -29,63 +18,6 @@ const BookingDetail = ({ params }: { params: { id: string } }) => {
     params.id
   );
   const booking: Booking = data?.data;
-
-  const uploadProps: UploadProps = {
-    multiple: false,
-    maxCount: 1,
-    accept: '.jpg,.jpeg,.png',
-    listType: 'picture-card',
-    iconRender: (file) => (
-      <Icon
-        icon='basil:document-solid'
-        height={64}
-        className='text-blue-600 mb-4'
-      />
-    ),
-    progress: {
-      strokeColor: {
-        '0%': '#2563eb',
-        '100%': '#2563eb',
-      },
-    },
-    beforeUpload: (file) => {
-      if (file.size > 5 * 1024 * 1024) {
-        message.error('File too large');
-        return Upload.LIST_IGNORE;
-      }
-      return false;
-    },
-    showUploadList: {
-      showRemoveIcon: true,
-      removeIcon: (
-        <Icon icon='mynaui:trash' className='text-red-500' height={24} />
-      ),
-    },
-  };
-
-  const handleUploadProof = async (file: any) => {
-    try {
-      const formData = new FormData();
-      formData.append('proof', file);
-      await bookingRepository.api.updateProof(params.id, formData);
-      message.success('Proof uploaded successfully');
-      mutate();
-    } catch (error) {
-      console.error(error);
-      message.error('Error uploading proof');
-    }
-  };
-
-  const handleRemoveProof = async () => {
-    try {
-      await bookingRepository.api.removeProof(params.id);
-      message.success('Proof removed successfully');
-      mutate();
-    } catch (error) {
-      console.error(error);
-      message.error('Error removing proof');
-    }
-  };
 
   if (!isLoading && !booking) {
     return (
@@ -131,65 +63,125 @@ const BookingDetail = ({ params }: { params: { id: string } }) => {
                 text={capitalizeFirstLetter(booking?.bookingStatus)}
               />
             </div>
-            <section className='flex flex-col gap-2 border p-4 rounded-xl'>
-              <p className='text-xs 2xl:text-sm font-medium'>Client</p>
-              <div className='flex justify-between'>
-                <div className='flex gap-4'>
-                  <div className='relative w-[100px] h-[100px] 2xl:w-[120px] 2xl:h-[120px]'>
-                    <Image
-                      src={
-                        booking?.user?.userDetail.profilePicture
-                          ? imgProfilePicture(
-                              booking?.user?.userDetail.profilePicture
-                            )
-                          : '/images/avatar-placeholder.png'
-                      }
-                      alt={'Translator Profile Picture'}
-                      fill
-                      sizes='(max-width: 400px)'
-                      className='object-cover rounded-2xl'
-                      priority
-                    />
-                  </div>
-                  <div className='flex flex-col justify-between'>
-                    <div>
-                      <h1 className='font-semibold text-xl 2xl:text-3xl'>
-                        {booking?.user?.userDetail?.fullName}
-                      </h1>
-                      <p className='text-xs 2xl:text-base font-semibold text-gray-400'>
-                        {booking?.user?.email}
-                      </p>
+            <div className='grid grid-cols-2 gap-4'>
+              <section className='flex flex-col gap-2 border p-4 rounded-xl'>
+                <p className='text-xs 2xl:text-sm font-medium'>Client</p>
+                <div className='flex justify-between'>
+                  <div className='flex gap-4'>
+                    <div className='relative w-[100px] h-[100px] 2xl:w-[120px] 2xl:h-[120px]'>
+                      <Image
+                        src={
+                          booking?.user?.userDetail.profilePicture
+                            ? imgProfilePicture(
+                                booking?.user?.userDetail.profilePicture
+                              )
+                            : '/images/avatar-placeholder.png'
+                        }
+                        alt={'Client Profile Picture'}
+                        fill
+                        sizes='(max-width: 400px)'
+                        className='object-cover rounded-2xl'
+                        priority
+                      />
                     </div>
-                    <div className='flex flex-col gap-1'>
-                      <div className='flex gap-1 items-center text-zinc-500'>
-                        <Icon
-                          icon={
-                            booking?.user?.userDetail.gender === 'male'
-                              ? 'mdi:gender-male'
-                              : 'mdi:gender-female'
-                          }
-                          className='text-base 2xl:text-xl'
-                        />
-                        <p className='text-xs 2xl:text-sm font-medium'>
-                          {capitalizeFirstLetter(
-                            booking?.user?.userDetail?.gender
-                          )}
+                    <div className='flex flex-col justify-between'>
+                      <div>
+                        <h1 className='font-semibold text-xl 2xl:text-3xl'>
+                          {booking?.user?.userDetail?.fullName}
+                        </h1>
+                        <p className='text-xs 2xl:text-base font-semibold text-gray-400'>
+                          {booking?.user?.email}
                         </p>
                       </div>
-                      <div className='flex gap-1 items-center text-zinc-500'>
-                        <Icon
-                          icon={'ic:round-phone'}
-                          className='text-base 2xl:text-xl'
-                        />
-                        <p className='text-xs 2xl:text-sm font-medium'>
-                          {booking?.user?.userDetail.phoneNumber}
-                        </p>
+                      <div className='flex flex-col gap-1'>
+                        <div className='flex gap-1 items-center text-zinc-500'>
+                          <Icon
+                            icon={
+                              booking?.user?.userDetail.gender === 'male'
+                                ? 'mdi:gender-male'
+                                : 'mdi:gender-female'
+                            }
+                            className='text-base 2xl:text-xl'
+                          />
+                          <p className='text-xs 2xl:text-sm font-medium'>
+                            {capitalizeFirstLetter(
+                              booking?.user?.userDetail?.gender
+                            )}
+                          </p>
+                        </div>
+                        <div className='flex gap-1 items-center text-zinc-500'>
+                          <Icon
+                            icon={'ic:round-phone'}
+                            className='text-base 2xl:text-xl'
+                          />
+                          <p className='text-xs 2xl:text-sm font-medium'>
+                            {booking?.user?.userDetail.phoneNumber}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </section>
+              </section>
+              <section className='flex flex-col gap-2 border p-4 rounded-xl'>
+                <p className='text-xs 2xl:text-sm font-medium'>Translator</p>
+                <div className='flex justify-between'>
+                  <div className='flex gap-4'>
+                    <div className='relative w-[100px] h-[100px] 2xl:w-[120px] 2xl:h-[120px]'>
+                      <Image
+                        src={
+                          booking?.translator?.user?.userDetail.profilePicture
+                            ? imgProfilePicture(
+                                booking?.translator?.user?.userDetail
+                                  .profilePicture
+                              )
+                            : '/images/avatar-placeholder.png'
+                        }
+                        alt={'Translator Profile Picture'}
+                        fill
+                        sizes='(max-width: 400px)'
+                        className='object-cover rounded-2xl'
+                        priority
+                      />
+                    </div>
+                    <div className='flex flex-col justify-between'>
+                      <div>
+                        <h1 className='font-semibold text-xl 2xl:text-3xl'>
+                          {booking?.translator?.user?.userDetail?.fullName}
+                        </h1>
+                        <p className='text-xs 2xl:text-base font-semibold text-gray-400'>
+                          {booking?.translator?.user?.email}
+                        </p>
+                      </div>
+                      <div>
+                        <div className='flex gap-1 items-center'>
+                          <Icon
+                            icon={'tabler:star-filled'}
+                            className='text-yellow-400 text-sm 2xl:text-lg'
+                          />
+                          <p className='text-xs 2xl:text-sm font-semibold'>
+                            {booking?.translator?.rating}
+                          </p>
+                          <p className='text-xs 2xl:text-sm font-light'>
+                            ({booking?.translator?.reviewsCount} reviews)
+                          </p>
+                        </div>
+                        <div className='flex gap-1 items-center text-zinc-500'>
+                          <Icon
+                            icon={'solar:square-academic-cap-bold'}
+                            className='text-base 2xl:text-xl'
+                          />
+                          <p className='text-xs 2xl:text-sm font-medium'>
+                            {booking?.translator?.yearsOfExperience} Years of
+                            Experience
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
             <section className='flex flex-col gap-2 border p-4 rounded-xl'>
               <p className='text-xs 2xl:text-sm font-medium'>Service</p>
               <h1 className='font-semibold text-xl 2xl:text-2xl'>
@@ -296,48 +288,14 @@ const BookingDetail = ({ params }: { params: { id: string } }) => {
             <section className='flex flex-col gap-2 border p-4 rounded-xl'>
               <p className='text-xs 2xl:text-sm font-medium'>Proof</p>
               {booking?.proof ? (
-                <>
-                  <AntdImage
-                    width={500}
-                    height={300}
-                    className='object-cover rounded-xl'
-                    src={`${config.baseUrl}/images/proof/booking/${booking?.proof}`}
-                  />
-                  {booking?.bookingStatus === 'in_progress' && (
-                    <Button
-                      className='w-fit py-6 font-medium rounded-xl hover:!border-rose-600 hover:!text-rose-600'
-                      type='default'
-                      htmlType='button'
-                      onClick={handleRemoveProof}
-                    >
-                      Remove Proof
-                    </Button>
-                  )}
-                </>
+                <AntdImage
+                  width={500}
+                  height={300}
+                  className='object-cover rounded-xl'
+                  src={`${config.baseUrl}/images/proof/booking/${booking?.proof}`}
+                />
               ) : (
-                booking?.bookingStatus === 'in_progress' && (
-                  <Dragger
-                    {...uploadProps}
-                    style={{ width: 300, padding: '3rem 0' }}
-                    onChange={(info: UploadChangeParam<UploadFile>) => {
-                      const { file } = info;
-                      if (file.status !== 'removed') {
-                        handleUploadProof(file);
-                      }
-                    }}
-                  >
-                    <div className='flex flex-col justify-center items-center'>
-                      <Icon
-                        icon={'iwwa:upload'}
-                        height={64}
-                        className=' text-blue-600'
-                      />
-                      <p className='text-sm text-zinc-500'>
-                        Drag & drop or click to upload
-                      </p>
-                    </div>
-                  </Dragger>
-                )
+                <p className='text-sm text-slate-500'>No proof uploaded yet</p>
               )}
             </section>
 

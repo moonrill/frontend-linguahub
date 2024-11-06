@@ -1,5 +1,6 @@
 'use client';
 
+import ExportModal from '#/components/Modal/ExportModal';
 import StatusBadge from '#/components/StatusBadge';
 import CustomTable from '#/components/Tables/CustomTable';
 import { config } from '#/config/app';
@@ -38,8 +39,9 @@ const AdminPayment = () => {
   const type = searchParams?.get('type') || 'All';
   const typeParam = type === 'All' ? undefined : type.toLowerCase();
 
-  const [drawerSize, setDrawerSize] = useState('large');
   const [showDrawer, setShowDrawer] = useState(false);
+  const [openExportModal, setOpenExportModal] = useState(false);
+  const [drawerSize, setDrawerSize] = useState<'default' | 'large'>('large');
   const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
 
   const {
@@ -332,6 +334,14 @@ const AdminPayment = () => {
               />
             </div>
           </Dropdown>
+          <Button
+            type='default'
+            className='py-3 px-5 w-fit h-fit text-sm font-medium text-blue-600 rounded-xl'
+            onClick={() => setOpenExportModal(true)}
+          >
+            <Icon icon={'uil:export'} height={18} />
+            Export
+          </Button>
         </div>
       </div>
       <CustomTable
@@ -551,6 +561,11 @@ const AdminPayment = () => {
           </div>
         )}
       </Drawer>
+      <ExportModal
+        open={openExportModal}
+        onCancel={() => setOpenExportModal(false)}
+        role='admin'
+      />
     </main>
   );
 };

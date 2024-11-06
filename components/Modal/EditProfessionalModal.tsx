@@ -232,6 +232,7 @@ const EditProfessionalModal = ({
             className='w-full py-6 font-medium rounded-xl'
             type='default'
             htmlType='button'
+            disabled={loading}
             onClick={() => {
               onCancel();
             }}
@@ -242,6 +243,8 @@ const EditProfessionalModal = ({
             className='w-full py-6 font-medium rounded-xl'
             type='primary'
             htmlType='submit'
+            loading={loading}
+            disabled={loading}
           >
             Save
           </Button>

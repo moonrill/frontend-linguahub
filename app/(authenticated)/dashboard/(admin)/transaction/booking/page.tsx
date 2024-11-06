@@ -254,7 +254,9 @@ const AdminBooking = () => {
         totalData={bookingLists?.total}
         totalPage={bookingLists?.totalPages}
         handlePageChange={handlePageChange}
-        onClick={({ id }) => router.push(`/dashboard/booking/${id}`)}
+        onClick={({ id }) =>
+          router.push(`/dashboard/transaction/booking/${id}`)
+        }
       />
     </main>
   );

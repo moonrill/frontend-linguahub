@@ -1,6 +1,7 @@
 'use client';
 
 import LanguageFlag from '#/components/LanguageFlag';
+import ServiceRequestDetailModal from '#/components/Modal/ServiceRequestDetail';
 import StatusBadge from '#/components/StatusBadge';
 import CustomTable from '#/components/Tables/CustomTable';
 import { imgProfilePicture } from '#/constants/general';
@@ -13,13 +14,18 @@ import { MenuItemType } from 'antd/es/menu/interface';
 import dayjs from 'dayjs';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useState } from 'react';
 
 const AdminServiceRequest = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
+
   const page = Number(searchParams?.get('page')) || 1;
   const status = searchParams?.get('status') || 'all';
   const statusParam = status === 'all' ? undefined : status;
+
+  const [selectedRequest, setSelectedRequest] = useState<Booking | null>(null);
+  const [openDetailModal, setOpenDetailModal] = useState(false);
 
   const {
     data: listServiceRequests,
@@ -243,6 +249,17 @@ const AdminServiceRequest = () => {
         totalData={listServiceRequests?.total}
         totalPage={listServiceRequests?.totalPages}
         handlePageChange={handlePageChange}
+        onClick={({ key }) => {
+          setSelectedRequest(
+            listServiceRequests?.data?.find((sr: Booking) => sr?.id === key)
+          );
+          setOpenDetailModal(true);
+        }}
+      />
+      <ServiceRequestDetailModal
+        open={openDetailModal}
+        onCancel={() => setOpenDetailModal(false)}
+        serviceRequest={selectedRequest}
       />
     </main>
   );

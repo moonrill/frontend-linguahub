@@ -51,6 +51,7 @@ const url = {
   updateProof: (id: string) => `/payments/${id}/proof`,
   removeProof: (id: string) => `/payments/${id}/proof`,
   completePayment: (id: string) => `/payments/${id}/complete`,
+  export: () => `/payments/export`,
 };
 
 const hooks = {
@@ -80,6 +81,7 @@ const api = {
   completePayment: (id: string) => {
     return http.put(url.completePayment(id));
   },
+  export: (data: any) => http.post(url.export()).send(data),
 };
 
 export const paymentRepository = {

@@ -127,7 +127,7 @@ const BookingDetail = ({ params }: { params: { id: string } }) => {
                 </div>
                 <div className='flex flex-col justify-between'>
                   <div>
-                    <h1 className='font-bold text-xl 2xl:text-3xl'>
+                    <h1 className='font-semibold text-xl 2xl:text-3xl'>
                       {booking?.translator?.user?.userDetail?.fullName}
                     </h1>
                     <p className='text-xs 2xl:text-base font-semibold text-gray-400'>

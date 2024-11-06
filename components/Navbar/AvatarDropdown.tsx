@@ -1,8 +1,8 @@
+import { TokenUtil } from '#/utils/token';
 import { Icon } from '@iconify-icon/react';
 import { MenuProps, message } from 'antd';
 import Dropdown from 'antd/es/dropdown/dropdown';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 type DropdownLabelProps = {
@@ -171,7 +171,6 @@ type AvatarDropdownProps = {
 };
 
 const AvatarDropdown = ({ children, role }: AvatarDropdownProps) => {
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   const handleLogout = async () => {
@@ -182,10 +181,9 @@ const AvatarDropdown = ({ children, role }: AvatarDropdownProps) => {
       });
 
       if (response.ok) {
-        localStorage.clear();
-        router.push('/login');
-      } else {
-        // Optionally handle error here
+        TokenUtil.clearAccessToken();
+        TokenUtil.persistToken();
+        window.location.href = '/login';
       }
     } catch (error) {
       message.error('An error occurred. Please try again.');

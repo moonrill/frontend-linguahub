@@ -26,53 +26,92 @@ const ServiceRequestDetailModal = ({
       onCancel={onCancel}
       closeIcon={null}
       centered
+      className='!w-fit min-w-[500px]'
     >
       {serviceRequest && (
         <div className='flex flex-col gap-4'>
-          <div className='flex justify-between gap-6 items-start rounded-lg w-full'>
-            <div className='flex gap-4'>
-              <div className='relative w-[65px] h-[65px] 2xl:w-[80px] 2xl:h-[80px]'>
-                <Image
-                  src={
-                    serviceRequest?.user?.userDetail.profilePicture
-                      ? imgProfilePicture(
-                          serviceRequest?.user?.userDetail.profilePicture
-                        )
-                      : '/images/avatar-placeholder.png'
-                  }
-                  alt={'Translator Profile Picture'}
-                  fill
-                  sizes='(max-width: 400px)'
-                  className='object-cover rounded-xl'
-                  priority
-                />
-              </div>
-              <div className='flex flex-col justify-between'>
-                <div>
-                  <h1 className='font-medium text-lg 2xl:text-xl'>
-                    {serviceRequest?.user?.userDetail.fullName}
-                  </h1>
-                  <p className='text-xs 2xl:text-sm font-semibold text-gray-400'>
-                    {serviceRequest?.user?.email}
-                  </p>
-                </div>
-                <div className='flex gap-1 items-center text-zinc-500'>
-                  <Icon
-                    icon={'mdi:map-marker'}
-                    className='text-base 2xl:text-xl'
-                  />
-                  <p className='text-xs 2xl:text-sm font-medium'>
-                    {serviceRequest?.user?.userDetail.city},{' '}
-                    {serviceRequest?.user?.userDetail.province}
-                  </p>
-                </div>
-              </div>
-            </div>
+          <div className='flex items-center justify-between'>
+            <h1 className='text-lg 2xl:text-xl font-semibold'>
+              Service Request Detail
+            </h1>
             <StatusBadge
               status={serviceRequest?.requestStatus}
               text={capitalizeFirstLetter(serviceRequest?.requestStatus)}
             />
           </div>
+          <div
+            className={`grid ${
+              serviceRequest?.translator ? 'grid-cols-2 gap-4' : 'grid-cols-1'
+            }`}
+          >
+            <section className='flex flex-col gap-2 border p-4 rounded-xl'>
+              <p className='text-xs 2xl:text-sm font-medium'>Client</p>
+              <div className='flex gap-4'>
+                <div className='relative w-[50px] h-[50px] 2xl:w-[60px] 2xl:h-[60px]'>
+                  <Image
+                    src={
+                      serviceRequest?.user?.userDetail.profilePicture
+                        ? imgProfilePicture(
+                            serviceRequest?.user?.userDetail.profilePicture
+                          )
+                        : '/images/avatar-placeholder.png'
+                    }
+                    alt={'Translator Profile Picture'}
+                    fill
+                    sizes='(max-width: 400px)'
+                    className='object-cover rounded-lg'
+                    priority
+                  />
+                </div>
+                <div className='flex flex-col justify-between'>
+                  <div>
+                    <h1 className='font-medium text-lg 2xl:text-xl'>
+                      {serviceRequest?.user?.userDetail.fullName}
+                    </h1>
+                    <p className='text-xs 2xl:text-sm font-semibold text-gray-400'>
+                      {serviceRequest?.user?.email}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </section>
+            {serviceRequest?.translator && (
+              <section className='flex flex-col gap-2 border p-4 rounded-xl'>
+                <p className='text-xs 2xl:text-sm font-medium'>Translator</p>
+                <div className='flex gap-3'>
+                  <div className='relative w-[50px] h-[50px] 2xl:w-[60px] 2xl:h-[60px]'>
+                    <Image
+                      src={
+                        serviceRequest?.translator?.user?.userDetail
+                          .profilePicture
+                          ? imgProfilePicture(
+                              serviceRequest?.translator?.user?.userDetail
+                                .profilePicture
+                            )
+                          : '/images/avatar-placeholder.png'
+                      }
+                      alt={'Translator Profile Picture'}
+                      fill
+                      sizes='(max-width: 400px)'
+                      className='object-cover rounded-lg'
+                      priority
+                    />
+                  </div>
+                  <div className='flex flex-col justify-between'>
+                    <div>
+                      <h1 className='font-medium text-lg 2xl:text-xl'>
+                        {serviceRequest?.translator?.user?.userDetail.fullName}
+                      </h1>
+                      <p className='text-xs 2xl:text-sm font-semibold text-gray-400'>
+                        {serviceRequest?.translator?.user?.email}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            )}
+          </div>
+
           <section className='flex flex-col gap-2 border p-4 rounded-xl'>
             <p className='text-xs 2xl:text-sm font-medium'>Service</p>
             <h1 className='font-semibold text-xl 2xl:text-2xl'>
