@@ -2,9 +2,13 @@ import { http } from '#/utils/http';
 import useSWR from 'swr';
 
 const url = {
+  getAllServices: (page?: number, limit?: number) =>
+    `/services${page ? `?page=${page}` : ''}${
+      limit ? `&limit=${limit}` : ''
+    }`,
   translatorServices: (page?: number, limit?: number) =>
-    `/translators/services${page && `?page=${page}`}${
-      limit && `&limit=${limit}`
+    `/translators/services${page ? `?page=${page}` : ''}${
+      limit ? `&limit=${limit}` : ''
     }`,
   updateStatus: (id: string) => `/services/${id}/status`,
   createService: () => '/services',
@@ -14,6 +18,9 @@ const url = {
 const hooks = {
   useTranslatorServices: (page?: number, limit?: number) => {
     return useSWR(url.translatorServices(page, limit), http.fetcher);
+  },
+  useGetAllServices: (page?: number, limit?: number) => {
+    return useSWR(url.getAllServices(page, limit), http.fetcher);
   },
 };
 
