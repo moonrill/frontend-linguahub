@@ -1,15 +1,16 @@
 'use client';
 
 import LanguageFlag from '#/components/LanguageFlag';
-import Pagination from '#/components/Pagination';
+import ServiceModal from '#/components/Modal/ServiceModal';
 import StatusBadge from '#/components/StatusBadge';
+import CustomTable from '#/components/Tables/CustomTable';
 import { serviceRepository } from '#/repository/service';
 import { translatorRepository } from '#/repository/translator';
 import { Service } from '#/types/ServiceTypes';
 import { Icon } from '@iconify-icon/react';
-import { Button, Dropdown, Input, MenuProps, message, Table, TableProps } from 'antd';
+import { Button, Dropdown, Input, MenuProps, message, TableProps } from 'antd';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 
 const AdminService = () => {
@@ -19,21 +20,16 @@ const AdminService = () => {
   const status = searchParams?.get('status') || 'all';
   const statusParam = status === 'all' ? undefined : status;
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
 
-  const { data: listServices, isLoading, mutate } = serviceRepository.hooks.useGetAllServices(page, 10);
+  const {
+    data: listServices,
+    isLoading,
+    mutate,
+  } = serviceRepository.hooks.useGetAllServices(page, 10);
 
   const { data: listLanguages } = translatorRepository.hooks.useGetTranslatorLanguages();
-
-  const statusOptions = [
-    { key: 'all', label: 'All' },
-    { key: 'active', label: 'Active' },
-    { key: 'inactive', label: 'Inactive' },
-  ];
-
-  const handleSelect = (key: string) => {
-    router.push(`/dashboard/translator/service?page=1&status=${key}`);
-  };
 
   const columns: TableProps['columns'] = [
     {
@@ -121,7 +117,7 @@ const AdminService = () => {
       mutate();
       message.success('Service status updated successfully');
     } catch (error: any) {
-      message.error(error?.response?.body?.message || 'Error toggling service');
+      message.error(error.response.body?.message || 'Error toggling service', 5);
     }
   };
 
@@ -135,20 +131,28 @@ const AdminService = () => {
             <span className='ml-2 text-xs 2xl:text-sm'>Edit</span>
           </div>
         ),
+        onClick: () => {
+          setSelectedService(service);
+          setIsModalOpen(true);
+        },
       },
       {
         key: '2',
         label: (
-          <div className='flex items-center' onClick={() => toggleStatus(service.id)}>
+          <div className='flex items-center'>
             <Icon
               icon={'tabler:circle-filled'}
               className={`text-lg 2xl:text-xl ${service.status !== 'Active' ? 'text-green-500' : 'text-rose-500'}`}
             />
-            <span className='ml-2 text-xs 2xl:text-sm'>{service.status !== 'Active' ? 'Activate' : 'Deactivate'}</span>
+            <span className='ml-2 text-xs 2xl:text-sm'>
+              {service.status !== 'Active' ? 'Activate' : 'Deactivate'}
+            </span>
           </div>
         ),
+        onClick: () => toggleStatus(service.id),
       },
     ];
+
     return items;
   };
 
@@ -158,15 +162,30 @@ const AdminService = () => {
     action: (
       <Dropdown
         trigger={['click']}
-        menu={{ items: actionDropdownItem(service) }}
+        menu={{
+          items: actionDropdownItem(service),
+        }}
       >
-        <Icon icon={'tabler:dots'} className='text-gray-500 text-2xl cursor-pointer p-2 hover:bg-zinc-200 rounded-lg transition-all duration-500' />
+        <Icon
+          icon={'tabler:dots'}
+          className='text-gray-500 text-2xl cursor-pointer p-2 hover:bg-zinc-200 rounded-lg transition-all duration-500'
+        />
       </Dropdown>
     ),
   }));
 
+  const statusOptions: MenuProps['items'] = [
+    { key: 'all', label: 'All' },
+    { key: 'Active', label: 'Active' },
+    { key: 'Inactive', label: 'Inactive' },
+  ];
+
+  const handleSelect = (value: string) => {
+    router.push(`/dashboard/quality/service?status=${value}&page=${page}`);
+  };
+
   const handlePageChange = (page: number) => {
-    router.push(`/dashboard/translator/service?page=${page}&status=${status}`);
+    router.push(`/dashboard/quality/service?page=${page}`);
   };
 
   return (
@@ -195,25 +214,25 @@ const AdminService = () => {
           </div>
         </Dropdown>
       </div>
-      <Table
+      <CustomTable
         columns={columns}
-        dataSource={data}
-        pagination={false}
-        scroll={{ x: 768 }}
-        loading={isLoading}
-        footer={() => (
-          <div className='flex justify-between items-center'>
-            <p className='text-xs 2xl:text-sm'>
-              <span className='font-bold'>{listServices?.page}</span> of {listServices?.totalPages} from {listServices?.total} result
-            </p>
-            <Pagination
-              current={listServices?.page}
-              total={listServices?.total}
-              pageSize={listServices?.limit}
-              onChange={handlePageChange}
-            />
-          </div>
-        )}
+        data={data}
+        isLoading={isLoading}
+        pageSize={listServices?.limit}
+        currentPage={listServices?.page}
+        totalData={listServices?.total}
+        totalPage={listServices?.totalPages}
+        handlePageChange={handlePageChange}
+      />
+      <ServiceModal
+        open={isModalOpen}
+        onCancel={() => {
+          setIsModalOpen(false);
+          setSelectedService(null);
+        }}
+        languages={listLanguages?.data}
+        mutate={mutate}
+        service={selectedService}
       />
     </main>
   );

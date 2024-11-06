@@ -82,12 +82,12 @@ const AdminReviewPage = () => {
       ),
     },
     {
-      title: 'Description',
-      dataIndex: 'description',
-      key: 'description',
+      title: 'Comment',
+      dataIndex: 'comment',
+      key: 'comment',
       render: (_, record) => (
         <div className='flex flex-col gap-2'>
-          <p className='text-xs 2xl:text-sm line-clamp-2'>{record.comment}</p>
+          <p className='text-xs 2xl:text-sm line-clamp-2'>{record.comment ? record.comment : '-'} </p>
         </div>
       ),
     },
