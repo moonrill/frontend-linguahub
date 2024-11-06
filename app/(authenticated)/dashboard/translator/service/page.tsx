@@ -2,21 +2,13 @@
 
 import LanguageFlag from '#/components/LanguageFlag';
 import ServiceModal from '#/components/Modal/ServiceModal';
-import Pagination from '#/components/Pagination';
 import StatusBadge from '#/components/StatusBadge';
+import CustomTable from '#/components/Tables/CustomTable';
 import { serviceRepository } from '#/repository/service';
 import { translatorRepository } from '#/repository/translator';
 import { Service } from '#/types/ServiceTypes';
 import { Icon } from '@iconify-icon/react';
-import {
-  Button,
-  Dropdown,
-  Input,
-  MenuProps,
-  message,
-  Table,
-  TableProps,
-} from 'antd';
+import { Button, Dropdown, Input, MenuProps, message, TableProps } from 'antd';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 
@@ -43,7 +35,7 @@ const TranslatorService = () => {
       dataIndex: 'name',
       key: 'name',
       fixed: 'left',
-      minWidth: 200,
+      ellipsis: true,
       render: (text) => <p className='font-medium'>{text}</p>,
       sortDirections: ['ascend', 'descend'],
       sorter: (a, b) => a.name.localeCompare(b.name),
@@ -52,7 +44,7 @@ const TranslatorService = () => {
       title: 'Source',
       dataIndex: 'sourceLanguage',
       key: 'sourceLanguage',
-      minWidth: 200,
+      ellipsis: true,
       render: (_, record) => (
         <div className='flex items-center gap-2'>
           <LanguageFlag language={record.sourceLanguage} />
@@ -64,7 +56,7 @@ const TranslatorService = () => {
       title: 'Target',
       dataIndex: 'targetLanguage',
       key: 'targetLanguage',
-      minWidth: 200,
+      ellipsis: true,
       render: (_, record) => (
         <div className='flex items-center gap-2'>
           <LanguageFlag language={record.targetLanguage} />
@@ -76,10 +68,9 @@ const TranslatorService = () => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      align: 'center',
-      width: 120,
+      ellipsis: true,
       render: (text) => (
-        <div className='w-fit m-auto'>
+        <div className='w-fit'>
           <StatusBadge text={text} status={text} />
         </div>
       ),
@@ -88,8 +79,7 @@ const TranslatorService = () => {
       title: 'Price per hour',
       dataIndex: 'pricePerHour',
       key: 'pricePerHour',
-      align: 'right',
-      minWidth: 150,
+      ellipsis: true,
       render: (text) => (
         <p className='font-semibold'>Rp{text.toLocaleString('id-ID')}</p>
       ),
@@ -100,8 +90,8 @@ const TranslatorService = () => {
       title: 'Action',
       dataIndex: 'action',
       key: 'action',
-      align: 'right',
-      width: 110,
+      fixed: 'right',
+      ellipsis: true,
     },
   ];
 
@@ -206,26 +196,15 @@ const TranslatorService = () => {
           <Icon icon={'ph:plus'} className='text-xl' />
         </Button>
       </div>
-      <Table
+      <CustomTable
         columns={columns}
-        dataSource={data}
-        pagination={false}
-        scroll={{ x: 768 }}
-        loading={isLoading}
-        footer={() => (
-          <div className='flex justify-between items-center'>
-            <p className='text-xs 2xl:text-sm'>
-              <span className='font-bold'>{listServices?.page}</span> of{' '}
-              {listServices?.totalPages} from {listServices?.total} result
-            </p>
-            <Pagination
-              current={listServices?.page}
-              total={listServices?.total}
-              pageSize={listServices?.limit}
-              onChange={handlePageChange}
-            />
-          </div>
-        )}
+        data={data}
+        isLoading={isLoading}
+        pageSize={listServices?.limit}
+        currentPage={listServices?.page}
+        totalData={listServices?.total}
+        totalPage={listServices?.totalPages}
+        handlePageChange={handlePageChange}
       />
       <ServiceModal
         open={isModalOpen}

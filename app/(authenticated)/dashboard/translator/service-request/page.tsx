@@ -3,8 +3,8 @@
 import LanguageFlag from '#/components/LanguageFlag';
 import ConfirmModal from '#/components/Modal/ConfirmModal';
 import ServiceRequestDetailModal from '#/components/Modal/ServiceRequestDetail';
-import Pagination from '#/components/Pagination';
 import StatusBadge from '#/components/StatusBadge';
+import CustomTable from '#/components/Tables/CustomTable';
 import { imgProfilePicture } from '#/constants/general';
 import { serviceRequestRepository } from '#/repository/service-request';
 import { Booking } from '#/types/BookingTypes';
@@ -18,7 +18,6 @@ import {
   MenuProps,
   message,
   Modal,
-  Table,
   TableProps,
   Tooltip,
 } from 'antd';
@@ -45,15 +44,16 @@ const TranslatorServiceRequest = () => {
   const [loading, setLoading] = useState(false);
 
   const {
-    data: response,
+    data: serviceRequests,
     mutate,
     isLoading,
-  } = serviceRequestRepository.hooks.useTranslatorServiceRequest(
+  } = serviceRequestRepository.hooks.useGetServiceRequests(
+    'translator',
+    statusParam,
     page,
     10,
     'date',
-    'desc',
-    statusParam
+    'desc'
   );
 
   const columns: TableProps['columns'] = [
@@ -61,21 +61,20 @@ const TranslatorServiceRequest = () => {
       title: 'Client',
       dataIndex: 'client',
       key: 'client',
-      minWidth: 150,
       fixed: 'left',
+      ellipsis: true,
     },
     {
       title: 'Service',
       dataIndex: 'service',
       key: 'service',
-      minWidth: 200,
+      ellipsis: true,
     },
     {
       title: 'Booking Date',
       dataIndex: 'bookingDate',
       key: 'bookingDate',
-      minWidth: 170,
-      align: 'center',
+      ellipsis: true,
       sortDirections: ['descend', 'ascend'],
       sorter: (a, b) =>
         dayjs(a.bookingDate).unix() - dayjs(b.bookingDate).unix(),
@@ -89,10 +88,9 @@ const TranslatorServiceRequest = () => {
       title: 'Status',
       dataIndex: 'requestStatus',
       key: 'requestStatus',
-      align: 'center',
-      width: 150,
+      ellipsis: true,
       render: (text) => (
-        <div className='w-fit m-auto'>
+        <div className='w-fit'>
           <StatusBadge text={capitalizeFirstLetter(text)} status={text} />
         </div>
       ),
@@ -101,10 +99,12 @@ const TranslatorServiceRequest = () => {
       title: 'Location',
       dataIndex: 'location',
       key: 'location',
-      minWidth: 150,
+      ellipsis: true,
       render: (text) => (
-        <Tooltip title={text} placement='topLeft'>
-          <p className='text-xs 2xl:text-sm line-clamp-1'>{text}</p>
+        <Tooltip title={text}>
+          <p className='text-xs 2xl:text-sm truncate max-w-[120px] 2xl:max-w-[150px]'>
+            {text}
+          </p>
         </Tooltip>
       ),
     },
@@ -112,8 +112,8 @@ const TranslatorServiceRequest = () => {
       title: 'Action',
       dataIndex: 'action',
       key: 'action',
-      align: 'right',
-      width: 120,
+      ellipsis: true,
+      fixed: 'right',
     },
   ];
 
@@ -204,7 +204,7 @@ const TranslatorServiceRequest = () => {
     return items;
   };
 
-  const data = response?.data?.map((sr: Booking) => ({
+  const data = serviceRequests?.data?.map((sr: Booking) => ({
     key: sr?.id,
     client: (
       <div className='flex gap-3 items-center'>
@@ -300,7 +300,7 @@ const TranslatorServiceRequest = () => {
 
   const handleSelect = (value: string) => {
     router.push(
-      `/dashboard/translator/service-request?status=${value}&page=${response?.page}`
+      `/dashboard/translator/service-request?status=${value}&page=${serviceRequests?.page}`
     );
   };
 
@@ -341,26 +341,15 @@ const TranslatorServiceRequest = () => {
           </div>
         </Dropdown>
       </div>
-      <Table
+      <CustomTable
         columns={columns}
-        dataSource={data}
-        pagination={false}
-        scroll={{ x: 768 }}
-        loading={isLoading}
-        footer={() => (
-          <div className='flex justify-between items-center'>
-            <p className='text-xs 2xl:text-sm'>
-              <span className='font-bold'>{response?.page}</span> of{' '}
-              {response?.totalPages} from {response?.total} result
-            </p>
-            <Pagination
-              current={response?.page}
-              total={response?.total}
-              pageSize={response?.limit}
-              onChange={handlePageChange}
-            />
-          </div>
-        )}
+        data={data}
+        isLoading={isLoading}
+        pageSize={serviceRequests?.limit}
+        currentPage={serviceRequests?.page}
+        totalData={serviceRequests?.total}
+        totalPage={serviceRequests?.totalPages}
+        handlePageChange={handlePageChange}
       />
       <ConfirmModal
         open={openApprove}

@@ -2,7 +2,8 @@ import { http } from '#/utils/http';
 import useSWR from 'swr';
 
 const url = {
-  getTranslatorServiceRequest: (
+  getServiceRequests: (
+    role: string,
     status: string | undefined,
     page: number,
     limit: number,
@@ -28,41 +29,20 @@ const url = {
     }
 
     const queryString = params.toString();
-    const url = `/translators/service-requests${
-      queryString ? `?${queryString}` : ''
-    }`;
+    let url;
 
-    return url;
-  },
-  getUserServiceRequest: (
-    status: string | undefined,
-    page: number,
-    limit: number,
-    sortBy?: string,
-    order?: string
-  ) => {
-    const params = new URLSearchParams();
-
-    if (status) {
-      params.append('status', status);
+    switch (role) {
+      case 'translator':
+        url = `/translators/service-requests${
+          queryString ? `?${queryString}` : ''
+        }`;
+        break;
+      case 'user':
+        url = `/users/service-requests${queryString ? `?${queryString}` : ''}`;
+        break;
+      default:
+        url = `/service-requests${queryString ? `?${queryString}` : ''}`;
     }
-    if (page) {
-      params.append('page', page.toString());
-    }
-    if (limit) {
-      params.append('limit', limit.toString());
-    }
-    if (sortBy) {
-      params.append('sortBy', sortBy);
-    }
-    if (order) {
-      params.append('order', order);
-    }
-
-    const queryString = params.toString();
-    const url = `/users/service-requests${
-      queryString ? `?${queryString}` : ''
-    }`;
 
     return url;
   },
@@ -79,19 +59,8 @@ const url = {
 };
 
 const hooks = {
-  useTranslatorServiceRequest: (
-    page: number,
-    limit: number,
-    sortBy?: string,
-    order?: string,
-    status?: string
-  ) => {
-    return useSWR(
-      url.getTranslatorServiceRequest(status, page, limit, sortBy, order),
-      http.fetcher
-    );
-  },
-  useUserServiceRequest: (
+  useGetServiceRequests: (
+    role: string,
     status: string | undefined,
     page: number,
     limit: number,
@@ -99,7 +68,7 @@ const hooks = {
     order?: string
   ) => {
     return useSWR(
-      url.getUserServiceRequest(status, page, limit, sortBy, order),
+      url.getServiceRequests(role, status, page, limit, sortBy, order),
       http.fetcher
     );
   },

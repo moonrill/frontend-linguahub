@@ -4,7 +4,7 @@
  * @param sentence - The sentence to be formatted
  * @returns The formatted sentence with the first letter of each word capitalized, except for Roman numerals.
  */
-export function capitalizeFirstLetter(sentence: string): string {
+export function capitalizeFirstLetter(sentence: string | undefined): string {
   if (!sentence) {
     return '';
   }

@@ -127,7 +127,7 @@ const BookingDetail = ({ params }: { params: { id: string } }) => {
                 </div>
                 <div className='flex flex-col justify-between'>
                   <div>
-                    <h1 className='font-bold text-xl 2xl:text-3xl'>
+                    <h1 className='font-semibold text-xl 2xl:text-3xl'>
                       {booking?.translator?.user?.userDetail?.fullName}
                     </h1>
                     <p className='text-xs 2xl:text-base font-semibold text-gray-400'>
@@ -307,10 +307,10 @@ const BookingDetail = ({ params }: { params: { id: string } }) => {
             <section className='flex flex-col gap-2 border p-4 rounded-lg'>
               <p className='text-xs 2xl:text-sm font-medium'>Proof</p>
               <AntdImage
-                width={300}
+                width={500}
                 height={300}
                 className='object-cover rounded-xl'
-                src={`${config.baseUrl}/images/proof/${booking?.proof}`}
+                src={`${config.baseUrl}/images/proof/booking/${booking?.proof}`}
               />
             </section>
           )}
@@ -346,13 +346,15 @@ const BookingDetail = ({ params }: { params: { id: string } }) => {
                 confirmText="Yes, I'm sure"
                 isLoading={loading}
               />
-              <Button
-                type='primary'
-                className='py-3 px-5 w-fit h-fit text-sm rounded-xl'
-                onClick={() => setOpenComplete(true)}
-              >
-                Complete Booking
-              </Button>
+              {booking?.proof && (
+                <Button
+                  type='primary'
+                  className='py-3 px-5 w-fit h-fit text-sm rounded-xl'
+                  onClick={() => setOpenComplete(true)}
+                >
+                  Complete Booking
+                </Button>
+              )}
               <ConfirmModal
                 open={openComplete}
                 onCancel={() => setOpenComplete(false)}

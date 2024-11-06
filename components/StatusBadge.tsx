@@ -1,34 +1,36 @@
+import { Icon } from '@iconify-icon/react';
 import { Tag } from 'antd';
 
 type Props = {
   status: string;
   text: string;
+  icon?: string;
 };
 
-const StatusBadge = ({ status, text }: Props) => {
+const StatusBadge = ({ status, text, icon }: Props) => {
   const getColor = (status: string) => {
     switch (status) {
       case 'pending':
       case 'unpaid':
-        return 'bg-amber-50 text-amber-600';
+        return 'bg-amber-100 text-amber-600';
       case 'approved':
       case 'completed':
       case 'paid':
       case 'Active':
-        return 'bg-green-50 text-green-600';
+        return 'bg-green-100 text-green-600';
       case 'in_progress':
       case 'translator':
-        return 'bg-blue-50 text-blue-600';
+        return 'bg-blue-100 text-blue-600';
       case 'rejected':
       case 'cancelled':
       case 'failed':
       case 'Inactive':
-        return 'bg-red-50 text-red-600';
+        return 'bg-red-100 text-red-600';
       case 'refund':
       case 'client':
-        return 'bg-purple-50 text-purple-600';
+        return 'bg-purple-100 text-purple-600';
       default:
-        return 'bg-gray-50 text-gray-600';
+        return 'bg-gray-100 text-gray-600';
     }
   };
 
@@ -38,6 +40,7 @@ const StatusBadge = ({ status, text }: Props) => {
         status
       )}`}
     >
+      {icon && <Icon icon={icon} className='mr-1 text-lg' />}
       {text}
     </Tag>
   );

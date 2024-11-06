@@ -1,14 +1,14 @@
 'use client';
 
 import LanguageFlag from '#/components/LanguageFlag';
-import Pagination from '#/components/Pagination';
 import StatusBadge from '#/components/StatusBadge';
+import CustomTable from '#/components/Tables/CustomTable';
 import { translatorRepository } from '#/repository/translator';
 import { Language } from '#/types/LanguageTypes';
 import { Translator } from '#/types/TranslatorTypes';
 import { capitalizeFirstLetter } from '#/utils/capitalizeFirstLetter';
 import { Icon } from '@iconify-icon/react';
-import { Input, Segmented, Table, TableProps, Tag } from 'antd';
+import { Input, Segmented, TableProps, Tag, Tooltip } from 'antd';
 import dayjs from 'dayjs';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -31,8 +31,10 @@ const TranslatorRegistration = () => {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
+      ellipsis: true,
+      fixed: 'left',
       render: (_, record) => (
-        <p className='font-semibold text-xs 2xl:text-sm line-clamp-1'>
+        <p className='font-semibold text-xs 2xl:text-sm'>
           {record?.user?.userDetail?.fullName}
         </p>
       ),
@@ -44,39 +46,31 @@ const TranslatorRegistration = () => {
       title: 'Email',
       dataIndex: 'email',
       key: 'email',
+      ellipsis: true,
       render: (_, record) => (
-        <p className='font-semibold text-gray-500 text-xs 2xl:text-sm line-clamp-1'>
-          {record?.user?.email}
-        </p>
+        <Tooltip title={record?.user?.email}>
+          <p className='font-semibold text-gray-500 text-xs 2xl:text-sm truncate max-w-[100px] 2xl:max-w-[300px]'>
+            {record?.user?.email}
+          </p>
+        </Tooltip>
       ),
     },
     {
       title: 'Gender',
       dataIndex: 'gender',
       key: 'gender',
-      align: 'center',
-      width: 120,
+      ellipsis: true,
       render: (_, record) => (
         <div className='flex items-center gap-1 text-xs 2xl:text-sm'>
-          <Icon
-            icon={
-              record?.user?.userDetail?.gender === 'male'
-                ? 'mdi:gender-male'
-                : 'mdi:gender-female'
-            }
-            width={20}
-            height={20}
-            className='text-zinc-400'
-          />
           <p>{capitalizeFirstLetter(record?.user?.userDetail?.gender)}</p>
         </div>
       ),
     },
     {
-      title: 'Years of experience',
+      title: 'Experience',
       dataIndex: 'yearsOfExperience',
       key: 'yearsOfExperience',
-      align: 'right',
+      ellipsis: true,
       render: (_, record) => (
         <p className='font-semibold text-xs 2xl:text-sm line-clamp-1'>
           {record?.yearsOfExperience} Years
@@ -89,8 +83,7 @@ const TranslatorRegistration = () => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      align: 'center',
-      width: 150,
+      ellipsis: true,
       render: (_, record) => (
         <div className='w-fit m-auto'>
           <StatusBadge
@@ -104,6 +97,7 @@ const TranslatorRegistration = () => {
       title: 'Portfolio',
       dataIndex: 'portfolio',
       key: 'portfolio',
+      ellipsis: true,
       render: (_, record) => (
         <Link href={record?.portfolioLink}>
           <Tag
@@ -120,6 +114,7 @@ const TranslatorRegistration = () => {
       title: 'Language',
       dataIndex: 'language',
       key: 'language',
+      ellipsis: true,
       render: (_, record) => (
         <div className='flex gap-1 2xl:gap-2'>
           {record?.languages
@@ -134,6 +129,7 @@ const TranslatorRegistration = () => {
       title: 'Application Date',
       dataIndex: 'createdAt',
       key: 'createdAt',
+      ellipsis: true,
       render: (_, record) => (
         <p className='font-semibold text-xs 2xl:text-sm'>
           {dayjs(record?.createdAt).format('DD MMMM YYYY, HH:mm')}
@@ -182,32 +178,16 @@ const TranslatorRegistration = () => {
           defaultValue={status}
         />
       </div>
-      <Table
+      <CustomTable
         columns={columns}
-        dataSource={data}
-        pagination={false}
-        scroll={{ x: 768 }}
-        rowClassName={'cursor-pointer'}
-        onRow={(row) => ({
-          onClick: () => {
-            router.push(`/dashboard/account/translator/${row.key}`);
-          },
-        })}
-        loading={isLoading}
-        footer={() => (
-          <div className='flex justify-between items-center'>
-            <p className='text-xs 2xl:text-sm'>
-              <span className='font-bold'>{listRegisters?.page}</span> of{' '}
-              {listRegisters?.totalPages} from {listRegisters?.total} result
-            </p>
-            <Pagination
-              current={listRegisters?.page}
-              total={listRegisters?.total}
-              pageSize={listRegisters?.limit}
-              onChange={handlePageChange}
-            />
-          </div>
-        )}
+        data={data}
+        isLoading={isLoading}
+        pageSize={listRegisters?.limit}
+        currentPage={listRegisters?.page}
+        totalData={listRegisters?.total}
+        totalPage={listRegisters?.totalPages}
+        handlePageChange={handlePageChange}
+        onClick={(id) => router.push(`/dashboard/account/translator/${id}`)}
       />
     </main>
   );

@@ -2,12 +2,12 @@
 
 import ConfirmModal from '#/components/Modal/ConfirmModal';
 import SpecializationModal from '#/components/Modal/SpecializationModal';
-import Pagination from '#/components/Pagination';
+import CustomTable from '#/components/Tables/CustomTable';
 import { imgSpecialization } from '#/constants/general';
 import { specializationRepository } from '#/repository/specialization';
 import { Specialization } from '#/types/SpecializationTypes';
 import { Icon } from '@iconify-icon/react';
-import { Button, Input, message, Table, TableProps } from 'antd';
+import { Button, Input, message, TableProps } from 'antd';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
@@ -155,28 +155,15 @@ const DashboardSpecialization = () => {
           <Icon icon={'ph:plus'} className='text-xl' />
         </Button>
       </div>
-      <Table
+      <CustomTable
         columns={columns}
-        dataSource={data}
-        pagination={false}
-        scroll={{ x: 768 }}
-        loading={isLoading}
-        style={{ backgroundColor: 'unset' }}
-        footer={() => (
-          <div className='flex justify-between items-center'>
-            <p className='text-xs 2xl:text-sm'>
-              <span className='font-bold'>{listSpecializations?.page}</span> of{' '}
-              {listSpecializations?.totalPages} from{' '}
-              {listSpecializations?.total} result
-            </p>
-            <Pagination
-              current={listSpecializations?.page}
-              total={listSpecializations?.total}
-              pageSize={listSpecializations?.limit}
-              onChange={handlePageChange}
-            />
-          </div>
-        )}
+        data={data}
+        isLoading={isLoading}
+        pageSize={listSpecializations?.limit}
+        currentPage={listSpecializations?.page}
+        totalData={listSpecializations?.total}
+        totalPage={listSpecializations?.totalPages}
+        handlePageChange={handlePageChange}
       />
       <SpecializationModal
         open={isModalOpen}

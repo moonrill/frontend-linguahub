@@ -1,33 +1,57 @@
 'use client';
 
 import LanguageFlag from '#/components/LanguageFlag';
+import ServiceRequestDetailModal from '#/components/Modal/ServiceRequestDetail';
 import StatusBadge from '#/components/StatusBadge';
 import CustomTable from '#/components/Tables/CustomTable';
 import { imgProfilePicture } from '#/constants/general';
-import { bookingRepository } from '#/repository/booking';
+import { serviceRequestRepository } from '#/repository/service-request';
 import { Booking } from '#/types/BookingTypes';
 import { capitalizeFirstLetter } from '#/utils/capitalizeFirstLetter';
 import { Icon } from '@iconify-icon/react';
-import { Dropdown, Input, TableProps, Tooltip } from 'antd';
+import { Dropdown, Input, TableProps } from 'antd';
 import { MenuItemType } from 'antd/es/menu/interface';
 import dayjs from 'dayjs';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useState } from 'react';
 
-const TranslatorBooking = () => {
+const AdminServiceRequest = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
+
   const page = Number(searchParams?.get('page')) || 1;
   const status = searchParams?.get('status') || 'all';
   const statusParam = status === 'all' ? undefined : status;
-  const { data: bookingLists, isLoading } =
-    bookingRepository.hooks.useGetBookings('translator', statusParam, page, 10);
+
+  const [selectedRequest, setSelectedRequest] = useState<Booking | null>(null);
+  const [openDetailModal, setOpenDetailModal] = useState(false);
+
+  const {
+    data: listServiceRequests,
+    mutate,
+    isLoading,
+  } = serviceRequestRepository.hooks.useGetServiceRequests(
+    'admin',
+    statusParam,
+    page,
+    10,
+    'date',
+    'desc'
+  );
 
   const columns: TableProps['columns'] = [
     {
       title: 'Client',
       dataIndex: 'client',
       key: 'client',
+      ellipsis: true,
+      fixed: 'left',
+    },
+    {
+      title: 'Translator',
+      dataIndex: 'translator',
+      key: 'translator',
       ellipsis: true,
       fixed: 'left',
     },
@@ -53,8 +77,8 @@ const TranslatorBooking = () => {
     },
     {
       title: 'Status',
-      dataIndex: 'bookingStatus',
-      key: 'bookingStatus',
+      dataIndex: 'requestStatus',
+      key: 'requestStatus',
       ellipsis: true,
       render: (text) => (
         <div className='w-fit'>
@@ -62,42 +86,17 @@ const TranslatorBooking = () => {
         </div>
       ),
     },
-    {
-      title: 'Location',
-      dataIndex: 'location',
-      key: 'location',
-      ellipsis: true,
-      render: (text) => (
-        <Tooltip title={text}>
-          <p className='text-xs 2xl:text-sm truncate max-w-[100px] 2xl:max-w-[150px]'>
-            {text}
-          </p>
-        </Tooltip>
-      ),
-    },
-    {
-      title: 'Price',
-      dataIndex: 'price',
-      key: 'price',
-      ellipsis: true,
-      render: (text) => (
-        <p className='text-xs 2xl:text-sm font-semibold'>Rp{text}</p>
-      ),
-      sortDirections: ['descend', 'ascend'],
-      sorter: (a, b) => a.price - b.price,
-    },
   ];
 
-  const data = bookingLists?.data?.map((booking: Booking) => ({
-    key: booking?.id,
-    ...booking,
+  const data = listServiceRequests?.data?.map((sr: Booking) => ({
+    key: sr?.id,
     client: (
       <div className='flex gap-3 items-center'>
         <div className='relative w-[40px] h-[40px] hidden 2xl:block'>
           <Image
             src={
-              booking?.user?.userDetail.profilePicture
-                ? imgProfilePicture(booking?.user?.userDetail.profilePicture)
+              sr?.user?.userDetail.profilePicture
+                ? imgProfilePicture(sr?.user?.userDetail.profilePicture)
                 : '/images/avatar-placeholder.png'
             }
             alt={'translator-profile-picture'}
@@ -109,48 +108,70 @@ const TranslatorBooking = () => {
         </div>
 
         <div className='flex flex-col gap-1'>
-          <p className='font-medium text-sm line-clamp-1'>
-            {booking?.user?.userDetail?.fullName}
+          <p className='font-medium text-xs 2xl:text-sm line-clamp-1'>
+            {sr?.user?.userDetail?.fullName}
           </p>
           <p className='text-[10px] 2xl:text-xs font-semibold text-gray-500'>
-            {booking?.user?.email}
+            {sr?.user?.email}
+          </p>
+        </div>
+      </div>
+    ),
+    translator: (
+      <div className='flex gap-3 items-center'>
+        <div className='relative w-[40px] h-[40px] hidden 2xl:block'>
+          <Image
+            src={
+              sr?.translator?.user?.userDetail.profilePicture
+                ? imgProfilePicture(
+                    sr?.translator?.user?.userDetail.profilePicture
+                  )
+                : '/images/avatar-placeholder.png'
+            }
+            alt={'translator-profile-picture'}
+            fill
+            sizes='(max-width: 400px)'
+            className='object-cover rounded-lg'
+            priority
+          />
+        </div>
+
+        <div className='flex flex-col gap-1'>
+          <p className='font-medium text-xs 2xl:text-sm line-clamp-1'>
+            {sr?.translator?.user?.userDetail?.fullName}
+          </p>
+          <p className='text-[10px] 2xl:text-xs font-semibold text-gray-500'>
+            {sr?.translator?.user?.email}
           </p>
         </div>
       </div>
     ),
     service: (
       <div className='flex flex-col gap-1'>
-        <p className='text-xs 2xl:text-sm font-medium'>
-          {booking?.service?.name}
-        </p>
+        <p className='text-xs 2xl:text-sm font-medium'>{sr?.service?.name}</p>
         <div className='flex items-center gap-2'>
           <div className='flex items-center gap-1'>
-            <LanguageFlag
-              language={booking?.service?.sourceLanguage}
-              size='sm'
-            />
+            <LanguageFlag language={sr?.service?.sourceLanguage} size='sm' />
             <span className='text-[10px] 2xl:text-xs uppercase font-semibold text-gray-500'>
-              {booking?.service?.sourceLanguage?.code}
+              {sr?.service?.sourceLanguage?.code}
             </span>
           </div>
           -
           <div className='flex items-center gap-1'>
-            <LanguageFlag
-              language={booking?.service?.targetLanguage}
-              size='sm'
-            />
+            <LanguageFlag language={sr?.service?.targetLanguage} size='sm' />
             <span className='text-[10px] 2xl:text-xs uppercase font-semibold text-gray-500'>
-              {booking?.service?.targetLanguage?.code}
+              {sr?.service?.targetLanguage?.code}
             </span>
           </div>
         </div>
       </div>
     ),
-    price: booking?.serviceFee.toLocaleString('id-ID'),
+    requestStatus: sr?.requestStatus,
+    bookingDate: sr?.bookingDate,
   }));
 
   const handlePageChange = (page: number) => {
-    router.push(`/dashboard/translator/booking?page=${page}`);
+    router.push(`/dashboard/transaction/service-request?page=${page}`);
   };
 
   const statusOptions: MenuItemType[] = [
@@ -159,16 +180,16 @@ const TranslatorBooking = () => {
       label: 'All',
     },
     {
-      key: 'unpaid',
-      label: 'Unpaid',
+      key: 'pending',
+      label: 'Pending',
     },
     {
-      key: 'in_progress',
-      label: 'In Progress',
+      key: 'approved',
+      label: 'Approved',
     },
     {
-      key: 'completed',
-      label: 'Completed',
+      key: 'rejected',
+      label: 'Rejected',
     },
     {
       key: 'cancelled',
@@ -178,7 +199,7 @@ const TranslatorBooking = () => {
 
   const handleSelect = (value: string) => {
     router.push(
-      `/dashboard/translator/booking?status=${value}&page=${bookingLists?.page}`
+      `/dashboard/transaction/service-request?status=${value}&page=${listServiceRequests?.page}`
     );
   };
 
@@ -223,15 +244,25 @@ const TranslatorBooking = () => {
         columns={columns}
         data={data}
         isLoading={isLoading}
-        pageSize={bookingLists?.limit}
-        currentPage={bookingLists?.page}
-        totalData={bookingLists?.total}
-        totalPage={bookingLists?.totalPages}
+        pageSize={listServiceRequests?.limit}
+        currentPage={listServiceRequests?.page}
+        totalData={listServiceRequests?.total}
+        totalPage={listServiceRequests?.totalPages}
         handlePageChange={handlePageChange}
-        onClick={({ id }) => router.push(`/dashboard/translator/booking/${id}`)}
+        onClick={({ key }) => {
+          setSelectedRequest(
+            listServiceRequests?.data?.find((sr: Booking) => sr?.id === key)
+          );
+          setOpenDetailModal(true);
+        }}
+      />
+      <ServiceRequestDetailModal
+        open={openDetailModal}
+        onCancel={() => setOpenDetailModal(false)}
+        serviceRequest={selectedRequest}
       />
     </main>
   );
 };
 
-export default TranslatorBooking;
+export default AdminServiceRequest;

@@ -2,11 +2,12 @@ import { http } from '#/utils/http';
 import useSWR from 'swr';
 
 const url = {
-  getUserPayments: (
-    type: 'client' | 'translator',
+  getPayments: (
+    role: string,
     status: string | undefined,
     page: number,
     limit: number,
+    type?: string,
     sortBy?: string,
     order?: string
   ) => {
@@ -21,6 +22,9 @@ const url = {
     if (limit) {
       params.append('limit', limit.toString());
     }
+    if (type) {
+      params.append('type', type);
+    }
     if (sortBy) {
       params.append('sortBy', sortBy);
     }
@@ -30,33 +34,58 @@ const url = {
 
     const queryString = params.toString();
     let url;
-    if (type === 'client') {
-      url = `/users/payments${queryString ? `?${queryString}` : ''}`;
-    } else {
-      url = `/translators/payments${queryString ? `?${queryString}` : ''}`;
+
+    switch (role) {
+      case 'translator':
+        url = `/translators/payments${queryString ? `?${queryString}` : ''}`;
+        break;
+      case 'user':
+        url = `/users/payments${queryString ? `?${queryString}` : ''}`;
+        break;
+      default:
+        url = `/payments${queryString ? `?${queryString}` : ''}`;
     }
 
     return url;
   },
+  updateProof: (id: string) => `/payments/${id}/proof`,
+  removeProof: (id: string) => `/payments/${id}/proof`,
+  completePayment: (id: string) => `/payments/${id}/complete`,
+  export: () => `/payments/export`,
 };
 
 const hooks = {
-  useGetUserPayments: (
-    type: 'client' | 'translator',
+  useGetPayments: (
+    role: string,
     status: string | undefined,
     page: number,
     limit: number,
+    type?: string,
     sortBy?: string,
     order?: string
   ) => {
     return useSWR(
-      url.getUserPayments(type, status, page, limit, sortBy, order),
+      url.getPayments(role, status, page, limit, type, sortBy, order),
       http.fetcher
     );
   },
 };
 
+const api = {
+  updateProof: (id: string, data: any) => {
+    return http.put(url.updateProof(id)).send(data);
+  },
+  removeProof: (id: string) => {
+    return http.del(url.removeProof(id));
+  },
+  completePayment: (id: string) => {
+    return http.put(url.completePayment(id));
+  },
+  export: (data: any) => http.post(url.export()).send(data),
+};
+
 export const paymentRepository = {
   url,
+  api,
   hooks,
 };

@@ -1,70 +1,90 @@
 'use client';
 
 import LanguageFlag from '#/components/LanguageFlag';
-import Pagination from '#/components/Pagination';
+import ExportModal from '#/components/Modal/ExportModal';
 import StatusBadge from '#/components/StatusBadge';
+import CustomTable from '#/components/Tables/CustomTable';
+import { config } from '#/config/app';
 import { imgProfilePicture } from '#/constants/general';
 import { paymentRepository } from '#/repository/payment';
 import { Payment } from '#/types/PaymentTypes';
 import { capitalizeFirstLetter } from '#/utils/capitalizeFirstLetter';
 import { Icon } from '@iconify-icon/react';
-import { Dropdown, Input, Table, TableProps } from 'antd';
+import {
+  Image as AntdImage,
+  Button,
+  Divider,
+  Drawer,
+  Dropdown,
+  Input,
+  message,
+  TableProps,
+} from 'antd';
 import { MenuItemType } from 'antd/es/menu/interface';
 import dayjs from 'dayjs';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 const TranslatorPayment = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const page = Number(searchParams?.get('page')) || 1;
+
   const status = searchParams?.get('status') || 'all';
+  const page = Number(searchParams?.get('page')) || 1;
   const statusParam = status === 'all' ? undefined : status;
 
-  const { data: listPayments, isLoading } =
-    paymentRepository.hooks.useGetUserPayments(
-      'translator',
-      statusParam,
-      page,
-      10
-    );
+  const [loading, setLoading] = useState(false);
+  const [showDrawer, setShowDrawer] = useState(false);
+  const [openExportModal, setOpenExportModal] = useState(false);
+  const [drawerSize, setDrawerSize] = useState<'default' | 'large'>('large');
+  const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
+
+  const {
+    data: listPayments,
+    isLoading,
+    mutate,
+  } = paymentRepository.hooks.useGetPayments(
+    'translator',
+    statusParam,
+    page,
+    10
+  );
 
   const columns: TableProps['columns'] = [
+    {
+      title: 'Date & Time',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      ellipsis: true,
+      sortDirections: ['descend', 'ascend'],
+      sorter: (a, b) => dayjs(a.createdAt).unix() - dayjs(b.createdAt).unix(),
+      render: (text) => (
+        <p className='text-xs 2xl:text-sm font-medium'>
+          {dayjs(text).format('DD MMMM YYYY, HH:mm')}
+        </p>
+      ),
+    },
     {
       title: 'Client',
       dataIndex: 'client',
       key: 'client',
-      minWidth: 150,
+      ellipsis: true,
       fixed: 'left',
     },
     {
       title: 'Service',
       dataIndex: 'service',
       key: 'service',
-      minWidth: 200,
-    },
-    {
-      title: 'Date',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      minWidth: 100,
-      sortDirections: ['descend', 'ascend'],
-      align: 'center',
-      sorter: (a, b) => dayjs(a.createdAt).unix() - dayjs(b.createdAt).unix(),
-      render: (text) => (
-        <p className='text-xs 2xl:text-sm font-medium'>
-          {dayjs(text).format('DD MMMM YYYY')}
-        </p>
-      ),
+      ellipsis: true,
     },
     {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      align: 'center',
-      width: 150,
+      ellipsis: true,
       render: (text) => (
-        <div className='w-fit m-auto'>
+        <div className='w-fit'>
           <StatusBadge text={capitalizeFirstLetter(text)} status={text} />
         </div>
       ),
@@ -73,11 +93,12 @@ const TranslatorPayment = () => {
       title: 'Amount',
       dataIndex: 'amount',
       key: 'amount',
-      minWidth: 120,
-      align: 'right',
+      ellipsis: true,
       render: (text) => (
         <p className='text-xs 2xl:text-sm font-semibold'>Rp{text}</p>
       ),
+      sortDirections: ['descend', 'ascend'],
+      sorter: (a, b) => a.amount - b.amount,
     },
   ];
 
@@ -88,8 +109,10 @@ const TranslatorPayment = () => {
         <div className='relative w-[40px] h-[40px] hidden 2xl:block'>
           <Image
             src={
-              payment?.user?.userDetail.profilePicture
-                ? imgProfilePicture(payment?.user?.userDetail.profilePicture)
+              payment?.booking?.user?.userDetail.profilePicture
+                ? imgProfilePicture(
+                    payment?.booking?.user?.userDetail.profilePicture
+                  )
                 : '/images/avatar-placeholder.png'
             }
             alt={'translator-profile-picture'}
@@ -102,10 +125,10 @@ const TranslatorPayment = () => {
 
         <div className='flex flex-col gap-1'>
           <p className='font-medium text-sm line-clamp-1'>
-            {payment?.user?.userDetail?.fullName}
+            {payment?.booking?.user?.userDetail?.fullName}
           </p>
           <p className='text-[10px] 2xl:text-xs font-semibold text-gray-500'>
-            {payment?.user?.email}
+            {payment?.booking?.user?.email}
           </p>
         </div>
       </div>
@@ -139,6 +162,7 @@ const TranslatorPayment = () => {
       </div>
     ),
     ...payment,
+    amount: payment?.amount.toLocaleString('id-ID'),
   }));
 
   const statusOptions: MenuItemType[] = [
@@ -168,6 +192,55 @@ const TranslatorPayment = () => {
     router.push(`/dashboard/translator/payment?page=${page}&status=${status}`);
   };
 
+  const handlePaymentComplete = async () => {
+    if (!selectedPayment) {
+      return;
+    }
+    setLoading(true);
+
+    try {
+      await paymentRepository.api.completePayment(selectedPayment.id);
+      message.success('Payment completed successfully');
+      mutate();
+    } catch (error: any) {
+      message.error(
+        error?.response?.body?.message || 'Error completing payment'
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedPayment) {
+      const updatedPayment = listPayments?.data?.find(
+        (payment: Payment) => payment.id === selectedPayment.id
+      );
+      setSelectedPayment(updatedPayment || null);
+    }
+  }, [listPayments, selectedPayment]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 1440) {
+        setDrawerSize('default');
+      } else {
+        setDrawerSize('large');
+      }
+    };
+
+    // Call once to set initial limit
+    handleResize();
+
+    // Add event listener for window resize
+    window.addEventListener('resize', handleResize);
+
+    // Cleanup event listener on component unmount
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   return (
     <main className='bg-white w-full rounded-3xl p-4'>
       <div className='flex justify-between items-center mb-4'>
@@ -184,53 +257,169 @@ const TranslatorPayment = () => {
           }
           className='h-12 w-fit'
         />
-        <Dropdown
-          menu={{
-            items: statusOptions,
-            selectable: true,
-            onClick: ({ key }) => handleSelect(key),
-            selectedKeys: [status],
-          }}
-          trigger={['click']}
-          className='cursor-pointer h-12 bg-zinc-100 px-4 py-2 rounded-xl text-sm 2xl:text-base text-zinc-500 font-medium hover:bg-zinc-200 transition-all duration-500'
-          placement='bottomRight'
-        >
-          <div className='flex items-center justify-between gap-4'>
-            <p>Status</p>
-            <Icon
-              icon='weui:arrow-outlined'
-              height={24}
-              className='rotate-90'
-            />
-          </div>
-        </Dropdown>
+        <div className='flex items-center gap-4'>
+          <Dropdown
+            menu={{
+              items: statusOptions,
+              selectable: true,
+              onClick: ({ key }) => handleSelect(key),
+              selectedKeys: [status],
+            }}
+            trigger={['click']}
+            className='cursor-pointer h-12 bg-zinc-100 px-4 py-2 rounded-xl text-sm 2xl:text-base text-zinc-500 font-medium hover:bg-zinc-200 transition-all duration-500'
+            placement='bottomRight'
+          >
+            <div className='flex items-center justify-between gap-4'>
+              <p>Status</p>
+              <Icon
+                icon='weui:arrow-outlined'
+                height={24}
+                className='rotate-90'
+              />
+            </div>
+          </Dropdown>
+          <Button
+            type='default'
+            className='py-3 px-5 w-fit h-fit text-sm font-medium text-blue-600 rounded-xl'
+            onClick={() => setOpenExportModal(true)}
+          >
+            <Icon icon={'uil:export'} height={18} />
+            Export
+          </Button>
+        </div>
       </div>
-      <Table
+      <CustomTable
         columns={columns}
-        dataSource={data}
-        pagination={false}
-        scroll={{ x: 768 }}
-        rowClassName={'cursor-pointer'}
-        onRow={(row) => ({
-          onClick: () => {
-            router.push(`/dashboard/translator/booking/${row.key}`);
-          },
-        })}
-        loading={isLoading}
-        footer={() => (
-          <div className='flex justify-between items-center'>
-            <p className='text-xs 2xl:text-sm'>
-              <span className='font-bold'>{listPayments?.page}</span> of{' '}
-              {listPayments?.totalPages} from {listPayments?.total} result
-            </p>
-            <Pagination
-              current={listPayments?.page}
-              total={listPayments?.total}
-              pageSize={listPayments?.limit}
-              onChange={handlePageChange}
+        data={data}
+        isLoading={isLoading}
+        pageSize={listPayments?.limit}
+        currentPage={listPayments?.page}
+        totalData={listPayments?.total}
+        totalPage={listPayments?.totalPages}
+        handlePageChange={handlePageChange}
+        onClick={({ key }) => {
+          const originalPayment = listPayments?.data?.find(
+            (payment: Payment) => payment.id === key
+          );
+          setSelectedPayment(originalPayment || null);
+          setShowDrawer(true);
+        }}
+      />
+      <Drawer
+        onClose={() => {
+          setShowDrawer(false);
+          setSelectedPayment(null);
+        }}
+        open={showDrawer}
+        size={drawerSize}
+        title='Payment Details'
+        extra={
+          selectedPayment && (
+            <StatusBadge
+              status={selectedPayment?.status}
+              text={capitalizeFirstLetter(selectedPayment?.status)}
             />
+          )
+        }
+      >
+        {selectedPayment && (
+          <div>
+            <h1 className='text-xl font-semibold'>Booking Summary</h1>
+            <div className='text-sm mt-2 flex flex-col gap-1'>
+              <div className='flex justify-between'>
+                <p className='font-medium text-slate-500'>Client</p>
+                <p className='font-semibold text-blue-950'>
+                  {selectedPayment?.booking?.user?.userDetail?.fullName}
+                </p>
+              </div>
+              <div className='flex justify-between'>
+                <p className='font-medium text-slate-500'>Service</p>
+                <p className='font-semibold text-blue-950'>
+                  {selectedPayment?.booking?.service.name}
+                </p>
+              </div>
+              <div className='flex justify-between'>
+                <p className='font-medium text-slate-500'>Source Language</p>
+                <p className='font-semibold text-blue-950'>
+                  {selectedPayment?.booking?.service.sourceLanguage.name}
+                </p>
+              </div>
+              <div className='flex justify-between'>
+                <p className='font-medium text-slate-500'>Target Language</p>
+                <p className='font-semibold text-blue-950'>
+                  {selectedPayment?.booking?.service.targetLanguage.name}
+                </p>
+              </div>
+
+              <div className='flex justify-between'>
+                <p className='font-medium text-slate-500'>Booking Date</p>
+                <p className='font-semibold text-blue-950'>
+                  {dayjs(selectedPayment?.booking.bookingDate).format(
+                    'DD MMMM YYYY'
+                  )}
+                </p>
+              </div>
+            </div>
+            <Divider />
+            <h1 className='text-xl font-semibold'>Price Details</h1>
+            <div className='text-sm mt-2 flex flex-col gap-1'>
+              <div className='flex justify-between'>
+                <p className='font-medium text-slate-500'>Service price</p>
+                <p className='font-medium text-blue-950'>
+                  Rp
+                  {selectedPayment?.booking?.service?.pricePerHour.toLocaleString(
+                    'id-ID'
+                  )}
+                </p>
+              </div>
+              <div className='flex justify-between'>
+                <p className='font-medium text-slate-500'>Duration</p>
+                <p className='font-medium text-blue-950'>
+                  {selectedPayment?.booking.duration} Hours
+                </p>
+              </div>
+            </div>
+            <Divider />
+            <div className='flex justify-between'>
+              <h1 className='text-xl font-semibold'>Total</h1>
+              <h1 className='text-xl font-semibold'>
+                Rp{selectedPayment?.booking.serviceFee.toLocaleString('id-ID')}
+              </h1>
+            </div>
+            <Divider />
+            <div className='flex flex-col gap-3'>
+              <h1 className='text-xl font-semibold'>Proof</h1>
+              {selectedPayment?.proof ? (
+                <>
+                  <AntdImage
+                    width={200}
+                    height={200}
+                    className='object-cover rounded-xl'
+                    src={`${config.baseUrl}/images/proof/payment/${selectedPayment?.proof}`}
+                  />
+                  {selectedPayment?.status === 'pending' && (
+                    <Button
+                      type='primary'
+                      className='py-3 px-5 w-fit h-fit text-sm rounded-xl'
+                      onClick={handlePaymentComplete}
+                      loading={loading}
+                      disabled={loading}
+                    >
+                      Complete Payment
+                    </Button>
+                  )}
+                </>
+              ) : (
+                <p className='text-sm text-slate-500'>No proof uploaded yet</p>
+              )}
+            </div>
           </div>
         )}
+      </Drawer>
+      <ExportModal
+        open={openExportModal}
+        onCancel={() => setOpenExportModal(false)}
+        role='translator'
       />
     </main>
   );

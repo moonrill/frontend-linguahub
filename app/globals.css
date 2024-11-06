@@ -185,7 +185,7 @@ p {
 }
 
 .ant-tag-checkable:hover {
-  @apply border-blue-500 bg-transparent !important;
+  @apply border-blue-500 bg-blue-50 !important;
 }
 
 .ant-tag-checkable-checked {

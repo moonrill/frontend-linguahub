@@ -1,11 +1,11 @@
 'use client';
 
-import Pagination from '#/components/Pagination';
+import CustomTable from '#/components/Tables/CustomTable';
 import { imgProfilePicture } from '#/constants/general';
 import { reviewRepository } from '#/repository/review';
 import { Review } from '#/types/TranslatorTypes';
 import { Icon } from '@iconify-icon/react';
-import { Dropdown, Input, Table, TableProps } from 'antd';
+import { Dropdown, Input, TableProps, Tooltip } from 'antd';
 import { MenuItemType } from 'antd/es/menu/interface';
 import dayjs from 'dayjs';
 import Image from 'next/image';
@@ -26,7 +26,7 @@ const TranslatorReviews = () => {
         <div className='flex gap-2'>
           <Icon
             icon={'ant-design:star-filled'}
-            className='text-2xl text-yellow-400'
+            className='text-lg 2xl:text-2xl text-yellow-400'
           />
           <p className={'font-medium'}>5</p>
         </div>
@@ -38,7 +38,7 @@ const TranslatorReviews = () => {
         <div className='flex gap-2'>
           <Icon
             icon={'ant-design:star-filled'}
-            className='text-2xl text-yellow-400'
+            className='text-lg 2xl:text-2xl text-yellow-400'
           />
           <p className={'font-medium'}>4</p>
         </div>
@@ -50,7 +50,7 @@ const TranslatorReviews = () => {
         <div className='flex gap-2'>
           <Icon
             icon={'ant-design:star-filled'}
-            className='text-2xl text-yellow-400'
+            className='text-lg 2xl:text-2xl text-yellow-400'
           />
           <p className={'font-medium'}>3</p>
         </div>
@@ -62,7 +62,7 @@ const TranslatorReviews = () => {
         <div className='flex gap-2'>
           <Icon
             icon={'ant-design:star-filled'}
-            className='text-2xl text-yellow-400'
+            className='text-lg 2xl:text-2xl text-yellow-400'
           />
           <p className={'font-medium'}>2</p>
         </div>
@@ -74,7 +74,7 @@ const TranslatorReviews = () => {
         <div className='flex gap-2'>
           <Icon
             icon={'ant-design:star-filled'}
-            className='text-2xl text-yellow-400'
+            className='text-lg 2xl:text-2xl text-yellow-400'
           />
           <p className={'font-medium'}>1</p>
         </div>
@@ -89,17 +89,10 @@ const TranslatorReviews = () => {
 
   const columns: TableProps['columns'] = [
     {
-      title: 'Client',
-      dataIndex: 'client',
-      key: 'client',
-      minWidth: 250,
-    },
-    {
-      title: 'Date',
+      title: 'Date & Time',
       dataIndex: 'createdAt',
       key: 'createdAt',
-      minWidth: 250,
-      align: 'center',
+      ellipsis: true,
       sortDirections: ['descend', 'ascend'],
       sorter: (a, b) => dayjs(a.createdAt).unix() - dayjs(b.createdAt).unix(),
       render: (_, record) => (
@@ -109,16 +102,35 @@ const TranslatorReviews = () => {
       ),
     },
     {
+      title: 'Booking ID',
+      dataIndex: 'bookingId',
+      key: 'bookingId',
+      ellipsis: true,
+      render: (text) => (
+        <Tooltip title={text}>
+          <p className='text-xs 2xl:text-sm font-medium truncate max-w-[100px] 2xl:max-w-[150px]'>
+            {text}
+          </p>
+        </Tooltip>
+      ),
+    },
+    {
+      title: 'Client',
+      dataIndex: 'client',
+      key: 'client',
+      ellipsis: true,
+    },
+    {
       title: 'Comment',
       dataIndex: 'comment',
       key: 'comment',
+      ellipsis: true,
     },
     {
       title: 'Rating',
       dataIndex: 'rating',
       key: 'rating',
-      align: 'center',
-      width: 100,
+      ellipsis: true,
     },
   ];
 
@@ -146,7 +158,7 @@ const TranslatorReviews = () => {
         </div>
 
         <div className='flex flex-col gap-1'>
-          <p className='font-medium text-sm line-clamp-1'>
+          <p className='font-medium text-xs 2xl:text-sm line-clamp-1'>
             {review?.user?.userDetail?.fullName}
           </p>
           <p className='text-[10px] 2xl:text-xs font-semibold text-gray-500'>
@@ -157,11 +169,21 @@ const TranslatorReviews = () => {
     ),
     createdAt: review.createdAt,
     comment: (
-      <p className='text-xs 2xl:text-sm line-clamp-2'>
-        {review.comment || '-'}
-      </p>
+      <Tooltip title={review.comment}>
+        <p className='text-xs 2xl:text-sm truncate max-w-[150px] 2xl:max-w-[300px]'>
+          {review.comment || '-'}
+        </p>
+      </Tooltip>
     ),
-    rating: review.rating,
+    rating: (
+      <div className='flex items-center gap-2'>
+        <Icon
+          icon={'ant-design:star-filled'}
+          className={'text-lg 2xl:text-2xl text-yellow-400'}
+        />{' '}
+        {review.rating}
+      </div>
+    ),
     bookingId: review?.booking?.id,
   }));
 
@@ -202,32 +224,18 @@ const TranslatorReviews = () => {
           </div>
         </Dropdown>
       </div>
-      <Table
+      <CustomTable
         columns={columns}
-        dataSource={data}
-        pagination={false}
-        scroll={{ x: 768 }}
-        loading={isLoading}
-        rowClassName={'cursor-pointer'}
-        onRow={(row) => ({
-          onClick: () => {
-            router.push(`/dashboard/translator/booking/${row.bookingId}`);
-          },
-        })}
-        footer={() => (
-          <div className='flex justify-between items-center'>
-            <p className='text-xs 2xl:text-sm'>
-              <span className='font-bold'>{listReviews?.page}</span> of{' '}
-              {listReviews?.totalPages} from {listReviews?.total} result
-            </p>
-            <Pagination
-              current={listReviews?.page}
-              total={listReviews?.total}
-              pageSize={listReviews?.limit}
-              onChange={handlePageChange}
-            />
-          </div>
-        )}
+        data={data}
+        isLoading={isLoading}
+        pageSize={listReviews?.limit}
+        currentPage={listReviews?.page}
+        totalData={listReviews?.total}
+        totalPage={listReviews?.totalPages}
+        handlePageChange={handlePageChange}
+        onClick={({ bookingId }) =>
+          router.push(`/dashboard/translator/booking/${bookingId}`)
+        }
       />
     </main>
   );

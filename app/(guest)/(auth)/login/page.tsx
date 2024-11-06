@@ -67,7 +67,7 @@ const Login = () => {
           >
             <Form.Item
               name={'email'}
-              validateDebounce={500}
+              validateDebounce={1000}
               rules={[
                 {
                   type: 'email',
@@ -94,7 +94,7 @@ const Login = () => {
             </Form.Item>
             <Form.Item
               name={'password'}
-              validateDebounce={500}
+              validateDebounce={1000}
               rules={[
                 { required: true, message: 'Please enter your password' },
               ]}
