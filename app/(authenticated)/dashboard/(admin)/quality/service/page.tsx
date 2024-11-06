@@ -1,42 +1,39 @@
 'use client';
 
 import LanguageFlag from '#/components/LanguageFlag';
-import ServiceModal from '#/components/Modal/ServiceModal';
 import Pagination from '#/components/Pagination';
 import StatusBadge from '#/components/StatusBadge';
 import { serviceRepository } from '#/repository/service';
 import { translatorRepository } from '#/repository/translator';
 import { Service } from '#/types/ServiceTypes';
 import { Icon } from '@iconify-icon/react';
-import {
-  Button,
-  Dropdown,
-  Input,
-  MenuProps,
-  message,
-  Table,
-  TableProps,
-} from 'antd';
+import { Button, Dropdown, Input, MenuProps, message, Table, TableProps } from 'antd';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 
 const AdminService = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const page = Number(searchParams?.get('page')) || 1;
+  const status = searchParams?.get('status') || 'all';
+  const statusParam = status === 'all' ? undefined : status;
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
 
-  const {
-    data: listServices,
-    isLoading,
-    mutate,
-  } = serviceRepository.hooks.useGetAllServices(page, 10);
+  const { data: listServices, isLoading, mutate } = serviceRepository.hooks.useGetAllServices(page, 10);
 
-  const { data: listLanguages } =
-    translatorRepository.hooks.useGetTranslatorLanguages();
+  const { data: listLanguages } = translatorRepository.hooks.useGetTranslatorLanguages();
+
+  const statusOptions = [
+    { key: 'all', label: 'All' },
+    { key: 'active', label: 'Active' },
+    { key: 'inactive', label: 'Inactive' },
+  ];
+
+  const handleSelect = (key: string) => {
+    router.push(`/dashboard/translator/service?page=1&status=${key}`);
+  };
 
   const columns: TableProps['columns'] = [
     {
@@ -47,27 +44,21 @@ const AdminService = () => {
         <div className='flex items-center gap-2'>
           <div className='relative w-[50px] h-[50px] hidden 2xl:block'>
             <Image
-              src={
-                record?.translator?.user?.userDetail?.profilePicture
-                  ? record?.translator.user.userDetail.profilePicture
-                  : '/images/avatar-placeholder.png'
-              }
+              src={record?.translator?.user?.userDetail?.profilePicture || '/images/avatar-placeholder.png'}
               fill
               alt='translator-profile-picture'
               sizes='(max-width: 400px)'
               className='object-cover rounded-lg'
               priority
-    
             />
           </div>
-          <div>
-            <p>{record?.translator?.user?.userDetail?.fullName || 'N/A'}</p> 
-            <p className='text-zinc-500'>{record?.translator?.user?.email || 'N/A'}</p> 
+          <div className='flex flex-col gap-1'>
+            <p className='font-medium text-sm line-clamp-1'>{record?.translator?.user?.userDetail?.fullName || 'N/A'}</p>
+            <p className='text-[10px] 2xl:text-xs font-semibold text-gray-500'>{record?.translator?.user?.email || 'N/A'}</p>
           </div>
         </div>
       ),
     },
-
     {
       title: 'Service Name',
       dataIndex: 'name',
@@ -75,7 +66,6 @@ const AdminService = () => {
       fixed: 'left',
       minWidth: 200,
       render: (text) => <p className='font-medium'>{text}</p>,
-      sortDirections: ['ascend', 'descend'],
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
@@ -120,10 +110,7 @@ const AdminService = () => {
       key: 'pricePerHour',
       align: 'right',
       minWidth: 150,
-      render: (text) => (
-        <p className='font-semibold'>Rp{text.toLocaleString('id-ID')}</p>
-      ),
-      sortDirections: ['ascend', 'descend'],
+      render: (text) => <p className='font-semibold'>Rp{text.toLocaleString('id-ID')}</p>,
       sorter: (a, b) => a.pricePerHour - b.pricePerHour,
     },
   ];
@@ -131,14 +118,10 @@ const AdminService = () => {
   const toggleStatus = async (id: string) => {
     try {
       await serviceRepository.api.toggleStatus(id);
-
       mutate();
       message.success('Service status updated successfully');
     } catch (error: any) {
-      message.error(
-        error.response.body?.message || 'Error toggling service',
-        5
-      );
+      message.error(error?.response?.body?.message || 'Error toggling service');
     }
   };
 
@@ -148,37 +131,24 @@ const AdminService = () => {
         key: '1',
         label: (
           <div className='flex items-center'>
-            <Icon
-              icon={'hugeicons:pencil-edit-01'}
-              className='text-lg 2xl:text-xl'
-            />
+            <Icon icon={'hugeicons:pencil-edit-01'} className='text-lg 2xl:text-xl' />
             <span className='ml-2 text-xs 2xl:text-sm'>Edit</span>
           </div>
         ),
-        onClick: () => {
-          setSelectedService(service);
-          setIsModalOpen(true);
-        },
       },
       {
         key: '2',
         label: (
-          <div className='flex items-center'>
+          <div className='flex items-center' onClick={() => toggleStatus(service.id)}>
             <Icon
               icon={'tabler:circle-filled'}
-              className={`text-lg 2xl:text-xl ${
-                service.status !== 'Active' ? 'text-green-500' : 'text-rose-500'
-              }`}
+              className={`text-lg 2xl:text-xl ${service.status !== 'Active' ? 'text-green-500' : 'text-rose-500'}`}
             />
-            <span className='ml-2 text-xs 2xl:text-sm'>
-              {service.status !== 'Active' ? 'Activate' : 'Deactivate'}
-            </span>
+            <span className='ml-2 text-xs 2xl:text-sm'>{service.status !== 'Active' ? 'Activate' : 'Deactivate'}</span>
           </div>
         ),
-        onClick: () => toggleStatus(service.id),
       },
     ];
-
     return items;
   };
 
@@ -188,20 +158,15 @@ const AdminService = () => {
     action: (
       <Dropdown
         trigger={['click']}
-        menu={{
-          items: actionDropdownItem(service),
-        }}
+        menu={{ items: actionDropdownItem(service) }}
       >
-        <Icon
-          icon={'tabler:dots'}
-          className='text-gray-500 text-2xl cursor-pointer p-2 hover:bg-zinc-200 rounded-lg transition-all duration-500'
-        />
+        <Icon icon={'tabler:dots'} className='text-gray-500 text-2xl cursor-pointer p-2 hover:bg-zinc-200 rounded-lg transition-all duration-500' />
       </Dropdown>
     ),
   }));
 
   const handlePageChange = (page: number) => {
-    router.push(`/dashboard/translator/service?page=${page}`);
+    router.push(`/dashboard/translator/service?page=${page}&status=${status}`);
   };
 
   return (
@@ -210,15 +175,25 @@ const AdminService = () => {
         <Input
           type='text'
           placeholder='Search...'
-          prefix={
-            <Icon
-              icon={'iconamoon:search-light'}
-              height={24}
-              className='text-zinc-400'
-            />
-          }
+          prefix={<Icon icon={'iconamoon:search-light'} height={24} className='text-zinc-400' />}
           className='h-12 w-fit'
         />
+        <Dropdown
+          menu={{
+            items: statusOptions,
+            selectable: true,
+            onClick: ({ key }) => handleSelect(key),
+            selectedKeys: [status],
+          }}
+          trigger={['click']}
+          className='cursor-pointer h-12 bg-zinc-100 px-4 py-2 rounded-xl text-sm 2xl:text-base text-zinc-500 font-medium hover:bg-zinc-200 transition-all duration-500'
+          placement='bottomRight'
+        >
+          <div className='flex items-center justify-between gap-4'>
+            <p>Status</p>
+            <Icon icon='weui:arrow-outlined' height={24} className='rotate-90' />
+          </div>
+        </Dropdown>
       </div>
       <Table
         columns={columns}
@@ -229,8 +204,7 @@ const AdminService = () => {
         footer={() => (
           <div className='flex justify-between items-center'>
             <p className='text-xs 2xl:text-sm'>
-              <span className='font-bold'>{listServices?.page}</span> of{' '}
-              {listServices?.totalPages} from {listServices?.total} result
+              <span className='font-bold'>{listServices?.page}</span> of {listServices?.totalPages} from {listServices?.total} result
             </p>
             <Pagination
               current={listServices?.page}
@@ -240,16 +214,6 @@ const AdminService = () => {
             />
           </div>
         )}
-      />
-      <ServiceModal
-        open={isModalOpen}
-        onCancel={() => {
-          setIsModalOpen(false);
-          setSelectedService(null);
-        }}
-        languages={listLanguages?.data}
-        mutate={mutate}
-        service={selectedService}
       />
     </main>
   );

@@ -35,8 +35,8 @@ const AdminReviewPage = () => {
         <div className='flex items-center gap-2'>
           <div className='relative w-[50px] h-[50px] hidden 2xl:block'>
             <Image
-  src={record.user?.userDetail?.profilePicture ? imgProfilePicture(record.user.userDetail.profilePicture) : '/images/avatar-placeholder.png'}
-    alt='client-profile-picture'
+              src={record.user?.userDetail?.profilePicture ? imgProfilePicture(record.user.userDetail.profilePicture) : '/images/avatar-placeholder.png'}
+              alt='client-profile-picture'
               fill
               sizes='(max-width: 400px)'
               className='object-cover rounded-lg'
@@ -47,28 +47,26 @@ const AdminReviewPage = () => {
         </div>
       ),
     },
-
-   {
-  title: 'Translator',
-  dataIndex: 'translator',
-  key: 'translator',
-  render: (_, record) => (
-    <div className='flex items-center gap-2'>
-      <div className='relative w-[50px] h-[50px] hidden 2xl:block'>
-        <Image
-  src={record.translator?.user?.userDetail?.profilePicture ? imgProfilePicture(record.translator.user.userDetail.profilePicture) : '/images/avatar-placeholder.png'}
-  alt='translator-profile-picture'
-          fill
-          sizes='(max-width: 400px)'
-          className='object-cover rounded-lg'
-          priority
-        />
-      </div>
-      <p className='font-semibold text-xs 2xl:text-sm line-clamp-1'>{record.translator.user.userDetail.fullName}</p>
-    </div>
-  ),
-},
-
+    {
+      title: 'Translator',
+      dataIndex: 'translator',
+      key: 'translator',
+      render: (_, record) => (
+        <div className='flex items-center gap-2'>
+          <div className='relative w-[50px] h-[50px] hidden 2xl:block'>
+            <Image
+              src={record.translator?.user?.userDetail?.profilePicture ? imgProfilePicture(record.translator.user.userDetail.profilePicture) : '/images/avatar-placeholder.png'}
+              alt='translator-profile-picture'
+              fill
+              sizes='(max-width: 400px)'
+              className='object-cover rounded-lg'
+              priority
+            />
+          </div>
+          <p className='font-semibold text-xs 2xl:text-sm line-clamp-1'>{record.translator.user.userDetail.fullName}</p>
+        </div>
+      ),
+    },
     {
       title: 'Date',
       dataIndex: 'createdAt',
@@ -93,8 +91,6 @@ const AdminReviewPage = () => {
         </div>
       ),
     },
-    
-    
     {
       title: 'Rating',
       dataIndex: 'rating',
@@ -102,7 +98,7 @@ const AdminReviewPage = () => {
       align: 'center',
       width: 100,
       render: (rating: number) => (
-        <p className='text-xs 2xl:text-sm'>{rating ? `${rating} ` : 'N/A'}</p> 
+        <p className='text-xs 2xl:text-sm'>{rating ? `${rating} ` : 'N/A'}</p>
       ),
     },
   ];
