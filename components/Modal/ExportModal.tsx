@@ -1,4 +1,4 @@
-import { paymentRepository } from '#/repository/payment';
+import { config } from '#/config/app';
 import { Icon } from '@iconify-icon/react';
 import { Button, DatePicker, Form, Modal, Tag } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
@@ -11,12 +11,10 @@ interface Props {
 }
 
 const ExportModal: React.FC<Props> = ({ open, onCancel, role }) => {
-  // Memisahkan status berdasarkan role
   const adminStatusList = ['Pending', 'Paid', 'Failed', 'Refund'];
   const translatorStatusList = ['Pending', 'Paid', 'Failed'];
   const typeList = ['Translator', 'Client'];
 
-  // Gunakan status list sesuai role
   const statusList = role === 'admin' ? adminStatusList : translatorStatusList;
 
   const [selectedStatus, setSelectedStatus] = useState<string[]>([]);
@@ -47,8 +45,23 @@ const ExportModal: React.FC<Props> = ({ open, onCancel, role }) => {
     };
 
     try {
-      const response = await paymentRepository.api.export(data);
-      console.log(response);
+      const response = await fetch(`${config.baseUrl}/payments/export`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      window.open(blobUrl, '_blank');
+      onCancel();
     } catch (error) {
       console.error(error);
     }

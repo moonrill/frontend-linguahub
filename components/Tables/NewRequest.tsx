@@ -91,7 +91,7 @@ const NewRequest = () => {
     service: (
       <div className='flex flex-col'>
         <p className='text-xs 2xl:text-sm font-medium'>{sr?.service?.name}</p>
-        <p className='text-xs font-semibold text-gray-500 uppercase'>
+        <p className='text-[10px] 2xl:text-xs font-semibold text-gray-500 uppercase'>
           {sr?.service?.sourceLanguage?.code} -{' '}
           {sr?.service?.targetLanguage?.code}
         </p>
