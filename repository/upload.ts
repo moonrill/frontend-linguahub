@@ -5,6 +5,7 @@ const url = {
   certificate: () => '/translators/upload/certificate',
   uploadFlag: () => `/languages/upload/flagImage`,
   uploadLogo: () => `/specializations/upload/logo`,
+  profilePicture: () => '/users/upload/profile-picture',
 };
 
 const api = {
@@ -31,6 +32,12 @@ const api = {
     formData.append('logo', logo);
 
     return http.post(url.uploadLogo()).send(formData);
+  },
+  useUploadProfilePicture(profilePicture: any) {
+    const formData = new FormData();
+    formData.append('profilePicture', profilePicture);
+
+    return http.post(url.profilePicture()).send(formData);
   },
 };
 

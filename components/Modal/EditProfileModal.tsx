@@ -2,6 +2,7 @@
 
 import { fetchAddress } from '#/repository/address';
 import { authRepository } from '#/repository/auth';
+import { uploadRepository } from '#/repository/upload';
 import {
   Addresses,
   City,
@@ -12,8 +13,20 @@ import {
 } from '#/types/AddressTypes';
 import { User } from '#/types/UserType';
 import { Icon } from '@iconify-icon/react';
-import { Button, DatePicker, Form, Input, message, Modal, Select } from 'antd';
+import {
+  Button,
+  DatePicker,
+  Form,
+  Input,
+  message,
+  Modal,
+  Select,
+  Upload,
+  UploadProps,
+} from 'antd';
 import { useForm } from 'antd/es/form/Form';
+import { UploadChangeParam, UploadFile } from 'antd/es/upload';
+import Dragger from 'antd/es/upload/Dragger';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import AddressSelect from '../AddressSelect';
@@ -114,6 +127,39 @@ const EditProfileModal = ({ open, onCancel, user, mutate }: Props) => {
     });
   };
 
+  const uploadProps: UploadProps = {
+    multiple: false,
+    maxCount: 1,
+    accept: '.jpg,.jpeg,.png,.svg',
+    listType: 'picture',
+    iconRender: (file) => (
+      <Icon
+        icon='basil:document-solid'
+        height={64}
+        className='text-blue-600 mb-4'
+      />
+    ),
+    progress: {
+      strokeColor: {
+        '0%': '#2563eb',
+        '100%': '#2563eb',
+      },
+    },
+    beforeUpload: (file) => {
+      if (file.size > 5 * 1024 * 1024) {
+        message.error('File too large');
+        return Upload.LIST_IGNORE;
+      }
+      return false;
+    },
+    showUploadList: {
+      showRemoveIcon: true,
+      removeIcon: (
+        <Icon icon='mynaui:trash' className='text-red-500' height={24} />
+      ),
+    },
+  };
+
   const handleFinish = async (values: any) => {
     try {
       setLoading(true);
@@ -134,8 +180,26 @@ const EditProfileModal = ({ open, onCancel, user, mutate }: Props) => {
       setLoading(false);
     }
   };
+
+  const handleUpload = async (file: any) => {
+    try {
+      const response = await uploadRepository.api.useUploadProfilePicture(file);
+      form.setFieldValue('profilePicture', response?.body?.profilePicture);
+      message.success('Image uploaded successfully');
+    } catch (error) {
+      console.error(error);
+      message.error('Error uploading image');
+    }
+  };
+
   return (
-    <Modal open={open} onCancel={onCancel} centered footer={null}>
+    <Modal
+      open={open}
+      onCancel={onCancel}
+      centered
+      footer={null}
+      className='!min-w-[700px]'
+    >
       <div className='flex items-center gap-2'>
         <div className='p-2 bg-blue-600 rounded-full flex items-center justify-center text-white'>
           <Icon icon={'lets-icons:edit'} className='text-2xl' />
@@ -144,204 +208,242 @@ const EditProfileModal = ({ open, onCancel, user, mutate }: Props) => {
       </div>
       <Form
         form={form}
-        className='mt-6 text-black flex flex-col'
+        className='mt-6 text-black flex flex-col gap-2'
         onFinish={handleFinish}
       >
-        <Form.Item
-          name={'fullName'}
-          validateDebounce={500}
-          rules={[
-            {
-              required: true,
-              message: 'Please enter your full name',
-            },
-          ]}
-        >
-          <Input
-            type='text'
-            placeholder='Full Name'
-            suffix={
-              <Icon
-                icon={'material-symbols:id-card'}
-                height={24}
-                className='text-zinc-400'
-              />
-            }
-            className='h-14'
-          />
-        </Form.Item>
-        <Form.Item
-          name={'gender'}
-          rules={[{ required: true, message: 'Please select your gender' }]}
-        >
-          <Select
-            placeholder='Gender'
-            className='h-14 w-full border-none'
-            menuItemSelectedIcon={
-              <Icon
-                icon={'ci:check-big'}
-                height={24}
-                className='text-zinc-500'
-              />
-            }
-            options={[
-              { value: 'male', label: 'Male' },
-              { value: 'female', label: 'Female' },
-            ]}
-            suffixIcon={
-              <Icon
-                icon={'mdi:chevron-down'}
-                height={32}
-                className='text-zinc-400'
-              />
-            }
-          />
-        </Form.Item>
-        <Form.Item
-          name={'phoneNumber'}
-          validateDebounce={500}
-          validateFirst
-          rules={[
-            {
-              required: true,
-              message: 'Please enter your phone number',
-            },
-            {
-              pattern: /^\d+$/,
-              message: 'Phone number must be digits only!',
-            },
-            {
-              min: 10,
-              message: 'Phone number must be at least 10 digits!',
-            },
-            {
-              max: 13,
-              message: 'Phone number cannot be more than 13 digits!',
-            },
-          ]}
-        >
-          <Input
-            type='text'
-            placeholder='Phone Number'
-            inputMode='numeric'
-            pattern='[0-9]*'
-            suffix={
-              <Icon
-                icon={'ic:round-phone'}
-                height={24}
-                className='text-zinc-400'
-              />
-            }
-            className='h-14'
-          />
-        </Form.Item>
-        <Form.Item
-          name={'dateOfBirth'}
-          validateDebounce={500}
-          rules={[
-            { required: true, message: 'Please enter your date of birth' },
-          ]}
-        >
-          <DatePicker
-            placeholder='Date of Birth'
-            className='h-14 w-full bg-zinc-100 border-none rounded-2xl hover:bg-zinc-200 px-6 focus:bg-zinc-100'
-            maxDate={dayjs(dayjs().format('YYYY-MM-DD'))}
-            suffixIcon={
-              <Icon
-                icon={'ic:round-date-range'}
-                height={24}
-                className='text-zinc-400'
-              />
-            }
-          />
-        </Form.Item>
-        <div>
-          <div className='grid md:grid-cols-2 md:gap-4'>
-            <Form.Item
-              name='province'
-              rules={[{ required: true, message: 'Please select a province' }]}
-            >
-              <AddressSelect
-                type='province'
-                placeholder='Province'
-                options={addresses.province}
-                disabled={false}
-                onChange={(label: string, value: string) =>
-                  handleSelectionChange('province', value, label)
-                }
-              />
-            </Form.Item>
-            <Form.Item
-              name='city'
-              rules={[{ required: true, message: 'Please select a city' }]}
-            >
-              <AddressSelect
-                type='city'
-                placeholder='City'
-                options={addresses.city}
-                disabled={!selectedAddress.province}
-                onChange={(label: string, value: string) =>
-                  handleSelectionChange('city', value, label)
-                }
-              />
+        <div className='flex gap-4'>
+          <div>
+            <Form.Item name={'profilePicture'}>
+              <p className='text-sm 2xl:text-base mb-2'>
+                Profile Picture
+                <span className='text-zinc-500'> (Optional)</span>
+              </p>
+              <Dragger
+                {...uploadProps}
+                style={{ width: 250, padding: '3rem 0' }}
+                onChange={(info: UploadChangeParam<UploadFile>) => {
+                  const { file } = info;
+                  if (file.status !== 'removed') {
+                    handleUpload(file);
+                  }
+                }}
+              >
+                <div className='flex flex-col justify-center items-center'>
+                  <Icon
+                    icon={'iwwa:upload'}
+                    height={64}
+                    className=' text-blue-600'
+                  />
+                  <p className='text-sm text-zinc-500'>
+                    Drag & drop or click to upload
+                  </p>
+                </div>
+              </Dragger>
             </Form.Item>
           </div>
-          <div className='grid md:grid-cols-2 md:gap-4'>
+          <div className='w-full'>
             <Form.Item
-              name='district'
-              rules={[{ required: true, message: 'Please select a district' }]}
-            >
-              <AddressSelect
-                type='district'
-                placeholder='District'
-                options={addresses.district}
-                disabled={!selectedAddress.city}
-                onChange={(label: string, value: string) =>
-                  handleSelectionChange('district', value, label)
-                }
-              />
-            </Form.Item>
-            <Form.Item
-              name='subDistrict'
+              name={'fullName'}
+              validateDebounce={500}
               rules={[
-                { required: true, message: 'Please select a sub-district' },
+                {
+                  required: true,
+                  message: 'Please enter your full name',
+                },
               ]}
             >
-              <AddressSelect
-                type='subDistrict'
-                placeholder='Sub District'
-                options={addresses.subDistrict}
-                disabled={!selectedAddress.district}
-                onChange={(label: string, value: string) =>
-                  handleSelectionChange('subDistrict', value, label)
+              <Input
+                type='text'
+                placeholder='Full Name'
+                suffix={
+                  <Icon
+                    icon={'material-symbols:id-card'}
+                    height={24}
+                    className='text-zinc-400'
+                  />
+                }
+                className='h-14'
+              />
+            </Form.Item>
+            <Form.Item
+              name={'gender'}
+              rules={[{ required: true, message: 'Please select your gender' }]}
+            >
+              <Select
+                placeholder='Gender'
+                className='h-14 w-full border-none'
+                menuItemSelectedIcon={
+                  <Icon
+                    icon={'ci:check-big'}
+                    height={24}
+                    className='text-zinc-500'
+                  />
+                }
+                options={[
+                  { value: 'male', label: 'Male' },
+                  { value: 'female', label: 'Female' },
+                ]}
+                suffixIcon={
+                  <Icon
+                    icon={'mdi:chevron-down'}
+                    height={32}
+                    className='text-zinc-400'
+                  />
                 }
               />
             </Form.Item>
-          </div>
-          <Form.Item
-            name={'street'}
-            validateDebounce={500}
-            rules={[
-              {
-                required: true,
-                message: 'Please enter your street',
-              },
-            ]}
-          >
-            <Input
-              type='text'
-              placeholder='Street'
-              suffix={
-                <Icon
-                  icon={'fluent:street-sign-24-filled'}
-                  height={24}
-                  className='text-zinc-400'
+            <Form.Item
+              name={'phoneNumber'}
+              validateDebounce={500}
+              validateFirst
+              rules={[
+                {
+                  required: true,
+                  message: 'Please enter your phone number',
+                },
+                {
+                  pattern: /^\d+$/,
+                  message: 'Phone number must be digits only!',
+                },
+                {
+                  min: 10,
+                  message: 'Phone number must be at least 10 digits!',
+                },
+                {
+                  max: 13,
+                  message: 'Phone number cannot be more than 13 digits!',
+                },
+              ]}
+            >
+              <Input
+                type='text'
+                placeholder='Phone Number'
+                inputMode='numeric'
+                pattern='[0-9]*'
+                suffix={
+                  <Icon
+                    icon={'ic:round-phone'}
+                    height={24}
+                    className='text-zinc-400'
+                  />
+                }
+                className='h-14'
+              />
+            </Form.Item>
+            <Form.Item
+              name={'dateOfBirth'}
+              validateDebounce={500}
+              rules={[
+                { required: true, message: 'Please enter your date of birth' },
+              ]}
+            >
+              <DatePicker
+                placeholder='Date of Birth'
+                className='h-14 w-full bg-zinc-100 border-none rounded-2xl hover:bg-zinc-200 px-6 focus:bg-zinc-100'
+                maxDate={dayjs(dayjs().format('YYYY-MM-DD'))}
+                suffixIcon={
+                  <Icon
+                    icon={'ic:round-date-range'}
+                    height={24}
+                    className='text-zinc-400'
+                  />
+                }
+              />
+            </Form.Item>
+            <div>
+              <div className='grid md:grid-cols-2 md:gap-4'>
+                <Form.Item
+                  name='province'
+                  rules={[
+                    { required: true, message: 'Please select a province' },
+                  ]}
+                >
+                  <AddressSelect
+                    type='province'
+                    placeholder='Province'
+                    options={addresses.province}
+                    disabled={false}
+                    onChange={(label: string, value: string) =>
+                      handleSelectionChange('province', value, label)
+                    }
+                  />
+                </Form.Item>
+                <Form.Item
+                  name='city'
+                  rules={[{ required: true, message: 'Please select a city' }]}
+                >
+                  <AddressSelect
+                    type='city'
+                    placeholder='City'
+                    options={addresses.city}
+                    disabled={!selectedAddress.province}
+                    onChange={(label: string, value: string) =>
+                      handleSelectionChange('city', value, label)
+                    }
+                  />
+                </Form.Item>
+              </div>
+              <div className='grid md:grid-cols-2 md:gap-4'>
+                <Form.Item
+                  name='district'
+                  rules={[
+                    { required: true, message: 'Please select a district' },
+                  ]}
+                >
+                  <AddressSelect
+                    type='district'
+                    placeholder='District'
+                    options={addresses.district}
+                    disabled={!selectedAddress.city}
+                    onChange={(label: string, value: string) =>
+                      handleSelectionChange('district', value, label)
+                    }
+                  />
+                </Form.Item>
+                <Form.Item
+                  name='subDistrict'
+                  rules={[
+                    { required: true, message: 'Please select a sub-district' },
+                  ]}
+                >
+                  <AddressSelect
+                    type='subDistrict'
+                    placeholder='Sub District'
+                    options={addresses.subDistrict}
+                    disabled={!selectedAddress.district}
+                    onChange={(label: string, value: string) =>
+                      handleSelectionChange('subDistrict', value, label)
+                    }
+                  />
+                </Form.Item>
+              </div>
+              <Form.Item
+                name={'street'}
+                validateDebounce={500}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please enter your street',
+                  },
+                ]}
+              >
+                <Input
+                  type='text'
+                  placeholder='Street'
+                  suffix={
+                    <Icon
+                      icon={'fluent:street-sign-24-filled'}
+                      height={24}
+                      className='text-zinc-400'
+                    />
+                  }
+                  className='h-14'
                 />
-              }
-              className='h-14'
-            />
-          </Form.Item>
+              </Form.Item>
+            </div>
+          </div>
         </div>
+
         <div className='flex justify-between w-full gap-4'>
           <Button
             className='w-full py-6 font-medium rounded-xl'

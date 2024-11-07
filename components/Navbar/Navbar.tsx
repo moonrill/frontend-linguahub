@@ -1,7 +1,8 @@
 'use client';
 
+import { config } from '#/config/app';
 import { imgProfilePicture } from '#/constants/general';
-import { Payload } from '#/types/UserType';
+import { User } from '#/types/UserType';
 import { ArrowUpOutlined } from '@ant-design/icons';
 import { Avatar, Button, Layout } from 'antd';
 import Image from 'next/image';
@@ -16,25 +17,32 @@ const Navbar = ({ visible }: { visible: boolean }) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const [user, setUser] = useState<Payload | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchUser = async () => {
-      setLoading(true);
       try {
-        const response = await fetch('/api/user');
-        const data = await response.json();
+        const result = await fetch(`${config.baseUrl}/auth/profile`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+          },
+        });
 
-        setUser(data);
+        const response = await result.json();
+
+        setUser(response.data);
       } catch (error) {
         console.error(error);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
     fetchUser();
   }, []);
+
+  console.log(user);
 
   return (
     <Header
@@ -75,7 +83,7 @@ const Navbar = ({ visible }: { visible: boolean }) => {
           Translator
         </Link>
         <div className='flex gap-2 items-center'>
-          {!loading && (
+          {!isLoading && (
             <>
               {!user && (
                 <>
@@ -98,15 +106,17 @@ const Navbar = ({ visible }: { visible: boolean }) => {
                 </>
               )}
               {user && (
-                <AvatarDropdown role={user?.role}>
+                <AvatarDropdown role={user?.role?.name}>
                   <div
                     className='flex items-center p-[2px] 2xl:p-0.5 rounded-full'
                     style={{ border: '2px solid #2563eb' }}
                   >
-                    {user?.profilePicture ? (
+                    {user?.userDetail?.profilePicture ? (
                       <div className='relative w-10 h-10 2xl:w-12 2xl:h-12'>
                         <Image
-                          src={imgProfilePicture(user?.profilePicture)}
+                          src={imgProfilePicture(
+                            user?.userDetail?.profilePicture
+                          )}
                           alt={'user avatar'}
                           fill
                           sizes='(max-width: 50px)'
@@ -116,7 +126,7 @@ const Navbar = ({ visible }: { visible: boolean }) => {
                       </div>
                     ) : (
                       <Avatar className='w-10 h-10 2xl:w-12 2xl:h-12'>
-                        {user?.fullName?.charAt(0).toUpperCase() ||
+                        {user?.userDetail?.fullName.charAt(0).toUpperCase() ||
                           user?.email?.charAt(0).toUpperCase()}
                       </Avatar>
                     )}

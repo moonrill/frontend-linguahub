@@ -500,7 +500,7 @@ const TranslatorProfile = () => {
                   </Form.Item>
                 </div>
                 <Button
-                  className='w-fit p-4 text-xs 2xl:text-sm font-medium rounded-lg ml-auto'
+                  className='w-fit py-5 px-4 text-xs 2xl:text-sm font-medium rounded-lg ml-auto'
                   type='default'
                   htmlType='submit'
                   disabled={loading}

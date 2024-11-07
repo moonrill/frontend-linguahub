@@ -195,7 +195,7 @@ const TranslatorDetail = ({ params }: { params: { id: string } }) => {
                     {translator?.user?.userDetail?.phoneNumber}
                   </p>
                 </div>
-                <div className='flex items-center gap-2'>
+                <div className='flex gap-2'>
                   <Icon
                     icon={'mdi:map-marker'}
                     className='text-blue-600 text-xl 2xl:text-2xl'

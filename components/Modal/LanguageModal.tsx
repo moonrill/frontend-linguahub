@@ -30,7 +30,7 @@ const LanguageModal = ({ open, onCancel, language, mutate }: Props) => {
     multiple: false,
     maxCount: 1,
     accept: '.jpg,.jpeg,.png,.svg',
-    listType: 'picture-card',
+    listType: 'picture',
     iconRender: (file) => (
       <Icon
         icon='basil:document-solid'
