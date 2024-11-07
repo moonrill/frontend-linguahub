@@ -187,7 +187,7 @@ const TranslatorRegistration = () => {
         totalData={listRegisters?.total}
         totalPage={listRegisters?.totalPages}
         handlePageChange={handlePageChange}
-        onClick={(id) => router.push(`/dashboard/account/translator/${id}`)}
+        onClick={({ id }) => router.push(`/dashboard/account/translator/${id}`)}
       />
     </main>
   );
