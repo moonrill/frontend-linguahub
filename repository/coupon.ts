@@ -12,7 +12,7 @@ const url = {
     return `/users/coupons?${
       status &&
       `status=${status}${sortBy && `&sortBy=${sortBy}`}${
-        order && `&order=${order}`
+        order && `&order=${order}` 
       }${page && `&page=${page}`}${limit && `&limit=${limit}`}`
     }`;
   },
