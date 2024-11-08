@@ -9,6 +9,7 @@ import { Dropdown, Input, TableProps, Tooltip } from 'antd';
 import { MenuItemType } from 'antd/es/menu/interface';
 import dayjs from 'dayjs';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 const TranslatorReviews = () => {
@@ -132,6 +133,26 @@ const TranslatorReviews = () => {
       key: 'rating',
       ellipsis: true,
     },
+    {
+      title: 'Action',
+      dataIndex: 'action',
+      key: 'action',
+      ellipsis: true,
+      fixed: 'right',
+      render: (_, record) => (
+        <Tooltip title='View Detail'>
+          <Link
+            href={`/dashboard/translator/booking/${record?.bookingId}?scroll=bottom`}
+            className='text-gray-500 cursor-pointer p-2 hover:bg-zinc-200 rounded-lg transition-all duration-500 flex items-center justify-center w-fit'
+          >
+            <Icon
+              icon={'solar:eye-linear'}
+              className='text-xl 2xl:text-2xl text-blue-600'
+            />
+          </Link>
+        </Tooltip>
+      ),
+    },
   ];
 
   const handleSelect = (key: string) => {
@@ -233,9 +254,6 @@ const TranslatorReviews = () => {
         totalData={listReviews?.total}
         totalPage={listReviews?.totalPages}
         handlePageChange={handlePageChange}
-        onClick={({ bookingId }) =>
-          router.push(`/dashboard/translator/booking/${bookingId}`)
-        }
       />
     </main>
   );

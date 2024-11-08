@@ -141,6 +141,25 @@ const TranslatorAccount = () => {
       sortDirections: ['descend', 'ascend'],
       sorter: (a, b) => a.rating - b.rating,
     },
+    {
+      title: 'Action',
+      dataIndex: 'action',
+      key: 'action',
+      fixed: 'right',
+      render: (_, record) => (
+        <Tooltip title='View Detail'>
+          <Link
+            href={`/dashboard/account/translator/${record?.key}`}
+            className='text-gray-500 cursor-pointer p-2 hover:bg-zinc-200 rounded-lg transition-all duration-500 flex items-center justify-center w-fit'
+          >
+            <Icon
+              icon={'solar:eye-linear'}
+              className='text-xl 2xl:text-2xl text-blue-600'
+            />
+          </Link>
+        </Tooltip>
+      ),
+    },
   ];
 
   const data = listTranslators?.data?.map((register: Translator) => ({
@@ -178,7 +197,6 @@ const TranslatorAccount = () => {
         totalData={listTranslators?.total}
         totalPage={listTranslators?.totalPages}
         handlePageChange={handlePageChange}
-        onClick={({ id }) => router.push(`/dashboard/account/translator/${id}`)}
       />
     </main>
   );

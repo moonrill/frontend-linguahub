@@ -111,8 +111,8 @@ const DocumentsUpload = ({
 
       await authRepository.api.register(formData);
       nextStep();
-    } catch (error) {
-      message.error('Something went wrong');
+    } catch (error: any) {
+      message.error(error?.response?.body?.message || 'Something went wrong');
     } finally {
       setLoading(false);
     }

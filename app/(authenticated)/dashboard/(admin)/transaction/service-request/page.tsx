@@ -1,5 +1,6 @@
 'use client';
 
+import CustomDropdown from '#/components/CustomDropdown';
 import LanguageFlag from '#/components/LanguageFlag';
 import ServiceRequestDetailModal from '#/components/Modal/ServiceRequestDetail';
 import StatusBadge from '#/components/StatusBadge';
@@ -9,7 +10,7 @@ import { serviceRequestRepository } from '#/repository/service-request';
 import { Booking } from '#/types/BookingTypes';
 import { capitalizeFirstLetter } from '#/utils/capitalizeFirstLetter';
 import { Icon } from '@iconify-icon/react';
-import { Dropdown, Input, TableProps } from 'antd';
+import { Input, TableProps, Tooltip } from 'antd';
 import { MenuItemType } from 'antd/es/menu/interface';
 import dayjs from 'dayjs';
 import Image from 'next/image';
@@ -27,18 +28,13 @@ const AdminServiceRequest = () => {
   const [selectedRequest, setSelectedRequest] = useState<Booking | null>(null);
   const [openDetailModal, setOpenDetailModal] = useState(false);
 
-  const {
-    data: listServiceRequests,
-    mutate,
-    isLoading,
-  } = serviceRequestRepository.hooks.useGetServiceRequests(
-    'admin',
-    statusParam,
-    page,
-    10,
-    'date',
-    'desc'
-  );
+  const { data: listServiceRequests, isLoading } =
+    serviceRequestRepository.hooks.useGetServiceRequests(
+      'admin',
+      statusParam,
+      page,
+      10
+    );
 
   const columns: TableProps['columns'] = [
     {
@@ -84,6 +80,32 @@ const AdminServiceRequest = () => {
         <div className='w-fit'>
           <StatusBadge text={capitalizeFirstLetter(text)} status={text} />
         </div>
+      ),
+    },
+    {
+      title: 'Action',
+      dataIndex: 'action',
+      key: 'action',
+      ellipsis: true,
+      render: (_, record) => (
+        <Tooltip title='View Detail'>
+          <div
+            className='text-gray-500 cursor-pointer p-2 hover:bg-zinc-200 rounded-lg transition-all duration-500 flex items-center justify-center w-fit'
+            onClick={() => {
+              setSelectedRequest(
+                listServiceRequests?.data?.find(
+                  (sr: Booking) => sr?.id === record.key
+                )
+              );
+              setOpenDetailModal(true);
+            }}
+          >
+            <Icon
+              icon={'solar:eye-linear'}
+              className='text-xl 2xl:text-2xl text-blue-600'
+            />
+          </div>
+        </Tooltip>
       ),
     },
   ];
@@ -197,7 +219,7 @@ const AdminServiceRequest = () => {
     },
   ];
 
-  const handleSelect = (value: string) => {
+  const onStatusChange = (value: string) => {
     router.push(
       `/dashboard/transaction/service-request?status=${value}&page=${listServiceRequests?.page}`
     );
@@ -219,26 +241,14 @@ const AdminServiceRequest = () => {
           }
           className='h-12 w-fit'
         />
-        <Dropdown
-          menu={{
-            items: statusOptions,
-            selectable: true,
-            onClick: ({ key }) => handleSelect(key),
-            selectedKeys: [status],
-          }}
-          trigger={['click']}
-          className='cursor-pointer h-12 bg-zinc-100 px-4 py-2 rounded-xl text-sm 2xl:text-base text-zinc-500 font-medium hover:bg-zinc-200 transition-all duration-500'
+        <CustomDropdown
+          label='Status'
           placement='bottomRight'
-        >
-          <div className='flex items-center justify-between gap-4'>
-            <p>Status</p>
-            <Icon
-              icon='weui:arrow-outlined'
-              height={24}
-              className='rotate-90'
-            />
-          </div>
-        </Dropdown>
+          useBackground={true}
+          items={statusOptions}
+          selectedKey={status}
+          onSelect={onStatusChange}
+        />
       </div>
       <CustomTable
         columns={columns}
@@ -249,12 +259,6 @@ const AdminServiceRequest = () => {
         totalData={listServiceRequests?.total}
         totalPage={listServiceRequests?.totalPages}
         handlePageChange={handlePageChange}
-        onClick={({ key }) => {
-          setSelectedRequest(
-            listServiceRequests?.data?.find((sr: Booking) => sr?.id === key)
-          );
-          setOpenDetailModal(true);
-        }}
       />
       <ServiceRequestDetailModal
         open={openDetailModal}

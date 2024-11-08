@@ -62,7 +62,6 @@ const DashboardLanguage = () => {
       title: 'Action',
       dataIndex: 'action',
       key: 'action',
-      align: 'right',
     },
   ];
 
@@ -71,7 +70,7 @@ const DashboardLanguage = () => {
     flag: <LanguageFlag language={language} />,
     action: (
       <div
-        className='p-2 flex justify-center items-center hover:bg-zinc-200 w-fit cursor-pointer rounded-lg transition-all duration-500 ml-auto'
+        className='p-2 flex justify-center items-center hover:bg-zinc-200 w-fit cursor-pointer rounded-lg transition-all duration-500'
         onClick={() => handleEdit(language)}
       >
         <Icon

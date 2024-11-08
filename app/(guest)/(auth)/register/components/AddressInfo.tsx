@@ -118,8 +118,8 @@ const AddressInfo = ({
         await authRepository.api.register(clientData);
 
         nextStep();
-      } catch (error) {
-        message.error('Something went wrong');
+      } catch (error: any) {
+        message.error(error?.response?.body?.message || 'Something went wrong');
       } finally {
         setLoading(false); // Set loading state to false after process
       }

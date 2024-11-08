@@ -19,6 +19,7 @@ import {
   Input,
   message,
   TableProps,
+  Tooltip,
 } from 'antd';
 import { MenuItemType } from 'antd/es/menu/interface';
 import dayjs from 'dayjs';
@@ -99,6 +100,31 @@ const TranslatorPayment = () => {
       ),
       sortDirections: ['descend', 'ascend'],
       sorter: (a, b) => a.amount - b.amount,
+    },
+    {
+      title: 'Action',
+      dataIndex: 'action',
+      key: 'action',
+      ellipsis: true,
+      render: (_, record) => (
+        <Tooltip title='View Detail'>
+          <div
+            className='text-gray-500 cursor-pointer p-2 hover:bg-zinc-200 rounded-lg transition-all duration-500 flex items-center justify-center w-fit'
+            onClick={() => {
+              const originalPayment = listPayments?.data?.find(
+                (payment: Payment) => payment.id === record.key
+              );
+              setSelectedPayment(originalPayment || null);
+              setShowDrawer(true);
+            }}
+          >
+            <Icon
+              icon={'solar:eye-linear'}
+              className='text-xl 2xl:text-2xl text-blue-600'
+            />
+          </div>
+        </Tooltip>
+      ),
     },
   ];
 
@@ -297,13 +323,6 @@ const TranslatorPayment = () => {
         totalData={listPayments?.total}
         totalPage={listPayments?.totalPages}
         handlePageChange={handlePageChange}
-        onClick={({ key }) => {
-          const originalPayment = listPayments?.data?.find(
-            (payment: Payment) => payment.id === key
-          );
-          setSelectedPayment(originalPayment || null);
-          setShowDrawer(true);
-        }}
       />
       <Drawer
         onClose={() => {

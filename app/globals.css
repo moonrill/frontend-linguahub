@@ -357,10 +357,6 @@ p {
   padding: 24px 0px !important;
 }
 
-.language-select {
-  @apply text-gray-400 !important;
-}
-
 .ant-dropdown .ant-dropdown-menu .ant-dropdown-menu-item-selected {
   @apply bg-zinc-200 text-black !important;
 }

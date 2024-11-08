@@ -67,7 +67,6 @@ const DashboardSpecialization = () => {
       title: 'Action',
       dataIndex: 'action',
       key: 'action',
-      align: 'right',
     },
   ];
 
@@ -75,7 +74,7 @@ const DashboardSpecialization = () => {
     (specialization: Specialization) => ({
       key: specialization.id,
       action: (
-        <div className='flex justify-end'>
+        <div className='flex '>
           <div
             className='p-2 hover:bg-zinc-200 w-fit cursor-pointer rounded-lg transition-all duration-500 flex items-center justify-center'
             onClick={() => handleSelect(specialization, 'edit')}

@@ -1,5 +1,6 @@
 'use client';
 
+import CustomDropdown from '#/components/CustomDropdown';
 import LanguageFlag from '#/components/LanguageFlag';
 import StatusBadge from '#/components/StatusBadge';
 import CustomTable from '#/components/Tables/CustomTable';
@@ -8,20 +9,30 @@ import { bookingRepository } from '#/repository/booking';
 import { Booking } from '#/types/BookingTypes';
 import { capitalizeFirstLetter } from '#/utils/capitalizeFirstLetter';
 import { Icon } from '@iconify-icon/react';
-import { Dropdown, Input, TableProps } from 'antd';
+import { Input, TableProps, Tooltip } from 'antd';
 import { MenuItemType } from 'antd/es/menu/interface';
 import dayjs from 'dayjs';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 const AdminBooking = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
+
   const page = Number(searchParams?.get('page')) || 1;
   const status = searchParams?.get('status') || 'all';
   const statusParam = status === 'all' ? undefined : status;
+  const sortBy = searchParams?.get('sortBy') || 'newest';
+
   const { data: bookingLists, isLoading } =
-    bookingRepository.hooks.useGetBookings('admin', statusParam, page, 10);
+    bookingRepository.hooks.useGetBookings(
+      'admin',
+      statusParam,
+      page,
+      10,
+      sortBy
+    );
 
   const columns: TableProps['columns'] = [
     {
@@ -52,9 +63,10 @@ const AdminBooking = () => {
       sortDirections: ['descend', 'ascend'],
       sorter: (a, b) =>
         dayjs(a.bookingDate).unix() - dayjs(b.bookingDate).unix(),
-      render: (text) => (
+      render: (_, record) => (
         <p className='text-xs 2xl:text-sm font-medium'>
-          {dayjs(text).format('DD MMMM YYYY')}
+          {dayjs(record.bookingDate).format('DD MMM YYYY')},{' '}
+          {record.startAt.slice(0, 5)}
         </p>
       ),
     },
@@ -81,6 +93,25 @@ const AdminBooking = () => {
       ),
       sortDirections: ['descend', 'ascend'],
       sorter: (a, b) => a.totalPrice - b.totalPrice,
+    },
+    {
+      title: 'Action',
+      dataIndex: 'action',
+      key: 'action',
+      fixed: 'right',
+      render: (_, record) => (
+        <Tooltip title='View Detail'>
+          <Link
+            href={`/dashboard/transaction/booking/${record?.key}`}
+            className='text-gray-500 cursor-pointer p-2 hover:bg-zinc-200 rounded-lg transition-all duration-500 flex items-center justify-center w-fit'
+          >
+            <Icon
+              icon={'solar:eye-linear'}
+              className='text-xl 2xl:text-2xl text-blue-600'
+            />
+          </Link>
+        </Tooltip>
+      ),
     },
   ];
 
@@ -172,7 +203,6 @@ const AdminBooking = () => {
       </div>
     ),
     bookingStatus: booking?.bookingStatus,
-    bookingDate: booking?.bookingDate,
   }));
 
   const handlePageChange = (page: number) => {
@@ -202,7 +232,7 @@ const AdminBooking = () => {
     },
   ];
 
-  const handleSelect = (value: string) => {
+  const onStatusChange = (value: string) => {
     router.push(
       `/dashboard/transaction/booking?status=${value}&page=${bookingLists?.page}`
     );
@@ -224,26 +254,14 @@ const AdminBooking = () => {
           }
           className='h-12 w-fit'
         />
-        <Dropdown
-          menu={{
-            items: statusOptions,
-            selectable: true,
-            onClick: ({ key }) => handleSelect(key),
-            selectedKeys: [status],
-          }}
-          trigger={['click']}
-          className='cursor-pointer h-12 bg-zinc-100 px-4 py-2 rounded-xl text-sm 2xl:text-base text-zinc-500 font-medium hover:bg-zinc-200 transition-all duration-500'
+        <CustomDropdown
+          label='Status'
           placement='bottomRight'
-        >
-          <div className='flex items-center justify-between gap-4'>
-            <p>Status</p>
-            <Icon
-              icon='weui:arrow-outlined'
-              height={24}
-              className='rotate-90'
-            />
-          </div>
-        </Dropdown>
+          useBackground={true}
+          items={statusOptions}
+          selectedKey={status}
+          onSelect={onStatusChange}
+        />
       </div>
       <CustomTable
         columns={columns}
@@ -254,9 +272,6 @@ const AdminBooking = () => {
         totalData={bookingLists?.total}
         totalPage={bookingLists?.totalPages}
         handlePageChange={handlePageChange}
-        onClick={({ id }) =>
-          router.push(`/dashboard/transaction/booking/${id}`)
-        }
       />
     </main>
   );
