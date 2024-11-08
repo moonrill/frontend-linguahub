@@ -9,6 +9,7 @@ import { Icon } from '@iconify-icon/react';
 import { Button, Dropdown, Input, MenuProps, message, TableProps } from 'antd';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
+import dayjs from 'dayjs';  // Import dayjs
 
 const AdminEvents = () => {
   const router = useRouter();
@@ -38,13 +39,13 @@ const AdminEvents = () => {
       title: 'Start Date',
       dataIndex: 'startDate',
       key: 'startDate',
-      render: (_, record) => <p>{new Date(record.startDate).toLocaleString()}</p>,
+      render: (_, record) => <p>{dayjs(record.startDate).format('YYYY-MM-DD HH:mm')}</p>, 
     },
     {
       title: 'End Date',
       dataIndex: 'endDate',
       key: 'endDate',
-      render: (_, record) => <p>{new Date(record.endDate).toLocaleString()}</p>,
+      render: (_, record) => <p>{dayjs(record.endDate).format('YYYY-MM-DD HH:mm')}</p>, 
     },
     {
       title: 'Action',

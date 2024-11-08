@@ -92,8 +92,8 @@ const EventModal = ({ open, onCancel, event, mutate }: Props) => {
       form.setFieldsValue({
         name: event.name,
         poster: event.poster,
-        startDate: dayjs(event.startDate), // Ensure startDate is a dayjs object
-        endDate: dayjs(event.endDate), // Ensure endDate is a dayjs object
+        startDate: dayjs(event.startDate), 
+        endDate: dayjs(event.endDate), 
         description: event.description,
       });
     }
@@ -153,58 +153,65 @@ const EventModal = ({ open, onCancel, event, mutate }: Props) => {
         </Form.Item>
 
         <div className='grid md:grid-cols-2 gap-4'>
-       <Form.Item
-  name="startDate"
-  rules={[{ required: true, message: 'Please select start time' }]}
-  style={{ margin: 0 }}
-  className="!mb-1"
->
-  <DatePicker
-    format="YYYY-MM-DD HH:mm"
-    placeholder="Start"
-    value={form.getFieldValue('startDate')} // Get the dayjs value for startDate
-    suffixIcon={<Icon icon="mdi:clock-time-three-outline" className="text-2xl" />}
-    minDate={dayjs(currentDate)} // Ensure startDate is not before current date
-  />
-</Form.Item>
+          <Form.Item
+            name="startDate"
+            rules={[{ required: true, message: 'Please select start time' }]}>
+            <DatePicker
+              format="YYYY-MM-DD HH:mm"
+              placeholder="Start"
+              value={form.getFieldValue('startDate')}
+              onChange={(value) => form.setFieldValue('startDate', value)}
+              suffixIcon={<Icon icon="mdi:clock-time-three-outline" className="text-2xl" />}
+              disabledDate={(current) => current && current < dayjs().startOf('day')}
+              showTime={{ format: 'HH:mm' }} 
+            />
+          </Form.Item>
 
-<Form.Item
-  name="endDate"
-  dependencies={['startDate']}      
-  rules={[
-    { required: true, message: 'Please select end time' },
-    ({ getFieldValue }) => ({
-      validator(_, value) {
-        const startAt = getFieldValue('startDate');
-        if (!value || !startAt || value.isAfter(startAt)) return Promise.resolve();
-        return Promise.reject(new Error('End time must be later than start time'));
-      },
-    }),
-  ]}
->
-  <DatePicker
-    format="YYYY-MM-DD HH:mm"
-    placeholder="End"
-    value={form.getFieldValue('endDate')} // Get the dayjs value for endDate
-    suffixIcon={<Icon icon="mdi:clock-outline" className="text-2xl" />}
-  />
-</Form.Item>
-
-
+          <Form.Item
+            name="endDate"
+            dependencies={['startDate']}
+            rules={[
+              { required: true, message: 'Please select end time' },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  const startAt = getFieldValue('startDate');
+                  if (!value || !startAt || value.isAfter(startAt)) return Promise.resolve();
+                  return Promise.reject(new Error('End time must be later than start time'));
+                },
+              }),
+            ]}>
+            <DatePicker
+              format="YYYY-MM-DD HH:mm"
+              placeholder="End"
+              value={form.getFieldValue('endDate')}
+              onChange={(value) => form.setFieldValue('endDate', value)}
+              suffixIcon={<Icon icon="mdi:clock-outline" className="text-2xl" />}
+              showTime={{ format: 'HH:mm' }} 
+            />
+          </Form.Item>
         </div>
 
-        <Form.Item 
-        name='description'
-        rules={[{ required: true, message: 'Please input a description' }]}
-        >
-          
-          <Input
-            type='text'
-            placeholder='Event description'
-            className='h-14'
-            suffix={<Icon icon='bi:info-circle' height={24} className='text-zinc-400' />}
-          />
-        </Form.Item>
+        <Form.Item
+  name="description"
+  rules={[{ required: true, message: 'Please input a description' }]}
+>
+  <Input.TextArea
+    rows={4}
+    placeholder="Event description"
+    className="h-14 bg-[#f4f4f5] hover:bg-[#e5e7eb] !ring-none !focus:ring-amber-600 !hover:border-transparent"
+    style={{ backgroundColor: '#f4f4f5' }}
+    onFocus={(e) => {
+      e.target.style.backgroundColor = '#f4f4f5'; 
+    }}
+    onBlur={(e) => {
+      if (!e.target.value) {
+        e.target.style.backgroundColor = '#e5e7eb'; 
+      }
+    }}
+  />
+</Form.Item>
+
+
 
         <div className='flex justify-between gap-4 mt-4'>
         <Button
