@@ -12,6 +12,9 @@ export const eventPoster = (image: string) =>
 export const imgProfilePicture = (image: string) =>
   `${config.baseUrl}/images/profile-picture/${image}`;
 
+export const imgProfileTranslator = (image: string) =>
+  `${config.baseUrl}/images/profile-picture/${image}`;
+
 export const statusColor = {
   request: {
     pending: 'yellow',

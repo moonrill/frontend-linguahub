@@ -3,10 +3,10 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { reviewRepository } from '#/repository/review';
 import { imgProfilePicture } from '#/constants/general';
-import { Input, Table, TableProps } from 'antd';
+import { Input, TableProps } from 'antd';
 import { Icon } from '@iconify-icon/react';
 import Image from 'next/image';
-import Pagination from '#/components/Pagination';
+import CustomTable from '#/components/Tables/CustomTable';
 import React, { useState } from 'react';
 import { Review } from '#/types/TranslatorTypes';
 import dayjs from 'dayjs';
@@ -71,9 +71,7 @@ const AdminReviewPage = () => {
       title: 'Date',
       dataIndex: 'createdAt',
       key: 'createdAt',
-      minWidth: 250,
       align: 'center',
-      sortDirections: ['descend', 'ascend'],
       sorter: (a, b) => dayjs(a.createdAt).unix() - dayjs(b.createdAt).unix(),
       render: (_, record) => (
         <p className='text-xs 2xl:text-sm font-medium'>
@@ -96,7 +94,6 @@ const AdminReviewPage = () => {
       dataIndex: 'rating',
       key: 'rating',
       align: 'center',
-      width: 100,
       render: (rating: number) => (
         <p className='text-xs 2xl:text-sm'>{rating ? `${rating} ` : 'N/A'}</p>
       ),
@@ -110,7 +107,7 @@ const AdminReviewPage = () => {
   const data = filteredData.map((review: Review) => ({
     key: review.id,
     ...review,
-  })) || []; 
+  })) || [];
 
   return (
     <main className='bg-white w-full rounded-3xl p-4'>
@@ -124,25 +121,15 @@ const AdminReviewPage = () => {
           className='h-12 w-fit'
         />
       </div>
-      <Table
+      <CustomTable
         columns={columns}
-        dataSource={data}
-        pagination={false}
-        loading={isLoading}
-        scroll={{ x: 768 }}
-        footer={() => (
-          <div className='flex justify-between items-center'>
-            <p className='text-xs 2xl:text-sm'>
-              <span className='font-bold'>{reviews?.page}</span> of {reviews?.totalPages} from {reviews?.total} results
-            </p>
-            <Pagination
-              current={reviews?.page}
-              total={reviews?.total}
-              pageSize={reviews?.limit}
-              onChange={handlePageChange}
-            />
-          </div>
-        )}
+        data={data}
+        isLoading={isLoading}
+        pageSize={reviews?.limit}
+        currentPage={reviews?.page}
+        totalData={reviews?.total}
+        totalPage={reviews?.totalPages}
+        handlePageChange={handlePageChange}
       />
     </main>
   );

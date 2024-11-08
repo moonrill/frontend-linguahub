@@ -5,6 +5,8 @@ const url = {
   certificate: () => '/translators/upload/certificate',
   uploadFlag: () => `/languages/upload/flagImage`,
   uploadLogo: () => `/specializations/upload/logo`,
+  uploadPoster: () => `/events/upload/poster`,
+
 };
 
 const api = {
@@ -32,6 +34,14 @@ const api = {
 
     return http.post(url.uploadLogo()).send(formData);
   },
+
+  useUploadPoster(poster: any) {
+    const formData = new FormData();
+    formData.append('poster', poster);
+
+    return http.post(url.uploadPoster()).send(formData);
+  },
+
 };
 
 export const uploadRepository = {

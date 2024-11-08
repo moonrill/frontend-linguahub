@@ -201,6 +201,7 @@ const ServiceRequestModal = ({ open, onCancel, translator }: Props) => {
                   }
                 />
               </Form.Item>
+              
             </div>
             <div className='flex flex-col gap-2 '>
               <p className='text-xs 2xl:text-sm font-medium'>Date & Time</p>
@@ -223,6 +224,7 @@ const ServiceRequestModal = ({ open, onCancel, translator }: Props) => {
                   }
                 />
               </Form.Item>
+
               <div className='flex justify-between gap-3'>
                 <Form.Item
                   name={'startAt'}
