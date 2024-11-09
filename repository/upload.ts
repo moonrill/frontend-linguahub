@@ -6,6 +6,7 @@ const url = {
   uploadFlag: () => `/languages/upload/flagImage`,
   uploadLogo: () => `/specializations/upload/logo`,
   profilePicture: () => '/users/upload/profile-picture',
+  uploadPoster: () => `/events/upload/poster`,
 };
 
 const api = {
@@ -38,6 +39,13 @@ const api = {
     formData.append('profilePicture', profilePicture);
 
     return http.post(url.profilePicture()).send(formData);
+  },
+
+  useUploadPoster(poster: any) {
+    const formData = new FormData();
+    formData.append('poster', poster);
+
+    return http.post(url.uploadPoster()).send(formData);
   },
 };
 

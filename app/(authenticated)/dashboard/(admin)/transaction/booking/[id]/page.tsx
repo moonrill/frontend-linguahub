@@ -337,3 +337,4 @@ const BookingDetail = ({ params }: { params: { id: string } }) => {
 };
 
 export default BookingDetail;
+  

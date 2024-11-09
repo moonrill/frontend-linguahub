@@ -152,6 +152,8 @@ const SpecializationModal = ({
             className='h-14'
           />
         </Form.Item>
+
+        
         <Form.Item
           name={'logo'}
           rules={[
