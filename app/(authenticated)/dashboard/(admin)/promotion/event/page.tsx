@@ -9,7 +9,7 @@ import { Icon } from '@iconify-icon/react';
 import { Button, Dropdown, Input, MenuProps, message, TableProps } from 'antd';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
-import dayjs from 'dayjs';  // Import dayjs
+import dayjs from 'dayjs';
 
 const AdminEvents = () => {
   const router = useRouter();
@@ -33,19 +33,32 @@ const AdminEvents = () => {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
+      ellipsis: true,
       render: (_, record) => <p className='font-medium'>{record.name}</p>,
     },
     {
       title: 'Start Date',
       dataIndex: 'startDate',
       key: 'startDate',
-      render: (_, record) => <p>{dayjs(record.startDate).format('YYYY-MM-DD HH:mm')}</p>, 
+      ellipsis: true,
+      sorter: (a, b) => dayjs(a.startDate).unix() - dayjs(b.startDate).unix(),
+      render: (_, record) => (
+        <p className='text-xs 2xl:text-sm font-medium'>
+          {dayjs(record.startDate).format('DD MMMM YYYY HH:mm')}
+        </p>
+      ),
     },
     {
       title: 'End Date',
       dataIndex: 'endDate',
       key: 'endDate',
-      render: (_, record) => <p>{dayjs(record.endDate).format('YYYY-MM-DD HH:mm')}</p>, 
+      ellipsis: true,
+      sorter: (a, b) => dayjs(a.endDate).unix() - dayjs(b.endDate).unix(),
+      render: (_, record) => (
+        <p className='text-xs 2xl:text-sm font-medium'>
+          {dayjs(record.endDate).format('DD MMMM YYYY HH:mm')}
+        </p>
+      ),
     },
     {
       title: 'Action',
@@ -71,9 +84,15 @@ const AdminEvents = () => {
     ...event,
   }));
 
-  const handleSelect = (event: Event, type: 'edit' | 'delete') => {
+  const handleSelect = (event: Event, type: 'edit' | 'delete' | 'detail') => {
     setSelectedEvent(event);
-    type === 'edit' ? setIsModalOpen(true) : setOpenConfirmModal(true);
+    if (type === 'edit') {
+      setIsModalOpen(true);
+    } else if (type === 'delete') {
+      setOpenConfirmModal(true);
+    } else if (type === 'detail') {
+      router.push(`/dashboard/promotion/event/${event.id}`);
+    }
   };
 
   const handleConfirm = async () => {
@@ -92,30 +111,38 @@ const AdminEvents = () => {
     }
   };
 
-  const actionDropdownItem = (event: Event): MenuProps['items'] => {
-    return [
-      {
-        key: 'edit',
-        label: (
-          <div className='flex items-center'>
-            <Icon icon={'hugeicons:pencil-edit-01'} className='text-lg' />
-            <span className='ml-2'>Edit</span>
-          </div>
-        ),
-        onClick: () => handleSelect(event, 'edit'),
-      },
-      {
-        key: 'delete',
-        label: (
-          <div className='flex items-center'>
-            <Icon icon={'tabler:trash'} className='text-lg text-red-600' />
-            <span className='ml-2'>Delete</span>
-          </div>
-        ),
-        onClick: () => handleSelect(event, 'delete'),
-      },
-    ];
-  };
+  const actionDropdownItem = (event: Event): MenuProps['items'] => [
+    {
+      key: 'edit',
+      label: (
+        <div className='flex items-center'>
+          <Icon icon={'hugeicons:pencil-edit-01'} className='text-lg' />
+          <span className='ml-2'>Edit</span>
+        </div>
+      ),
+      onClick: () => handleSelect(event, 'edit'),
+    },
+    {
+      key: 'delete',
+      label: (
+        <div className='flex items-center'>
+          <Icon icon={'tabler:trash'} className='text-lg text-red-600' />
+          <span className='ml-2'>Delete</span>
+        </div>
+      ),
+      onClick: () => handleSelect(event, 'delete'),
+    },
+    {
+      key: 'detail',
+      label: (
+        <div className='flex items-center'>
+          <Icon icon={'tabler:info-circle'} className='text-lg' />
+          <span className='ml-2'>Detail</span>
+        </div>
+      ),
+      onClick: () => handleSelect(event, 'detail'),
+    },
+  ];
 
   return (
     <main className="bg-white w-full rounded-3xl p-4">

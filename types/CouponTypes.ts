@@ -21,3 +21,4 @@ export type UserCoupon = {
   deletedAt: string | null;
   coupon: Coupon;
 };
+
