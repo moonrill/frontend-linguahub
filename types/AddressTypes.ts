@@ -28,7 +28,14 @@ export type Addresses = {
   subDistrict: SubDistrict[];
 };
 
-export type SelectedAddress = {
+export type SelectedAddressId = {
+  provinceId?: string;
+  cityId?: string;
+  districtId?: string;
+  subDistrictId?: string;
+};
+
+export type SelectedAddressName = {
   province?: string;
   city?: string;
   district?: string;

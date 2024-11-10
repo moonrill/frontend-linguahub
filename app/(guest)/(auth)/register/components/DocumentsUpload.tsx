@@ -189,6 +189,7 @@ const DocumentsUpload = ({
               type='default'
               htmlType='button'
               onClick={prevStep}
+              disabled={loading}
             >
               Back
             </Button>
@@ -196,6 +197,8 @@ const DocumentsUpload = ({
               className='w-full py-6 font-medium rounded-xl'
               type='primary'
               htmlType='submit'
+              loading={loading}
+              disabled={!cvFile || !certificateFile || loading}
             >
               Continue
             </Button>

@@ -1,3 +1,5 @@
+import { Dayjs } from 'dayjs';
+
 export type BaseFormData = {
   role: 'client' | 'translator';
   fullName: string;
@@ -5,11 +7,15 @@ export type BaseFormData = {
   gender: 'male' | 'female';
   password: string;
   confirmPassword: string;
-  dateOfBirth: string;
+  dateOfBirth: Dayjs;
   phoneNumber: string;
+  provinceId: string;
   province: string;
+  cityId: string;
   city: string;
+  districtId: string;
   district: string;
+  subDistrictId: string;
   subDistrict: string;
   street: string;
 };

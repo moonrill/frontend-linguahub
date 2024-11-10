@@ -1,19 +1,35 @@
 import { imgLanguage } from '#/constants/general';
 import { Language } from '#/types/LanguageTypes';
+import { RegisterFormData } from '#/types/RegisterTypes';
 import { Form, Tag, Tooltip } from 'antd';
 import Image from 'next/image';
+import { useCallback, useEffect } from 'react';
 
 const LanguageSelector: React.FC<{
   languages: Language[];
   isLoading: boolean;
   selectedLanguages: string[];
   setSelectedLanguages: React.Dispatch<React.SetStateAction<string[]>>;
-}> = ({ languages, isLoading, selectedLanguages, setSelectedLanguages }) => {
-  const toggleLanguage = (id: string) => {
-    setSelectedLanguages((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-    );
-  };
+  updateFormData: (data: Partial<RegisterFormData>) => void;
+}> = ({
+  languages,
+  isLoading,
+  selectedLanguages,
+  setSelectedLanguages,
+  updateFormData,
+}) => {
+  const toggleLanguage = useCallback(
+    (id: string) => {
+      setSelectedLanguages((prev) =>
+        prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+      );
+    },
+    [setSelectedLanguages]
+  );
+
+  useEffect(() => {
+    updateFormData({ languages: selectedLanguages });
+  }, [updateFormData, selectedLanguages]);
 
   return (
     <Form.Item

@@ -3,7 +3,7 @@
 import ClientSuccess from '#/components/RegisterSuccess/Client';
 import TranslatorSuccess from '#/components/RegisterSuccess/Translator';
 import { RegisterFormData } from '#/types/RegisterTypes';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import AddressInfo from './components/AddressInfo';
 import DocumentsUpload from './components/DocumentsUpload';
 import PersonalInfo from './components/PersonalInfo';
@@ -31,9 +31,9 @@ const Register = () => {
 
   const prevStep = () => setStep(step - 1);
 
-  const updateFormData = (data: Partial<RegisterFormData>) => {
+  const updateFormData = useCallback((data: Partial<RegisterFormData>) => {
     setFormData((prev: Partial<RegisterFormData>) => ({ ...prev, ...data }));
-  };
+  }, []);
 
   const clientSteps = ['Personal Information', 'Address Information'];
   const translatorSteps = [

@@ -41,8 +41,8 @@ const ProfessionalInfo = ({
       specializations: selectedSpecializations,
     };
 
-    updateFormData(updatedValues);
-    console.log(formData);
+    // updateFormData(updatedValues);
+    // console.log(formData);
 
     nextStep();
   };
@@ -86,6 +86,9 @@ const ProfessionalInfo = ({
                 />
               }
               className='h-14'
+              onChange={(e) =>
+                updateFormData({ yearsOfExperience: Number(e.target.value) })
+              }
             />
           </Form.Item>
           <Form.Item
@@ -109,6 +112,9 @@ const ProfessionalInfo = ({
                 />
               }
               className='h-14'
+              onChange={(e) =>
+                updateFormData({ portfolioLink: e.target.value })
+              }
             />
           </Form.Item>
           <Form.Item
@@ -136,6 +142,7 @@ const ProfessionalInfo = ({
                 label: bank,
                 value: bank,
               }))}
+              onChange={(value) => updateFormData({ bank: value })}
             />
           </Form.Item>
           <Form.Item
@@ -166,6 +173,9 @@ const ProfessionalInfo = ({
                 />
               }
               className='h-14'
+              onChange={(e) =>
+                updateFormData({ bankAccountNumber: e.target.value })
+              }
             />
           </Form.Item>
           <LanguageSelector
@@ -173,6 +183,7 @@ const ProfessionalInfo = ({
             isLoading={isLoadingLanguages}
             selectedLanguages={selectedLanguages}
             setSelectedLanguages={setSelectedLanguages}
+            updateFormData={updateFormData}
           />
 
           <SpecializationSelector
@@ -180,6 +191,7 @@ const ProfessionalInfo = ({
             isLoading={isLoadingSpecializations}
             selectedSpecializations={selectedSpecializations}
             setSelectedSpecializations={setSelectedSpecializations}
+            updateFormData={updateFormData}
           />
         </div>
 

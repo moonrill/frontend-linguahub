@@ -20,9 +20,6 @@ const PersonalInfo = ({
   formData,
 }: PersonalInfoProps) => {
   const onFinish = (values: any) => {
-    updateFormData(values as Partial<RegisterFormData>);
-    console.log(values);
-
     nextStep();
   };
 
@@ -58,6 +55,7 @@ const PersonalInfo = ({
                 />
               }
               className='h-14'
+              onChange={(e) => updateFormData({ fullName: e.target.value })}
             />
           </Form.Item>
           <Form.Item
@@ -86,6 +84,7 @@ const PersonalInfo = ({
                 />
               }
               className='h-14'
+              onChange={(e) => updateFormData({ email: e.target.value })}
             />
           </Form.Item>
           <Form.Item
@@ -124,6 +123,7 @@ const PersonalInfo = ({
                 />
               }
               className='h-14'
+              onChange={(e) => updateFormData({ phoneNumber: e.target.value })}
             />
           </Form.Item>
           <div className='grid md:grid-cols-2 md:gap-4'>
@@ -145,6 +145,7 @@ const PersonalInfo = ({
                     className='text-zinc-400'
                   />
                 }
+                onChange={(date) => updateFormData({ dateOfBirth: date })}
               />
             </Form.Item>
             <Form.Item
@@ -172,6 +173,7 @@ const PersonalInfo = ({
                     className='text-zinc-400'
                   />
                 }
+                onChange={(value) => updateFormData({ gender: value })}
               />
             </Form.Item>
           </div>
@@ -199,6 +201,7 @@ const PersonalInfo = ({
                 )
               }
               className='h-14'
+              onChange={(e) => updateFormData({ password: e.target.value })}
             />
           </Form.Item>
           <Form.Item
@@ -238,6 +241,9 @@ const PersonalInfo = ({
                 )
               }
               className='h-14'
+              onChange={(e) =>
+                updateFormData({ confirmPassword: e.target.value })
+              }
             />
           </Form.Item>
         </div>
