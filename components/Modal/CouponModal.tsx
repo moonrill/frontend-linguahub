@@ -129,7 +129,7 @@ const CouponModal = ({ open, onCancel, mutate, coupon }: CouponModalProps) => {
             optionFilterProp="children"
             className="h-10"
           >
-            {events.map((event) => (
+            {events.map((event: any) => (
               <Select.Option key={event.id} value={event.id}>
                 {event.name}
               </Select.Option>

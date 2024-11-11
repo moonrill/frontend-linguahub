@@ -4,7 +4,7 @@ import { eventRepository } from '#/repository/event';
 import { uploadRepository } from '#/repository/upload';
 import { Event } from '#/types/EventTypes';
 import { Icon } from '@iconify-icon/react';
-import { Button, Form, Input, message, Modal, Upload, UploadProps, TimePicker, DatePicker } from 'antd';
+import { Button, Form, Input, message, Modal, Upload, UploadProps, TimePicker, DatePicker, Calendar} from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { UploadChangeParam, UploadFile } from 'antd/es/upload';
 import Dragger from 'antd/es/upload/Dragger';
@@ -158,7 +158,7 @@ const EventModal = ({ open, onCancel, event, mutate }: Props) => {
             rules={[{ required: true, message: 'Please select start time' }]}>
             <DatePicker
               format="YYYY-MM-DD HH:mm"
-              placeholder="Start"
+              placeholder="Start Date"
               value={form.getFieldValue('startDate')}
               onChange={(value) => form.setFieldValue('startDate', value)}
               suffixIcon={<Icon icon="mdi:clock-time-three-outline" className="text-2xl" />}
@@ -182,7 +182,7 @@ const EventModal = ({ open, onCancel, event, mutate }: Props) => {
             ]}>
             <DatePicker
               format="YYYY-MM-DD HH:mm"
-              placeholder="End"
+              placeholder="End Date"
               value={form.getFieldValue('endDate')}
               onChange={(value) => form.setFieldValue('endDate', value)}
               suffixIcon={<Icon icon="mdi:clock-outline" className="text-2xl" />}

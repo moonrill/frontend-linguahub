@@ -1,5 +1,6 @@
 "use client";
 
+import StatusBadge from '#/components/StatusBadge';
 import ConfirmModal from "#/components/Modal/ConfirmModal";
 import CouponModal from "#/components/Modal/CouponModal";
 import CustomTable from "#/components/Tables/CustomTable";
@@ -31,6 +32,70 @@ const AdminCoupons = () => {
     router.push(`/dashboard/promotion/coupon?page=${page}`);
   };
 
+  const toggleStatus = async (id: string) => {
+    try {
+      await couponRepository.api.toggleStatus(id);
+
+      mutate();
+      message.success('Coupon status updated successfully');
+    } catch (error: any) {
+      message.error(
+        error.response.body?.message || 'Error toggling Coupon',
+        5
+      );
+    }
+  };
+
+  
+  const actionDropdownItem = (coupon: Coupon): MenuProps["items"] => [
+    {
+      key: "edit",
+      label: (
+        <div className="flex items-center">
+          <Icon icon={"hugeicons:pencil-edit-01"} className="text-lg" />
+          <span className="ml-2">Edit</span>
+        </div>
+      ),
+      onClick: () => handleSelect(coupon, "edit"),
+    },
+    {
+      key: "toggle-status",
+      label: (
+        <div className='flex items-center'>
+          <Icon
+            icon={'tabler:circle-filled'}
+            className={`text-lg 2xl:text-xl ${
+              coupon.status !== 'Active' ? 'text-green-500' : 'text-rose-500'
+            }`}
+          />
+          <span className='ml-2 text-xs 2xl:text-sm'>
+            {coupon.status !== 'Active' ? 'Activate' : 'Deactivate'}
+          </span>
+        </div>
+      ),
+      onClick: () => toggleStatus(coupon.id),    },
+    {
+      key: "delete",
+      label: (
+        <div className="flex items-center">
+          <Icon icon={"tabler:trash"} className="text-lg text-red-600" />
+          <span className="ml-2">Delete</span>
+        </div>
+      ),
+      onClick: () => handleSelect(coupon, "delete"),
+    },
+    {
+      key: "detail",
+      label: (
+        <div className="flex items-center">
+          <Icon icon={"tabler:info-circle"} className="text-lg" />
+          <span className="ml-2">Detail</span>
+        </div>
+      ),
+      onClick: () => handleSelect(coupon, "detail"),
+    },
+  ];
+
   const columns: TableProps["columns"] = [
     {
       title: "Name",
@@ -57,6 +122,17 @@ const AdminCoupons = () => {
         <p className="text-xs font-medium">
           {dayjs(record.expiredAt).format("DD MMMM YYYY")}
         </p>
+      ),
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      ellipsis: true,
+      render: (text) => (
+        <div className="w-fit">
+          <StatusBadge text={text} status={text} />
+        </div>
       ),
     },
     {
@@ -109,39 +185,6 @@ const AdminCoupons = () => {
       }
     }
   };
-
-  const actionDropdownItem = (coupon: Coupon): MenuProps["items"] => [
-    {
-      key: "edit",
-      label: (
-        <div className="flex items-center">
-          <Icon icon={"hugeicons:pencil-edit-01"} className="text-lg" />
-          <span className="ml-2">Edit</span>
-        </div>
-      ),
-      onClick: () => handleSelect(coupon, "edit"),
-    },
-    {
-      key: "delete",
-      label: (
-        <div className="flex items-center">
-          <Icon icon={"tabler:trash"} className="text-lg text-red-600" />
-          <span className="ml-2">Delete</span>
-        </div>
-      ),
-      onClick: () => handleSelect(coupon, "delete"),
-    },
-    {
-      key: "detail",
-      label: (
-        <div className="flex items-center">
-          <Icon icon={"tabler:info-circle"} className="text-lg" />
-          <span className="ml-2">Detail</span>
-        </div>
-      ),
-      onClick: () => handleSelect(coupon, "detail"),
-    },
-  ];
 
   return (
     <main className="bg-white w-full rounded-3xl p-4">

@@ -2,6 +2,22 @@ import { http } from '#/utils/http';
 import useSWR from 'swr';
 
 const url = {
+
+  getUserCoupons: (
+    status?: string,
+    page?: number,
+    limit?: number,
+    sortBy?: string,
+    order?: string
+  ) => {
+    return `/users/coupons?${
+      status &&
+      `status=${status}${sortBy && `&sortBy=${sortBy}`}${
+        order && `&order=${order}` 
+      }${page && `&page=${page}`}${limit && `&limit=${limit}`}`
+    }`;
+  },
+
   getAllCoupons: (limit?: number, page?: number, status?: string) =>
     `/coupons?limit=${limit}&page=${page}${status ? `&status=${status}` : ''}`,
   
@@ -31,9 +47,27 @@ const hooks = {
   useAllEvents: () => {
     return useSWR(url.getEvents(), http.fetcher);
   },
+
+  useGetUserCoupons: (
+    status: string,
+    page: number = 1,
+    limit: number = 10,
+    sortBy: string = 'expiredDate',
+    order: string = 'asc'
+  ) => {
+    return useSWR(
+      url.getUserCoupons(status, page, limit, sortBy, order),
+      http.fetcher
+    );
+  },
+  useGetUserCouponsByEvent: (eventId: string) => {
+    return useSWR(url.getUserCouponsByEvent(eventId), http.fetcher);
+  },
+  
 };
 
 const api = {
+  toggleStatus: (id: string) => http.put(url.updateCoupon(id)),
   createCoupon: (data: any) => http.post(url.createCoupon()).send(data),
   updateCoupon: (id: string, data: any) => http.put(url.updateCoupon(id)).send(data),
   deleteCoupon: (id: string) => http.del(url.deleteCoupon(id)),

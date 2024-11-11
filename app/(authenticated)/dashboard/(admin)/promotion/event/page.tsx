@@ -112,12 +112,25 @@ const AdminEvents = () => {
   };
 
   const actionDropdownItem = (event: Event): MenuProps['items'] => [
+
+    {
+      key: 'detail',
+      label: (
+        <div className='flex items-center'>
+          <Icon icon={'solar:eye-linear'} className='text-lg' />
+          <span className='ml-2'>View Details</span>
+        </div>
+      ),
+      onClick: () => handleSelect(event, 'detail'),
+    },
+
+
     {
       key: 'edit',
       label: (
         <div className='flex items-center'>
           <Icon icon={'hugeicons:pencil-edit-01'} className='text-lg' />
-          <span className='ml-2'>Edit</span>
+          <span className='ml-2'>Edit Event</span>
         </div>
       ),
       onClick: () => handleSelect(event, 'edit'),
@@ -125,22 +138,12 @@ const AdminEvents = () => {
     {
       key: 'delete',
       label: (
-        <div className='flex items-center'>
-          <Icon icon={'tabler:trash'} className='text-lg text-red-600' />
-          <span className='ml-2'>Delete</span>
+        <div className='flex items-center text-rose-500'>
+          <Icon icon={'tabler:trash'} className='text-lg ' />
+          <span className='ml-2'>Delete Event</span>
         </div>
       ),
       onClick: () => handleSelect(event, 'delete'),
-    },
-    {
-      key: 'detail',
-      label: (
-        <div className='flex items-center'>
-          <Icon icon={'tabler:info-circle'} className='text-lg' />
-          <span className='ml-2'>Detail</span>
-        </div>
-      ),
-      onClick: () => handleSelect(event, 'detail'),
     },
   ];
 
