@@ -263,7 +263,7 @@ const AddressInfo = ({
               htmlType='submit'
               loading={loading}
             >
-              {formData.role === 'translator' ? 'Next' : 'Create account'}
+              {formData.role === 'translator' ? 'Continue' : 'Create account'}
             </Button>
           </div>
           <p className='mb-0 text-sm'>

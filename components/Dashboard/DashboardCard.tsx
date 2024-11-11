@@ -1,14 +1,16 @@
 import { Icon } from '@iconify-icon/react';
 import { Card } from 'antd';
+import Link from 'next/link';
 
 type DashboardCardProps = {
   icon: string;
   title: string;
   value: string;
+  href?: string;
 };
 
-const DashboardCard = ({ icon, title, value }: DashboardCardProps) => {
-  return (
+const DashboardCard = ({ icon, title, value, href }: DashboardCardProps) => {
+  const cardContent = (
     <Card
       style={{
         border: 'none',
@@ -33,6 +35,7 @@ const DashboardCard = ({ icon, title, value }: DashboardCardProps) => {
       </div>
     </Card>
   );
+  return href ? <Link href={href}>{cardContent}</Link> : cardContent;
 };
 
 export default DashboardCard;

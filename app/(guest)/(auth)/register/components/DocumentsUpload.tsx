@@ -200,7 +200,7 @@ const DocumentsUpload = ({
               loading={loading}
               disabled={!cvFile || !certificateFile || loading}
             >
-              Continue
+              Create Account
             </Button>
           </div>
           <p className='mb-0 text-sm'>

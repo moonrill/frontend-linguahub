@@ -263,7 +263,7 @@ const PersonalInfo = ({
               type='primary'
               htmlType='submit'
             >
-              Next
+              Continue
             </Button>
           </div>
           <p className='mb-0 text-sm'>
