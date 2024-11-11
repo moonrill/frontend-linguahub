@@ -1,13 +1,10 @@
 'use client';
 
-import { TrendingUp } from 'lucide-react';
-import * as React from 'react';
 import { Label, Pie, PieChart } from 'recharts';
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '../ui/card';
@@ -22,49 +19,43 @@ import {
 
 export const description = 'A donut chart with text';
 
-const chartData = [
-  { browser: 'chrome', visitors: 275, fill: 'var(--color-chrome)' },
-  { browser: 'safari', visitors: 200, fill: 'var(--color-safari)' },
-  { browser: 'firefox', visitors: 287, fill: 'var(--color-firefox)' },
-  { browser: 'edge', visitors: 173, fill: 'var(--color-edge)' },
-  { browser: 'other', visitors: 190, fill: 'var(--color-other)' },
-];
+interface Props {
+  system: number;
+  translator: number;
+  coupon: number;
+}
 
-const chartConfig = {
-  visitors: {
-    label: 'Visitors',
-  },
-  chrome: {
-    label: 'Chrome',
-    color: 'hsl(var(--chart-1))',
-  },
-  safari: {
-    label: 'Safari',
-    color: 'hsl(var(--chart-2))',
-  },
-  firefox: {
-    label: 'Firefox',
-    color: 'hsl(var(--chart-3))',
-  },
-  edge: {
-    label: 'Edge',
-    color: 'hsl(var(--chart-4))',
-  },
-  other: {
-    label: 'Other',
-    color: 'hsl(var(--chart-5))',
-  },
-} satisfies ChartConfig;
+const AdminPieChart = ({ system, translator, coupon }: Props) => {
+  const chartData = [
+    { type: 'system', amount: system, fill: 'var(--color-system)' },
+    { type: 'translator', amount: translator, fill: 'var(--color-translator)' },
+    { type: 'coupon', amount: coupon, fill: 'var(--color-coupon)' },
+  ];
 
-const AdminePieChart = () => {
-  const totalVisitors = React.useMemo(() => {
-    return chartData.reduce((acc, curr) => acc + curr.visitors, 0);
-  }, []);
+  const chartConfig = {
+    amount: {
+      label: 'Amount',
+    },
+    system: {
+      label: 'System',
+      color: 'hsl(var(--chart-2))',
+    },
+    translator: {
+      label: 'Translator',
+      color: 'hsl(var(--chart-1))',
+    },
+    coupon: {
+      label: 'Coupon',
+      color: 'hsl(var(--chart-5))',
+    },
+  } satisfies ChartConfig;
+
+  const totalAmount = system + translator + coupon;
 
   return (
     <Card className='bg-white rounded-2xl w-full border-none shadow-none h-full'>
       <CardHeader className='items-center pb-0'>
-        <CardTitle>Pie Chart - Donut with Text</CardTitle>
+        <CardTitle>Payment Deliveries</CardTitle>
         <CardDescription>January - June 2024</CardDescription>
       </CardHeader>
       <CardContent className='flex-1 pb-0'>
@@ -80,8 +71,8 @@ const AdminePieChart = () => {
             <ChartLegend content={<ChartLegendContent />} />
             <Pie
               data={chartData}
-              dataKey='visitors'
-              nameKey='browser'
+              dataKey='amount'
+              nameKey='type'
               innerRadius={60}
               strokeWidth={5}
             >
@@ -98,17 +89,15 @@ const AdminePieChart = () => {
                         <tspan
                           x={viewBox.cx}
                           y={viewBox.cy}
-                          className='fill-foreground text-3xl font-bold'
+                          className='fill-foreground text-2xl font-bold'
                         >
-                          {totalVisitors.toLocaleString()}
+                          {`${(totalAmount / 1000).toFixed(0)}K`}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
                           y={(viewBox.cy || 0) + 24}
                           className='fill-muted-foreground'
-                        >
-                          Visitors
-                        </tspan>
+                        ></tspan>
                       </text>
                     );
                   }
@@ -118,16 +107,8 @@ const AdminePieChart = () => {
           </PieChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className='flex-col gap-2 text-sm'>
-        <div className='flex items-center gap-2 font-medium leading-none'>
-          Trending up by 5.2% this month <TrendingUp className='h-4 w-4' />
-        </div>
-        <div className='leading-none text-muted-foreground'>
-          Showing total visitors for the last 6 months
-        </div>
-      </CardFooter>
     </Card>
   );
 };
 
-export default AdminePieChart;
+export default AdminPieChart;

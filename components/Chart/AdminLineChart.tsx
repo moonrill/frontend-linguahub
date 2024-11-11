@@ -17,21 +17,17 @@ import {
   ChartTooltipContent,
 } from '../ui/chart';
 
-const AdminLineChart = () => {
-  const chartData = [
-    { month: 'January', income: 186000, expense: 80000 },
-    { month: 'February', income: 305000, expense: 20000 },
-    { month: 'March', income: 237000, expense: 12000 },
-    { month: 'April', income: 730000, expense: 190000 },
-    { month: 'May', income: 209000, expense: 13000 },
-    { month: 'June', income: 2140000, expense: 140000 },
-    { month: 'July', income: 190000, expense: 80000 },
-    { month: 'August', income: 300000, expense: 20000 },
-    { month: 'September', income: 200000, expense: 12000 },
-    { month: 'October', income: 250000, expense: 13000 },
-    { month: 'November', income: 200000, expense: 140000 },
-    { month: 'December', income: 190000, expense: 80000 },
-  ];
+interface Data {
+  month: string;
+  income: number;
+  expense: number;
+}
+
+interface Props {
+  data: Data[];
+}
+
+const AdminLineChart = ({ data }: Props) => {
   const chartConfig = {
     income: {
       label: 'Income',
@@ -52,10 +48,10 @@ const AdminLineChart = () => {
         <CardDescription>January - December</CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className='2xl:h-[450px] w-full'>
+        <ChartContainer config={chartConfig} className='2xl:h-[400px] w-full'>
           <AreaChart
             accessibilityLayer
-            data={chartData}
+            data={data}
             margin={{
               left: 12,
               right: 12,
