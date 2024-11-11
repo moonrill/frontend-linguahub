@@ -1,235 +1,198 @@
-'use client';
+import { useEffect, useState } from "react";
+import { Modal, Form, Input, Select, Button, message } from "antd";
+import { Icon } from "@iconify-icon/react";
+import { useForm } from "antd/es/form/Form";
+import dayjs from "dayjs";
+import { couponRepository } from "#/repository/coupon";
+import { Coupon } from "#/types/CouponTypes";
 
-import { languagesRepository } from '#/repository/language';
-import { uploadRepository } from '#/repository/upload';
-import { Language } from '#/types/LanguageTypes';
-import { Icon } from '@iconify-icon/react';
-import { Button, Form, Input, message, Modal, Upload, UploadProps } from 'antd';
-import { useForm } from 'antd/es/form/Form';
-import { UploadChangeParam, UploadFile } from 'antd/es/upload';
-import Dragger from 'antd/es/upload/Dragger';
-import { useEffect, useState } from 'react';
-
-interface Props {
+interface CouponModalProps {
   open: boolean;
   onCancel: () => void;
   mutate: () => void;
-  language?: Language | null;
+  coupon?: Coupon | null;
 }
 
-const CouponModal = ({ open, onCancel, language, mutate }: Props) => {
+const CouponModal = ({ open, onCancel, mutate, coupon }: CouponModalProps) => {
   const [form] = useForm();
   const [loading, setLoading] = useState(false);
+
+  const { data: eventsResponse, isLoading: isEventsLoading } = couponRepository.hooks.useAllEvents();
+  const events = Array.isArray(eventsResponse?.data) ? eventsResponse.data : [];
+
+  useEffect(() => {
+    if (coupon) {
+      form.setFieldsValue({
+        name: coupon.name,
+        description: coupon.description,
+        discountPercentage: coupon.discountPercentage,
+        expiredAt: dayjs(coupon.expiredAt).format("YYYY-MM-DD"),
+        eventId: coupon.event?.id,
+      });
+    } else {
+      form.resetFields();
+    }
+  }, [coupon, form]);
 
   const handleCancel = () => {
     form.resetFields();
     onCancel();
   };
 
-  const uploadProps: UploadProps = {
-    multiple: false,
-    maxCount: 1,
-    accept: '.jpg,.jpeg,.png,.svg',
-    listType: 'picture-card',
-    iconRender: (file) => (
-      <Icon
-        icon='basil:document-solid'
-        height={64}
-        className='text-blue-600 mb-4'
-      />
-    ),
-    progress: {
-      strokeColor: {
-        '0%': '#2563eb',
-        '100%': '#2563eb',
-      },
-    },
-    beforeUpload: (file) => {
-      if (file.size > 5 * 1024 * 1024) {
-        message.error('File too large');
-        return Upload.LIST_IGNORE;
-      }
-      return false;
-    },
-    showUploadList: {
-      showRemoveIcon: true,
-      removeIcon: (
-        <Icon icon='mynaui:trash' className='text-red-500' height={24} />
-      ),
-    },
-  };
-
-  const handleUpload = async (file: any) => {
-    try {
-      const response = await uploadRepository.api.useUploadFlag(file);
-      form.setFieldValue('flagImage', response?.body?.flagImage);
-      message.success('Image uploaded successfully');
-    } catch (error) {
-      console.error(error);
-      message.error('Error uploading image');
-    }
-  };
-
   const handleFinish = async (values: any) => {
     setLoading(true);
-
     try {
-      let response;
-      if (language) {
-        response = await languagesRepository.api.updateLanguage(
-          language.id,
-          values
-        );
+      const payload = {
+        name: values.name,
+        description: values.description,
+        discountPercentage: Number(values.discountPercentage),
+        expiredAt: values.expiredAt,
+        eventId: values.eventId,
+      };
+
+      if (coupon) {
+        await couponRepository.api.updateCoupon(coupon.id, payload);
+        message.success("Coupon updated successfully");
       } else {
-        response = await languagesRepository.api.createLanguage(values);
+        await couponRepository.api.createCoupon(payload);
+        message.success("Coupon created successfully");
       }
-      message.success(
-        response?.body?.message || 'Language created successfully'
-      );
       mutate();
       handleCancel();
-    } catch (error: any) {
-      message.error(
-        error?.response?.body?.message || 'Error creating language'
-      );
+    } catch (error) {
+      message.error("Failed to save coupon");
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    if (language) {
-      console.log(language);
-      form.setFieldsValue({
-        name: language.name,
-        code: language.code,
-        flagImage: language.flagImage,
-      });
-    }
-  }, [form, language]);
-
   return (
     <Modal open={open} onCancel={handleCancel} centered footer={null}>
-      <div className='flex items-center gap-2'>
-        <div className='p-2 bg-blue-600 rounded-full flex items-center justify-center text-white'>
-          <Icon icon={'lets-icons:edit'} className='text-2xl' />
+      <div className="flex items-center gap-2">
+        <div className="p-2 bg-blue-600 rounded-full flex items-center justify-center text-white">
+          <Icon icon="tabler:tag" className="text-2xl" />
         </div>
-        <h1 className='text-lg 2xl:text-xl font-semibold'>
-          {language ? 'Edit' : 'Create'} Language
+        <h1 className="text-lg 2xl:text-xl font-semibold">
+          {coupon ? "Edit Coupon" : "Add New Coupon"}
         </h1>
       </div>
       <Form
         form={form}
-        className='mt-6 text-black flex flex-col'
+        className="mt-6 text-black flex flex-col"
         onFinish={handleFinish}
       >
-        <div className='flex gap-3 w-full'>
-          <div className='w-3/5'>
-            <Form.Item
-              name={'name'}
-              validateDebounce={500}
-              className='mb-0 w-full'
-              rules={[
-                {
-                  required: true,
-                  message: 'Please enter language name',
-                },
-              ]}
-            >
-              <Input
-                type='text'
-                placeholder='Name'
-                suffix={
-                  <Icon
-                    icon={'cuida:translate-outline'}
-                    height={24}
-                    className='text-zinc-400'
-                  />
-                }
-                className='h-14'
-              />
-            </Form.Item>
-          </div>
-          <div className='w-2/5'>
-            <Form.Item
-              name={'code'}
-              validateDebounce={500}
-              className='mb-0 w-full'
-              rules={[
-                {
-                  required: true,
-                  message: 'Please enter language code',
-                },
-                {
-                  max: 3,
-                  message: 'Code must be 3 characters',
-                },
-              ]}
-            >
-              <Input
-                type='text'
-                placeholder='Code'
-                suffix={
-                  <Icon
-                    icon={'mingcute:hashtag-line'}
-                    height={24}
-                    className='text-zinc-400'
-                  />
-                }
-                className='h-14'
-              />
-            </Form.Item>
-          </div>
-        </div>
         <Form.Item
-          name={'flagImage'}
-          rules={[{ required: true, message: 'Please upload language flag' }]}
+          name="name"
+          rules={[
+            { required: true, message: "Please enter coupon name" },
+            { max: 50, message: "Name cannot exceed 50 characters" }
+          ]}
         >
-          <Dragger
-            {...uploadProps}
-            style={{ width: '100%', padding: '3rem 0' }}
-            onChange={(info: UploadChangeParam<UploadFile>) => {
-              const { file } = info;
-              if (file.status !== 'removed') {
-                handleUpload(file);
+          <Input
+            placeholder="Enter coupon name"
+            className="h-16"
+            suffix={<Icon icon="bi:alphabet" height={24} className="text-zinc-400" />}
+          />
+        </Form.Item>
+
+        <Form.Item
+          name="description"
+          rules={[
+            { required: true, message: "Please enter description" },
+            { max: 200, message: "Description cannot exceed 200 characters" }
+          ]}
+        >
+          <Input.TextArea
+            rows={4}
+            placeholder="Enter description"
+            className="h-14 bg-[#f4f4f5] hover:bg-[#e5e7eb]"
+            onFocus={(e) => {
+              e.target.style.backgroundColor = "#f4f4f5";
+            }}
+            onBlur={(e) => {
+              if (!e.target.value) {
+                e.target.style.backgroundColor = "#e5e7eb";
               }
             }}
-          >
-            <div className='flex flex-col justify-center items-center'>
-              <Icon
-                icon={'iwwa:upload'}
-                height={64}
-                className=' text-blue-600'
-              />
-              <p className='text-sm text-zinc-500'>
-                Drag & drop or click to upload
-              </p>
-            </div>
-          </Dragger>
-          {language && (
-            <p className='text-sm mt-2 font-light'>
-              Upload a new image to replace the current one or let it be blank.
-            </p>
-          )}
+          />
         </Form.Item>
-        <div className='flex justify-between w-full gap-4 mt-4'>
+
+        <Form.Item
+          name="eventId"
+          rules={[{ required: true, message: "Please select an event" }]}
+        >
+          <Select
+            placeholder="Select event"
+            loading={isEventsLoading}
+            disabled={isEventsLoading}
+            showSearch
+            optionFilterProp="children"
+            className="h-10"
+          >
+            {events.map((event) => (
+              <Select.Option key={event.id} value={event.id}>
+                {event.name}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+
+        <Form.Item
+          name="discountPercentage"
+          rules={[
+            { required: true, message: "Please enter discount percentage" },
+            {
+              validator: async (_, value) =>
+                value >= 0 && value <= 100
+                  ? Promise.resolve()
+                  : Promise.reject("Discount must be between 0 and 100"),
+            }
+          ]}
+        >
+          <Input
+            type="number"
+            min={0}
+            max={100}
+            placeholder="Enter discount percentage"
+            className="h-10"
+          />
+        </Form.Item>
+
+        <Form.Item
+          name="expiredAt"
+          rules={[
+            { required: true, message: "Please select expiration date" },
+            {
+              validator: (_, value) =>
+                dayjs(value).isBefore(dayjs(), "day")
+                  ? Promise.reject("Expiration date cannot be in the past")
+                  : Promise.resolve(),
+            },
+          ]}
+        >
+          <Input
+            type="date"
+            min={dayjs().format("YYYY-MM-DD")}
+            className="h-10"
+          />
+        </Form.Item>
+
+        <div className="flex justify-between gap-4 mt-4">
           <Button
-            className='w-full py-6 font-medium rounded-xl'
-            type='default'
-            htmlType='button'
+            className="w-full py-6 font-medium rounded-xl"
+            type="default"
             onClick={handleCancel}
             disabled={loading}
           >
             Cancel
           </Button>
           <Button
-            className='w-full py-6 font-medium rounded-xl'
-            type='primary'
-            htmlType='submit'
+            className="w-full py-6 font-medium rounded-xl"
+            type="primary"
+            htmlType="submit"
             loading={loading}
-            disabled={loading}
           >
-            Save
+            {coupon ? "Update Coupon" : "Create Coupon"}
           </Button>
         </div>
       </Form>
