@@ -42,8 +42,6 @@ const Navbar = ({ visible }: { visible: boolean }) => {
     fetchUser();
   }, []);
 
-  console.log(user);
-
   return (
     <Header
       className={`flex justify-between items-center px-[120px] h-fit py-4 !bg-white sticky !w-full !z-50 transition-all duration-500 ${

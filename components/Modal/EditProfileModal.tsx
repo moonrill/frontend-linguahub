@@ -8,7 +8,6 @@ import {
   City,
   District,
   Province,
-  SelectedAddress,
   SubDistrict,
 } from '#/types/AddressTypes';
 import { User } from '#/types/UserType';
@@ -40,6 +39,7 @@ type Props = {
 
 const EditProfileModal = ({ open, onCancel, user, mutate }: Props) => {
   const [form] = useForm();
+
   const [loading, setLoading] = useState(false);
   const [addresses, setAddresses] = useState<Addresses>({
     province: [],
@@ -47,84 +47,145 @@ const EditProfileModal = ({ open, onCancel, user, mutate }: Props) => {
     district: [],
     subDistrict: [],
   });
-  const [selectedAddress, setSelectedAddress] = useState<SelectedAddress>({});
 
   useEffect(() => {
-    if (user) {
-      form.setFieldsValue({
-        fullName: user?.userDetail?.fullName,
-        gender: user?.userDetail?.gender,
-        phoneNumber: user?.userDetail?.phoneNumber,
-        dateOfBirth: user?.userDetail?.dateOfBirth
-          ? dayjs(user?.userDetail?.dateOfBirth)
-          : null,
-        street: user?.userDetail?.street,
-      });
-    }
+    form.setFieldsValue({
+      fullName: user?.userDetail?.fullName,
+      gender: user?.userDetail?.gender,
+      phoneNumber: user?.userDetail?.phoneNumber,
+      dateOfBirth: user?.userDetail?.dateOfBirth
+        ? dayjs(user?.userDetail?.dateOfBirth)
+        : null,
+      street: user?.userDetail?.street,
+    });
   }, [user, form]);
 
-  const [selectedAddressNames, setSelectedAddressNames] =
-    useState<SelectedAddress>({});
-
   useEffect(() => {
-    fetchAddress('provinces').then((data) =>
-      setAddresses((prev) => ({ ...prev, province: data as Province[] }))
-    );
-  }, []);
+    const initializeAddresses = async () => {
+      try {
+        const provinces = (await fetchAddress('provinces')) as Province[];
+        setAddresses((prev) => ({ ...prev, province: provinces }));
 
-  useEffect(() => {
-    if (selectedAddress.province) {
-      fetchAddress('regencies', selectedAddress.province).then((data) => {
-        setAddresses((prev) => ({ ...prev, city: data as City[] }));
-      });
-    }
-  }, [selectedAddress.province]);
+        // Find province by name and fetch cities
+        if (user?.userDetail?.province) {
+          const province = provinces.find(
+            (p) => p.name === user.userDetail.province.toUpperCase()
+          );
 
-  useEffect(() => {
-    if (selectedAddress.city) {
-      fetchAddress('districts', selectedAddress.city).then((data) => {
-        setAddresses((prev) => ({ ...prev, district: data as District[] }));
-      });
-    }
-  }, [selectedAddress.city]);
+          if (province) {
+            form.setFieldsValue({
+              provinceId: province.id,
+              province: user?.userDetail?.province,
+            });
+            const cities = (await fetchAddress(
+              'regencies',
+              province.id
+            )) as City[];
+            setAddresses((prev) => ({ ...prev, city: cities }));
 
-  useEffect(() => {
-    if (selectedAddress.district) {
-      fetchAddress('villages', selectedAddress.district).then((data) => {
-        setAddresses((prev) => ({
-          ...prev,
-          subDistrict: data as SubDistrict[],
-        }));
-      });
-    }
-  }, [selectedAddress.district]);
+            // Find city by name and fetch districts
+            const city = cities.find(
+              (c) => c.name === user.userDetail.city.toUpperCase()
+            );
 
-  const handleSelectionChange = (
-    addressType: string,
-    value: string,
-    label: string
-  ) => {
-    setSelectedAddress((prev) => ({
-      ...prev,
-      [addressType]: value,
-    }));
-    setSelectedAddressNames((prev) => ({
-      ...prev,
-      [addressType]: label,
-    }));
+            if (city) {
+              form.setFieldsValue({
+                cityId: city.id,
+                city: user?.userDetail?.city,
+              });
+              const districts = (await fetchAddress(
+                'districts',
+                city.id
+              )) as District[];
+              setAddresses((prev) => ({ ...prev, district: districts }));
 
-    const resetTypes = {
-      province: ['city', 'district', 'subDistrict'],
-      city: ['district', 'subDistrict'],
-      district: ['subDistrict'],
+              // Find district by name and fetch subdistricts
+              const district = districts.find(
+                (d) => d.name === user.userDetail.district.toUpperCase()
+              );
+
+              if (district) {
+                form.setFieldsValue({
+                  districtId: district.id,
+                  district: user?.userDetail?.district,
+                });
+                const subDistricts = (await fetchAddress(
+                  'villages',
+                  district.id
+                )) as SubDistrict[];
+                setAddresses((prev) => ({
+                  ...prev,
+                  subDistrict: subDistricts,
+                }));
+
+                // Find and set subdistrict
+                const subDistrict = subDistricts.find(
+                  (sd) => sd.name === user.userDetail.subDistrict.toUpperCase()
+                );
+
+                if (subDistrict) {
+                  form.setFieldsValue({
+                    subDistrictId: subDistrict.id,
+                    subDistrict: user?.userDetail?.subDistrict,
+                  });
+                }
+              }
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error initializing addresses:', error);
+        message.error('Failed to load address data');
+      }
     };
 
-    resetTypes[addressType as keyof typeof resetTypes]?.forEach((type) => {
-      setSelectedAddress((prev) => ({ ...prev, [type]: null }));
-      setSelectedAddressNames((prev) => ({ ...prev, [type]: null }));
-      setAddresses((prev) => ({ ...prev, [type]: [] }));
-      form.resetFields([type]);
-    });
+    if (open) {
+      initializeAddresses();
+    }
+  }, [open, user, form]);
+
+  const handleSelectionChange = async (
+    addressType: string,
+    label: string,
+    value: string
+  ) => {
+    try {
+      form.setFieldValue(addressType, value);
+      form.setFieldValue(addressType.slice(0, -2), label);
+
+      const resetTypes = {
+        provinceId: ['cityId', 'districtId', 'subDistrictId'],
+        cityId: ['districtId', 'subDistrictId'],
+        districtId: ['subDistrictId'],
+      };
+
+      // Reset dependent fields
+      resetTypes[addressType as keyof typeof resetTypes]?.forEach((type) => {
+        form.resetFields([type]);
+        setAddresses((prev) => ({ ...prev, [type.slice(0, -2)]: [] }));
+      });
+
+      // Fetch dependent address data
+      if (addressType === 'provinceId') {
+        const cities = (await fetchAddress('regencies', value)) as City[];
+        setAddresses((prev) => ({ ...prev, city: cities }));
+      } else if (addressType === 'cityId') {
+        const districts = (await fetchAddress(
+          'districts',
+          value
+        )) as District[];
+        setAddresses((prev) => ({ ...prev, district: districts }));
+      } else if (addressType === 'districtId') {
+        const subDistricts = (await fetchAddress(
+          'villages',
+          value
+        )) as SubDistrict[];
+        setAddresses((prev) => ({ ...prev, subDistrict: subDistricts }));
+      }
+    } catch (error) {
+      console.error('Error handling address selection:', error);
+      message.error('Failed to update address selection');
+    }
   };
 
   const uploadProps: UploadProps = {
@@ -161,15 +222,23 @@ const EditProfileModal = ({ open, onCancel, user, mutate }: Props) => {
   };
 
   const handleFinish = async (values: any) => {
+    setLoading(true);
+    const address = {
+      province: form.getFieldValue('province'),
+      city: form.getFieldValue('city'),
+      district: form.getFieldValue('district'),
+      subDistrict: form.getFieldValue('subDistrict'),
+    };
+
     try {
-      setLoading(true);
       const data = {
         ...values,
         dateOfBirth: values.dateOfBirth
           ? dayjs(values.dateOfBirth).format('YYYY-MM-DD')
           : null,
       };
-      await authRepository.api.updateProfile(user?.id, data);
+
+      await authRepository.api.updateProfile(user?.id, { ...data, ...address });
 
       message.success('Profile updated successfully');
       onCancel();
@@ -353,66 +422,62 @@ const EditProfileModal = ({ open, onCancel, user, mutate }: Props) => {
             <div>
               <div className='grid md:grid-cols-2 md:gap-4'>
                 <Form.Item
-                  name='province'
+                  name='provinceId'
                   rules={[
                     { required: true, message: 'Please select a province' },
                   ]}
                 >
                   <AddressSelect
-                    type='province'
                     placeholder='Province'
                     options={addresses.province}
                     disabled={false}
                     onChange={(label: string, value: string) =>
-                      handleSelectionChange('province', value, label)
+                      handleSelectionChange('provinceId', label, value)
                     }
                   />
                 </Form.Item>
                 <Form.Item
-                  name='city'
+                  name='cityId'
                   rules={[{ required: true, message: 'Please select a city' }]}
                 >
                   <AddressSelect
-                    type='city'
                     placeholder='City'
                     options={addresses.city}
-                    disabled={!selectedAddress.province}
+                    disabled={!form.getFieldValue('provinceId')}
                     onChange={(label: string, value: string) =>
-                      handleSelectionChange('city', value, label)
+                      handleSelectionChange('cityId', label, value)
                     }
                   />
                 </Form.Item>
               </div>
               <div className='grid md:grid-cols-2 md:gap-4'>
                 <Form.Item
-                  name='district'
+                  name='districtId'
                   rules={[
                     { required: true, message: 'Please select a district' },
                   ]}
                 >
                   <AddressSelect
-                    type='district'
                     placeholder='District'
                     options={addresses.district}
-                    disabled={!selectedAddress.city}
+                    disabled={!form.getFieldValue('cityId')}
                     onChange={(label: string, value: string) =>
-                      handleSelectionChange('district', value, label)
+                      handleSelectionChange('districtId', label, value)
                     }
                   />
                 </Form.Item>
                 <Form.Item
-                  name='subDistrict'
+                  name='subDistrictId'
                   rules={[
                     { required: true, message: 'Please select a sub-district' },
                   ]}
                 >
                   <AddressSelect
-                    type='subDistrict'
                     placeholder='Sub District'
                     options={addresses.subDistrict}
-                    disabled={!selectedAddress.district}
+                    disabled={!form.getFieldValue('districtId')}
                     onChange={(label: string, value: string) =>
-                      handleSelectionChange('subDistrict', value, label)
+                      handleSelectionChange('subDistrictId', label, value)
                     }
                   />
                 </Form.Item>
@@ -449,9 +514,7 @@ const EditProfileModal = ({ open, onCancel, user, mutate }: Props) => {
             className='w-full py-6 font-medium rounded-xl'
             type='default'
             htmlType='button'
-            onClick={() => {
-              onCancel();
-            }}
+            onClick={onCancel}
           >
             Cancel
           </Button>
