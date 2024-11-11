@@ -23,8 +23,12 @@ import { UploadChangeParam, UploadFile } from 'antd/es/upload';
 import Dragger from 'antd/es/upload/Dragger';
 import dayjs from 'dayjs';
 import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
 
 const BookingDetail = ({ params }: { params: { id: string } }) => {
+  const searchParams = useSearchParams();
+  const scroll = searchParams?.get('scroll');
   const { data, isLoading, mutate } = bookingRepository.hooks.useGetBookingById(
     params.id
   );
@@ -105,6 +109,15 @@ const BookingDetail = ({ params }: { params: { id: string } }) => {
       />
     );
   }
+
+  useEffect(() => {
+    if (!isLoading && scroll === 'bottom') {
+      window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: 'smooth',
+      });
+    }
+  }, [scroll, isLoading]);
 
   return (
     <>

@@ -1,5 +1,6 @@
 'use client';
 
+import CustomDropdown from '#/components/CustomDropdown';
 import ExportModal from '#/components/Modal/ExportModal';
 import StatusBadge from '#/components/StatusBadge';
 import CustomTable from '#/components/Tables/CustomTable';
@@ -13,7 +14,6 @@ import {
   Button,
   Divider,
   Drawer,
-  Dropdown,
   Input,
   message,
   Segmented,
@@ -53,6 +53,8 @@ const AdminPayment = () => {
     statusParam,
     page,
     10,
+    'date',
+    'desc',
     typeParam
   );
 
@@ -79,7 +81,7 @@ const AdminPayment = () => {
       ellipsis: true,
       render: (_, record) => (
         <Tooltip title={record.booking?.id}>
-          <p className='text-xs 2xl:text-sm font-medium truncate max-w-[120px]'>
+          <p className='text-xs 2xl:text-sm font-medium truncate max-w-[150px]'>
             {record.booking?.id}
           </p>
         </Tooltip>
@@ -151,6 +153,34 @@ const AdminPayment = () => {
       sortDirections: ['descend', 'ascend'],
       sorter: (a, b) => a.amount - b.amount,
     },
+    {
+      title: 'Action',
+      dataIndex: 'action',
+      key: 'action',
+      ellipsis: true,
+      fixed: 'right',
+      render: (_, record) => (
+        <Tooltip title='View Detail'>
+          <div
+            className='text-gray-500 cursor-pointer p-2 hover:bg-zinc-200 rounded-lg transition-all duration-500 flex items-center justify-center w-fit'
+            onClick={() => {
+              setSelectedPayment(
+                listPayments?.data.find(
+                  (payment: Payment) => payment.id === record.key
+                )
+              );
+
+              setShowDrawer(true);
+            }}
+          >
+            <Icon
+              icon={'solar:eye-linear'}
+              className='text-xl 2xl:text-2xl text-blue-600'
+            />
+          </div>
+        </Tooltip>
+      ),
+    },
   ];
 
   const data = listPayments?.data?.map((payment: Payment) => ({
@@ -174,6 +204,10 @@ const AdminPayment = () => {
     {
       key: 'failed',
       label: 'Failed',
+    },
+    {
+      key: 'refund',
+      label: 'Refunded',
     },
   ];
 
@@ -218,7 +252,7 @@ const AdminPayment = () => {
     );
   };
 
-  const handleSelect = (key: string) => {
+  const onStatusChange = (key: string) => {
     router.push(
       `/dashboard/transaction/payment?status=${key}&page=${page}&type=${type}`
     );
@@ -280,13 +314,10 @@ const AdminPayment = () => {
       }
     };
 
-    // Call once to set initial limit
     handleResize();
 
-    // Add event listener for window resize
     window.addEventListener('resize', handleResize);
 
-    // Cleanup event listener on component unmount
     return () => {
       window.removeEventListener('resize', handleResize);
     };
@@ -314,26 +345,14 @@ const AdminPayment = () => {
             onChange={onChange}
             defaultValue={type}
           />
-          <Dropdown
-            menu={{
-              items: statusOptions,
-              selectable: true,
-              onClick: ({ key }) => handleSelect(key),
-              selectedKeys: [status],
-            }}
-            trigger={['click']}
-            className='cursor-pointer h-11 2xl:h-12 bg-zinc-100 px-4 py-2 rounded-xl text-sm 2xl:text-base text-zinc-500 font-medium hover:bg-zinc-200 transition-all duration-500'
+          <CustomDropdown
+            label='Status'
             placement='bottomRight'
-          >
-            <div className='flex items-center justify-between gap-4'>
-              <p>Status</p>
-              <Icon
-                icon='weui:arrow-outlined'
-                height={24}
-                className='rotate-90'
-              />
-            </div>
-          </Dropdown>
+            useBackground={true}
+            items={statusOptions}
+            selectedKey={status}
+            onSelect={onStatusChange}
+          />
           <Button
             type='default'
             className='py-3 px-5 w-fit h-fit text-sm font-medium text-blue-600 rounded-xl'
@@ -353,12 +372,6 @@ const AdminPayment = () => {
         totalData={listPayments?.total}
         totalPage={listPayments?.totalPages}
         handlePageChange={handlePageChange}
-        onClick={({ key }) => {
-          setSelectedPayment(
-            listPayments?.data.find((payment: Payment) => payment.id === key)
-          );
-          setShowDrawer(true);
-        }}
       />
       <Drawer
         onClose={() => {
@@ -501,53 +514,73 @@ const AdminPayment = () => {
             </div>
             <Divider />
             {selectedPayment?.paymentType === 'translator' && (
-              <div className='flex flex-col gap-3'>
-                <h1 className='text-xl font-semibold'>Proof</h1>
-                {selectedPayment?.proof ? (
-                  <>
-                    <AntdImage
-                      width={200}
-                      height={200}
-                      className='object-cover rounded-xl'
-                      src={`${config.baseUrl}/images/proof/payment/${selectedPayment?.proof}`}
-                    />
-                    {selectedPayment?.status === 'pending' && (
-                      <Button
-                        className='w-fit py-6 font-medium rounded-xl hover:!border-rose-600 hover:!text-rose-600'
-                        type='default'
-                        htmlType='button'
-                        onClick={handleRemoveProof}
+              <>
+                <div className='flex flex-col gap-3 text-sm'>
+                  <h1 className='text-xl font-semibold'>Translator Bank</h1>
+                  <div className='flex justify-between'>
+                    <p className='font-medium text-slate-500'>Bank Name</p>
+                    <p className='font-medium text-blue-950'>
+                      {selectedPayment?.booking?.translator?.bank}
+                    </p>
+                  </div>
+                  <div className='flex justify-between'>
+                    <p className='font-medium text-slate-500'>
+                      Bank Account Number
+                    </p>
+                    <p className='font-medium text-blue-950'>
+                      {selectedPayment?.booking?.translator?.bankAccountNumber}
+                    </p>
+                  </div>
+                </div>
+                <Divider />
+                <div className='flex flex-col gap-3'>
+                  <h1 className='text-xl font-semibold'>Proof</h1>
+                  {selectedPayment?.proof ? (
+                    <>
+                      <AntdImage
+                        width={200}
+                        height={200}
+                        className='object-cover rounded-xl'
+                        src={`${config.baseUrl}/images/proof/payment/${selectedPayment?.proof}`}
+                      />
+                      {selectedPayment?.status === 'pending' && (
+                        <Button
+                          className='w-fit py-6 font-medium rounded-xl hover:!border-rose-600 hover:!text-rose-600'
+                          type='default'
+                          htmlType='button'
+                          onClick={handleRemoveProof}
+                        >
+                          Remove Proof
+                        </Button>
+                      )}
+                    </>
+                  ) : (
+                    selectedPayment?.status === 'pending' && (
+                      <Dragger
+                        {...uploadProps}
+                        style={{ width: 300, padding: '3rem 0' }}
+                        onChange={(info: UploadChangeParam<UploadFile>) => {
+                          const { file } = info;
+                          if (file.status !== 'removed') {
+                            handleUploadProof(file);
+                          }
+                        }}
                       >
-                        Remove Proof
-                      </Button>
-                    )}
-                  </>
-                ) : (
-                  selectedPayment?.status === 'pending' && (
-                    <Dragger
-                      {...uploadProps}
-                      style={{ width: 300, padding: '3rem 0' }}
-                      onChange={(info: UploadChangeParam<UploadFile>) => {
-                        const { file } = info;
-                        if (file.status !== 'removed') {
-                          handleUploadProof(file);
-                        }
-                      }}
-                    >
-                      <div className='flex flex-col justify-center items-center'>
-                        <Icon
-                          icon={'iwwa:upload'}
-                          height={64}
-                          className=' text-blue-600'
-                        />
-                        <p className='text-sm text-zinc-500'>
-                          Drag & drop or click to upload
-                        </p>
-                      </div>
-                    </Dragger>
-                  )
-                )}
-              </div>
+                        <div className='flex flex-col justify-center items-center'>
+                          <Icon
+                            icon={'iwwa:upload'}
+                            height={64}
+                            className=' text-blue-600'
+                          />
+                          <p className='text-sm text-zinc-500'>
+                            Drag & drop or click to upload
+                          </p>
+                        </div>
+                      </Dragger>
+                    )
+                  )}
+                </div>
+              </>
             )}
             {selectedPayment?.paymentType === 'client' &&
               selectedPayment?.paymentMethod && (

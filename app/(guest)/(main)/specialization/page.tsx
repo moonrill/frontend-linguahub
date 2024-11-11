@@ -41,7 +41,7 @@ const Specializations = () => {
 
   const handleClick = (key: string) => {
     setCurrentPage(1);
-    router.push(`/specialization?name=${key}&page=1`);
+    router.push(`/specialization?name=${key}&page=1&sortBy=${sortBy}`);
   };
 
   const handlePageChange = (page: number) => {

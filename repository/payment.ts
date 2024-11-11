@@ -7,9 +7,9 @@ const url = {
     status: string | undefined,
     page: number,
     limit: number,
-    type?: string,
     sortBy?: string,
-    order?: string
+    order?: string,
+    type?: string
   ) => {
     const params = new URLSearchParams();
 
@@ -60,12 +60,12 @@ const hooks = {
     status: string | undefined,
     page: number,
     limit: number,
-    type?: string,
     sortBy?: string,
-    order?: string
+    order?: string,
+    type?: string
   ) => {
     return useSWR(
-      url.getPayments(role, status, page, limit, type, sortBy, order),
+      url.getPayments(role, status, page, limit, sortBy, order, type),
       http.fetcher
     );
   },

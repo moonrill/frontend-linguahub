@@ -97,6 +97,7 @@ const TranslatorSearchBar = ({
             label='Source Language'
             items={languageOptions}
             onSelect={(key) => handleSelect('sourceLanguage', key)}
+            selectedKey={selectedValue.sourceLanguage}
           />
           <div className='flex items-center gap-2'>
             <div className='relative w-8 h-8 2xl:w-[40px] 2xl:h-[40px]'>
@@ -139,6 +140,7 @@ const TranslatorSearchBar = ({
             label='Target Language'
             items={languageOptions}
             onSelect={(key) => handleSelect('targetLanguage', key)}
+            selectedKey={selectedValue.targetLanguage}
           />
           <div className='flex items-center gap-2'>
             <div className='relative w-8 h-8 2xl:w-[40px] 2xl:h-[40px]'>
@@ -181,6 +183,7 @@ const TranslatorSearchBar = ({
             label='Sort By'
             items={sortByOptions}
             onSelect={(key) => handleSelect('sortBy', key)}
+            selectedKey={selectedValue.sortBy}
           />
           <div className='flex items-center gap-2'>
             <h1 className='font-semibold text-lg 2xl:text-2xl'>

@@ -3,10 +3,14 @@ import TranslatorChart from '#/components/Chart/TranslatorChart';
 import DashboardCard from '#/components/Dashboard/DashboardCard';
 import NewRequest from '#/components/Tables/NewRequest';
 import RecentReviews from '#/components/Tables/RecentReviews';
+import { dashboardRepository } from '#/repository/dashboard';
 import { Col, Row } from 'antd';
 import Link from 'next/link';
 
 const TranslatorDashboard = () => {
+  const { data: response, isLoading } =
+    dashboardRepository.hooks.useGetTranslatorDashboard();
+
   return (
     <main className='flex flex-col gap-3 2xl:gap-4 h-full'>
       <Row gutter={24}>
@@ -14,18 +18,27 @@ const TranslatorDashboard = () => {
           <DashboardCard
             icon='solar:wallet-money-bold'
             title='Total Earnings'
-            value='Rp1.000.000'
+            value={`Rp${response?.data?.translatorEarnings.toLocaleString(
+              'id-ID'
+            )}`}
+            href='/dashboard/translator/payment'
           />
-          <DashboardCard icon='mingcute:star-fill' title='Rating' value='4.5' />
+          <DashboardCard
+            icon='mingcute:star-fill'
+            title='Rating'
+            value={response?.data?.translatorRating}
+          />
           <DashboardCard
             icon='solar:headphones-round-bold-duotone'
             title='Booking Completed'
-            value='254'
+            value={response?.data?.bookingCompletedCount}
+            href='/dashboard/translator/booking'
           />
           <DashboardCard
             icon='mdi:credit-card-outline'
             title='Total Request'
-            value='340'
+            value={response?.data?.requestCount}
+            href='/dashboard/translator/service-request'
           />
         </Col>
         <Col
@@ -51,7 +64,7 @@ const TranslatorDashboard = () => {
       </Row>
       <Row gutter={24}>
         <Col span={16}>
-          <TranslatorChart />
+          <TranslatorChart data={response?.data?.monthlyIncome} />
         </Col>
         <Col
           span={8}

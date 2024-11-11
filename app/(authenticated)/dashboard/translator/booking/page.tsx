@@ -1,5 +1,6 @@
 'use client';
 
+import CustomDropdown from '#/components/CustomDropdown';
 import LanguageFlag from '#/components/LanguageFlag';
 import StatusBadge from '#/components/StatusBadge';
 import CustomTable from '#/components/Tables/CustomTable';
@@ -8,20 +9,30 @@ import { bookingRepository } from '#/repository/booking';
 import { Booking } from '#/types/BookingTypes';
 import { capitalizeFirstLetter } from '#/utils/capitalizeFirstLetter';
 import { Icon } from '@iconify-icon/react';
-import { Dropdown, Input, TableProps, Tooltip } from 'antd';
+import { Input, MenuProps, TableProps, Tooltip } from 'antd';
 import { MenuItemType } from 'antd/es/menu/interface';
 import dayjs from 'dayjs';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 const TranslatorBooking = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
+
   const page = Number(searchParams?.get('page')) || 1;
   const status = searchParams?.get('status') || 'all';
   const statusParam = status === 'all' ? undefined : status;
+  const sortBy = searchParams?.get('sortBy') || 'newest';
+
   const { data: bookingLists, isLoading } =
-    bookingRepository.hooks.useGetBookings('translator', statusParam, page, 10);
+    bookingRepository.hooks.useGetBookings(
+      'translator',
+      statusParam,
+      page,
+      10,
+      sortBy
+    );
 
   const columns: TableProps['columns'] = [
     {
@@ -42,12 +53,10 @@ const TranslatorBooking = () => {
       dataIndex: 'bookingDate',
       key: 'bookingDate',
       ellipsis: true,
-      sortDirections: ['descend', 'ascend'],
-      sorter: (a, b) =>
-        dayjs(a.bookingDate).unix() - dayjs(b.bookingDate).unix(),
-      render: (text) => (
+      render: (_, record) => (
         <p className='text-xs 2xl:text-sm font-medium'>
-          {dayjs(text).format('DD MMMM YYYY')}
+          {dayjs(record.bookingDate).format('DD MMMM YYYY')},{' '}
+          {record.startAt.slice(0, 5)}
         </p>
       ),
     },
@@ -83,8 +92,25 @@ const TranslatorBooking = () => {
       render: (text) => (
         <p className='text-xs 2xl:text-sm font-semibold'>Rp{text}</p>
       ),
-      sortDirections: ['descend', 'ascend'],
-      sorter: (a, b) => a.price - b.price,
+    },
+    {
+      title: 'Action',
+      dataIndex: 'action',
+      key: 'action',
+      fixed: 'right',
+      render: (_, record) => (
+        <Tooltip title='View Detail'>
+          <Link
+            href={`/dashboard/translator/booking/${record?.key}`}
+            className='text-gray-500 cursor-pointer p-2 hover:bg-zinc-200 rounded-lg transition-all duration-500 flex items-center justify-center w-fit'
+          >
+            <Icon
+              icon={'solar:eye-linear'}
+              className='text-xl 2xl:text-2xl text-blue-600'
+            />
+          </Link>
+        </Tooltip>
+      ),
     },
   ];
 
@@ -109,7 +135,7 @@ const TranslatorBooking = () => {
         </div>
 
         <div className='flex flex-col gap-1'>
-          <p className='font-medium text-sm line-clamp-1'>
+          <p className='font-medium text-xs 2xl:text-sm line-clamp-1'>
             {booking?.user?.userDetail?.fullName}
           </p>
           <p className='text-[10px] 2xl:text-xs font-semibold text-gray-500'>
@@ -150,7 +176,9 @@ const TranslatorBooking = () => {
   }));
 
   const handlePageChange = (page: number) => {
-    router.push(`/dashboard/translator/booking?page=${page}`);
+    router.push(
+      `/dashboard/translator/booking?page=${page}&status=${status}&sortBy=${sortBy}`
+    );
   };
 
   const statusOptions: MenuItemType[] = [
@@ -176,9 +204,28 @@ const TranslatorBooking = () => {
     },
   ];
 
-  const handleSelect = (value: string) => {
+  const sortByItems: MenuProps['items'] = [
+    {
+      key: 'newest',
+      label: 'Newest',
+    },
+    {
+      key: 'bookingDate',
+      label: 'Booking Date',
+    },
+    {
+      key: 'price',
+      label: 'Price',
+    },
+  ];
+
+  const onSortByChange = (e: any) => {
+    router.push(`/dashboard/translator/booking?status=${status}&sortBy=${e}`);
+  };
+
+  const onStatusChange = (value: string) => {
     router.push(
-      `/dashboard/translator/booking?status=${value}&page=${bookingLists?.page}`
+      `/dashboard/translator/booking?status=${value}&sortBy=${sortBy}`
     );
   };
 
@@ -198,26 +245,24 @@ const TranslatorBooking = () => {
           }
           className='h-12 w-fit'
         />
-        <Dropdown
-          menu={{
-            items: statusOptions,
-            selectable: true,
-            onClick: ({ key }) => handleSelect(key),
-            selectedKeys: [status],
-          }}
-          trigger={['click']}
-          className='cursor-pointer h-12 bg-zinc-100 px-4 py-2 rounded-xl text-sm 2xl:text-base text-zinc-500 font-medium hover:bg-zinc-200 transition-all duration-500'
-          placement='bottomRight'
-        >
-          <div className='flex items-center justify-between gap-4'>
-            <p>Status</p>
-            <Icon
-              icon='weui:arrow-outlined'
-              height={24}
-              className='rotate-90'
-            />
-          </div>
-        </Dropdown>
+        <div className='flex gap-2'>
+          <CustomDropdown
+            label='Status'
+            placement='bottomRight'
+            useBackground={true}
+            items={statusOptions}
+            selectedKey={status}
+            onSelect={onStatusChange}
+          />
+          <CustomDropdown
+            label='Sort By'
+            placement='bottomRight'
+            useBackground={true}
+            items={sortByItems}
+            selectedKey={sortBy}
+            onSelect={onSortByChange}
+          />
+        </div>
       </div>
       <CustomTable
         columns={columns}
@@ -228,7 +273,6 @@ const TranslatorBooking = () => {
         totalData={bookingLists?.total}
         totalPage={bookingLists?.totalPages}
         handlePageChange={handlePageChange}
-        onClick={({ id }) => router.push(`/dashboard/translator/booking/${id}`)}
       />
     </main>
   );

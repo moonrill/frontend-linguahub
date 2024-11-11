@@ -111,8 +111,8 @@ const DocumentsUpload = ({
 
       await authRepository.api.register(formData);
       nextStep();
-    } catch (error) {
-      message.error('Something went wrong');
+    } catch (error: any) {
+      message.error(error?.response?.body?.message || 'Something went wrong');
     } finally {
       setLoading(false);
     }
@@ -189,6 +189,7 @@ const DocumentsUpload = ({
               type='default'
               htmlType='button'
               onClick={prevStep}
+              disabled={loading}
             >
               Back
             </Button>
@@ -196,8 +197,10 @@ const DocumentsUpload = ({
               className='w-full py-6 font-medium rounded-xl'
               type='primary'
               htmlType='submit'
+              loading={loading}
+              disabled={!cvFile || !certificateFile || loading}
             >
-              Continue
+              Create Account
             </Button>
           </div>
           <p className='mb-0 text-sm'>

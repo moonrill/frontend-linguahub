@@ -13,22 +13,16 @@ import {
   ChartTooltipContent,
 } from '../ui/chart';
 
-const TranslatorChart = () => {
-  const chartData = [
-    { month: 'January', income: 190000 },
-    { month: 'February', income: 65000 },
-    { month: 'March', income: 975000 },
-    { month: 'April', income: 350000 },
-    { month: 'May', income: 120000 },
-    { month: 'June', income: 426000 },
-    { month: 'July', income: 450000 },
-    { month: 'August', income: 256000 },
-    { month: 'September', income: 321000 },
-    { month: 'October', income: 198000 },
-    { month: 'November', income: 190000 },
-    { month: 'December', income: 150000 },
-  ];
+interface Data {
+  month: string;
+  income: number;
+}
 
+interface Props {
+  data: Data[];
+}
+
+const TranslatorChart = ({ data }: Props) => {
   const chartConfig = {
     income: {
       label: 'Income',
@@ -47,11 +41,8 @@ const TranslatorChart = () => {
         <CardDescription>January - December</CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer
-          config={chartConfig}
-          className='h-full 2xl:h-[350px] w-full'
-        >
-          <BarChart accessibilityLayer data={chartData}>
+        <ChartContainer config={chartConfig} className='w-full h-[236px]'>
+          <BarChart accessibilityLayer data={data}>
             <CartesianGrid vertical={false} />
             <XAxis
               dataKey='month'

@@ -1,6 +1,8 @@
 'use client';
 
 import LanguageFlag from '#/components/LanguageFlag';
+import ConfirmModal from '#/components/Modal/ConfirmModal';
+import StatusBadge from '#/components/StatusBadge';
 import { config } from '#/config/app';
 import { imgProfilePicture } from '#/constants/general';
 import { translatorRepository } from '#/repository/translator';
@@ -9,59 +11,59 @@ import { Specialization } from '#/types/SpecializationTypes';
 import { Translator } from '#/types/TranslatorTypes';
 import { capitalizeFirstLetter } from '#/utils/capitalizeFirstLetter';
 import { Icon } from '@iconify-icon/react';
-import { Button, Result, Skeleton, Table, TableProps, Tag } from 'antd';
+import {
+  Button,
+  Form,
+  Input,
+  message,
+  Modal,
+  Result,
+  Skeleton,
+  Tag,
+} from 'antd';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState } from 'react';
 
 const TranslatorDetail = ({ params }: { params: { id: string } }) => {
   const { data, isLoading, mutate } =
     translatorRepository.hooks.useGetTranslatorById(params.id);
 
+  const [openApprove, setOpenApprove] = useState(false);
+  const [openRejectModal, setOpenRejectModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const translator: Translator = data?.data;
 
-  const columns: TableProps['columns'] = [
-    {
-      title: 'Service Name',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: 'Source Language',
-      dataIndex: 'sourceLanguage',
-      key: 'sourceLanguage',
-      render: (_, record) => (
-        <div className='flex items-center gap-2'>
-          <LanguageFlag language={record.sourceLanguage} />
-          <span>{record.sourceLanguage.name}</span>
-        </div>
-      ),
-    },
-    {
-      title: 'Target Language',
-      dataIndex: 'targetLanguage',
-      key: 'targetLanguage',
-      render: (_, record) => (
-        <div className='flex items-center gap-2'>
-          <LanguageFlag language={record.targetLanguage} />
-          <span>{record.targetLanguage.name}</span>
-        </div>
-      ),
-    },
-    {
-      title: 'Price per hour',
-      dataIndex: 'pricePerHour',
-      key: 'pricePerHour',
-      align: 'right',
-      render: (text) => (
-        <p className='font-semibold'>Rp{text.toLocaleString('id-ID')}</p>
-      ),
-    },
-  ];
+  const handleAccept = async () => {
+    if (!translator) return;
+    setLoading(true);
+    try {
+      await translatorRepository.api.approveTranslator(translator.id);
+      setOpenApprove(false);
+      message.success('Translator approved successfully');
+      mutate();
+    } catch (error) {
+      message.error('Failed to approve translator');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const services = translator?.services?.map((service) => ({
-    key: service.id,
-    ...service,
-  }));
+  const handleReject = async (values: any) => {
+    if (!translator) return;
+    setLoading(true);
+    try {
+      await translatorRepository.api.rejectTranslator(translator.id, values);
+      setOpenRejectModal(false);
+      message.success('Translator rejected successfully');
+      mutate();
+    } catch (error) {
+      message.error('Failed to reject translator');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <main className='bg-white w-full h-full rounded-3xl p-4 flex flex-col gap-4'>
@@ -210,6 +212,12 @@ const TranslatorDetail = ({ params }: { params: { id: string } }) => {
                 </div>
               </div>
             </div>
+            <div>
+              <StatusBadge
+                status={translator?.status}
+                text={capitalizeFirstLetter(translator?.status)}
+              />
+            </div>
           </section>
           <section className='flex p-4 border w-full rounded-xl justify-between'>
             <div className='flex gap-10 2xl:gap-20'>
@@ -310,7 +318,7 @@ const TranslatorDetail = ({ params }: { params: { id: string } }) => {
             </div>
           </section>
           <section className='flex p-4 border w-full rounded-xl gap-6'>
-            <div className='flex flex-col gap-3'>
+            <div className='flex flex-col gap-2'>
               <h1 className='text-sm 2xl:text-xl font-semibold text-zinc-600'>
                 CV/Resume
               </h1>
@@ -328,7 +336,7 @@ const TranslatorDetail = ({ params }: { params: { id: string } }) => {
                 </div>
               </Link>
             </div>
-            <div className='flex flex-col gap-3'>
+            <div className='flex flex-col gap-2'>
               <h1 className='text-sm 2xl:text-xl font-semibold text-zinc-600'>
                 Certificate
               </h1>
@@ -347,17 +355,96 @@ const TranslatorDetail = ({ params }: { params: { id: string } }) => {
               </Link>
             </div>
           </section>
-          <section className='flex flex-col gap-3 p-4 border w-full rounded-xl'>
-            <h1 className='text-sm 2xl:text-xl font-semibold text-zinc-600'>
-              Service
-            </h1>
-            <Table
-              columns={columns}
-              dataSource={services}
-              pagination={false}
-              rowHoverable={false}
-            />
-          </section>
+          {translator?.status === 'pending' && (
+            <>
+              <div className='flex gap-3 justify-end'>
+                <Button
+                  className='py-6 px-4 font-medium rounded-xl text-sm 2xl:text-base flex gap-0.5 hover:!border hover:!border-rose-600 hover:!text-rose-600'
+                  type='default'
+                  htmlType='button'
+                  onClick={() => setOpenRejectModal(true)}
+                >
+                  Reject
+                </Button>
+                <Button
+                  className='py-6 px-4 font-medium rounded-xl text-sm 2xl:text-base flex gap-0.5'
+                  type='primary'
+                  htmlType='submit'
+                  onClick={() => setOpenApprove(true)}
+                >
+                  <Icon
+                    icon={'solar:check-read-linear'}
+                    className='text-2xl 2xl:text-3xl'
+                  />
+                  Approve
+                </Button>
+              </div>
+              <ConfirmModal
+                open={openApprove}
+                onCancel={() => setOpenApprove(false)}
+                onConfirm={handleAccept}
+                type='success'
+                title='Approve Request?'
+                description='Are you sure you want to approve this request?'
+                cancelText='No, cancel'
+                confirmText="Yes, I'm sure"
+                isLoading={loading}
+              />
+              <Modal
+                open={openRejectModal}
+                onCancel={() => setOpenRejectModal(false)}
+                centered
+                footer={null}
+              >
+                <div className='flex items-center gap-2'>
+                  <div className='p-2 bg-blue-600 rounded-full flex items-center justify-center text-white'>
+                    <Icon icon={'lucide:mail-x'} className='text-2xl' />
+                  </div>
+                  <h1 className='text-lg 2xl:text-xl font-semibold'>
+                    Reject Request
+                  </h1>
+                </div>
+                <Form
+                  className='mt-2 text-black flex flex-col'
+                  onFinish={handleReject}
+                >
+                  <Form.Item
+                    name='reason'
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Please provide reason for rejection',
+                      },
+                    ]}
+                  >
+                    <Input.TextArea
+                      rows={6}
+                      className='mt-4 text-sm focus:!border-none border-none !bg-zinc-100 focus:!ring-0 p-3 rounded-xl'
+                      placeholder='Please provide reason for rejection'
+                    />
+                  </Form.Item>
+                  <div className='flex justify-between w-full gap-4'>
+                    <Button
+                      className='w-full py-6 font-medium rounded-xl'
+                      type='default'
+                      htmlType='button'
+                      onClick={() => setOpenRejectModal(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      className='w-full py-6 font-medium rounded-xl'
+                      type='primary'
+                      htmlType='submit'
+                      loading={loading}
+                    >
+                      Send
+                    </Button>
+                  </div>
+                </Form>
+              </Modal>
+            </>
+          )}
         </>
       ) : (
         <Result

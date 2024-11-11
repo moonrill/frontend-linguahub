@@ -6,7 +6,7 @@ import {
   City,
   District,
   Province,
-  SelectedAddress,
+  SelectedAddressName,
   SubDistrict,
 } from '#/types/AddressTypes';
 import { RegisterFormData } from '#/types/RegisterTypes';
@@ -29,16 +29,16 @@ const AddressInfo = ({
   formData,
 }: AddressInfoProps) => {
   const [form] = Form.useForm();
+
+  const [loading, setLoading] = useState(false);
+  const [selectedAddressName, setSelectedAddressName] =
+    useState<SelectedAddressName>({});
   const [addresses, setAddresses] = useState<Addresses>({
     province: [],
     city: [],
     district: [],
     subDistrict: [],
   });
-  const [loading, setLoading] = useState(false);
-  const [selectedAddress, setSelectedAddress] = useState<SelectedAddress>({});
-  const [selectedAddressNames, setSelectedAddressNames] =
-    useState<SelectedAddress>({});
 
   useEffect(() => {
     fetchAddress('provinces').then((data) =>
@@ -47,81 +47,107 @@ const AddressInfo = ({
   }, []);
 
   useEffect(() => {
-    if (selectedAddress.province) {
-      fetchAddress('regencies', selectedAddress.province).then((data) => {
+    if (formData.provinceId) {
+      fetchAddress('regencies', formData.provinceId).then((data) => {
         setAddresses((prev) => ({ ...prev, city: data as City[] }));
       });
     }
-  }, [selectedAddress.province]);
+  }, [formData.provinceId]);
 
   useEffect(() => {
-    if (selectedAddress.city) {
-      fetchAddress('districts', selectedAddress.city).then((data) => {
+    if (formData.cityId) {
+      fetchAddress('districts', formData.cityId).then((data) => {
         setAddresses((prev) => ({ ...prev, district: data as District[] }));
       });
     }
-  }, [selectedAddress.city]);
+  }, [formData.cityId]);
 
   useEffect(() => {
-    if (selectedAddress.district) {
-      fetchAddress('villages', selectedAddress.district).then((data) => {
+    if (formData.districtId) {
+      fetchAddress('villages', formData.districtId).then((data) => {
         setAddresses((prev) => ({
           ...prev,
           subDistrict: data as SubDistrict[],
         }));
       });
     }
-  }, [selectedAddress.district]);
+  }, [formData.districtId]);
+
+  useEffect(() => {
+    if (
+      formData.provinceId ||
+      formData.cityId ||
+      formData.districtId ||
+      formData.subDistrictId ||
+      formData.street
+    ) {
+      setSelectedAddressName({
+        province: formData.province,
+        city: formData.city,
+        district: formData.district,
+        subDistrict: formData.subDistrict,
+      });
+      form.setFieldsValue({
+        provinceId: formData.provinceId,
+        cityId: formData.cityId,
+        districtId: formData.districtId,
+        subDistrictId: formData.subDistrictId,
+        street: formData.street,
+      });
+    }
+  }, [formData, form]);
 
   const handleSelectionChange = (
     addressType: string,
-    value: string,
-    label: string
+    label: string,
+    value: string
   ) => {
-    setSelectedAddress((prev) => ({
+    setSelectedAddressName((prev) => ({
       ...prev,
-      [addressType]: value,
-    }));
-    setSelectedAddressNames((prev) => ({
-      ...prev,
-      [addressType]: label,
+      [addressType.slice(0, -2)]: label,
     }));
 
+    updateFormData({ [addressType]: value });
+    updateFormData({ [addressType.slice(0, -2)]: label });
+
     const resetTypes = {
-      province: ['city', 'district', 'subDistrict'],
-      city: ['district', 'subDistrict'],
-      district: ['subDistrict'],
+      provinceId: ['cityId', 'districtId', 'subDistrictId'],
+      cityId: ['districtId', 'subDistrictId'],
+      districtId: ['subDistrictId'],
     };
 
     resetTypes[addressType as keyof typeof resetTypes]?.forEach((type) => {
-      setSelectedAddress((prev) => ({ ...prev, [type]: null }));
-      setSelectedAddressNames((prev) => ({ ...prev, [type]: null }));
+      updateFormData({ [type]: null });
+      setSelectedAddressName((prev) => ({
+        ...prev,
+        [type.slice(0, -2)]: null,
+      }));
       setAddresses((prev) => ({ ...prev, [type]: [] }));
       form.resetFields([type]);
     });
   };
 
   const onFinish = async (values: any) => {
-    setLoading(true); // Set loading state to true
+    setLoading(true);
+
+    console.log(formData);
+
     if (formData.role === 'translator') {
-      updateFormData(selectedAddressNames);
-      updateFormData({ street: values.street });
       nextStep();
     } else {
       try {
         const clientData = {
           ...formData,
-          ...selectedAddressNames,
-          street: values.street,
+          values,
         };
 
         await authRepository.api.register(clientData);
 
         nextStep();
-      } catch (error) {
-        message.error('Something went wrong');
+      } catch (error: any) {
+        message.error(error?.response?.body?.message || 'Something went wrong');
       } finally {
-        setLoading(false); // Set loading state to false after process
+        setLoading(false);
       }
     }
   };
@@ -134,68 +160,63 @@ const AddressInfo = ({
         requiredMark={false}
         layout='vertical'
         onFinish={onFinish}
-        initialValues={{ street: formData.street }}
         autoComplete='off'
       >
         <div>
           <div className='grid md:grid-cols-2 md:gap-4'>
             <Form.Item
-              name='province'
+              name='provinceId'
               rules={[{ required: true, message: 'Please select a province' }]}
             >
               <AddressSelect
-                type='province'
                 placeholder='Province'
                 options={addresses.province}
                 disabled={false}
                 onChange={(label: string, value: string) =>
-                  handleSelectionChange('province', value, label)
+                  handleSelectionChange('provinceId', label, value)
                 }
               />
             </Form.Item>
             <Form.Item
-              name='city'
+              name='cityId'
               rules={[{ required: true, message: 'Please select a city' }]}
             >
               <AddressSelect
-                type='city'
                 placeholder='City'
                 options={addresses.city}
-                disabled={!selectedAddress.province}
+                disabled={!formData.provinceId}
                 onChange={(label: string, value: string) =>
-                  handleSelectionChange('city', value, label)
+                  handleSelectionChange('cityId', label, value)
                 }
               />
             </Form.Item>
           </div>
           <div className='grid md:grid-cols-2 md:gap-4'>
             <Form.Item
-              name='district'
+              name='districtId'
               rules={[{ required: true, message: 'Please select a district' }]}
             >
               <AddressSelect
-                type='district'
                 placeholder='District'
                 options={addresses.district}
-                disabled={!selectedAddress.city}
+                disabled={!formData.cityId}
                 onChange={(label: string, value: string) =>
-                  handleSelectionChange('district', value, label)
+                  handleSelectionChange('districtId', label, value)
                 }
               />
             </Form.Item>
             <Form.Item
-              name='subDistrict'
+              name='subDistrictId'
               rules={[
                 { required: true, message: 'Please select a sub-district' },
               ]}
             >
               <AddressSelect
-                type='subDistrict'
                 placeholder='Sub District'
                 options={addresses.subDistrict}
-                disabled={!selectedAddress.district}
+                disabled={!formData.districtId}
                 onChange={(label: string, value: string) =>
-                  handleSelectionChange('subDistrict', value, label)
+                  handleSelectionChange('subDistrictId', label, value)
                 }
               />
             </Form.Item>
@@ -213,6 +234,7 @@ const AddressInfo = ({
             <Input
               type='text'
               placeholder='Street'
+              onChange={(e) => updateFormData({ street: e.target.value })}
               suffix={
                 <Icon
                   icon={'fluent:street-sign-24-filled'}
@@ -239,9 +261,9 @@ const AddressInfo = ({
               className='w-full py-6 font-medium rounded-xl'
               type='primary'
               htmlType='submit'
-              loading={loading} // Disable button while loading
+              loading={loading}
             >
-              {formData.role === 'translator' ? 'Next' : 'Create account'}
+              {formData.role === 'translator' ? 'Continue' : 'Create account'}
             </Button>
           </div>
           <p className='mb-0 text-sm'>

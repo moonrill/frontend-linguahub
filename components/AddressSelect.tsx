@@ -6,20 +6,18 @@ import { Select } from 'antd';
 type AddressSelectOptions = Province[] | City[] | District[] | SubDistrict[];
 
 type AddressSelectProps = {
-  type: 'province' | 'city' | 'district' | 'subDistrict';
   placeholder: string;
-  value?: string;
   options: AddressSelectOptions;
   disabled: boolean;
+  value?: string;
   onChange: (label: string, value: string) => void;
 };
 
 const AddressSelect = ({
-  type,
   placeholder,
   options,
-  value,
   disabled,
+  value,
   onChange,
 }: AddressSelectProps) => {
   return (
@@ -29,10 +27,10 @@ const AddressSelect = ({
       disabled={disabled}
       className='h-14 w-full border-none'
       onChange={(value, option: any) => onChange(option.label, value)}
+      value={value}
       filterOption={(input, option) =>
         (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
       }
-      value={value}
       options={options.map((opt) => ({
         label: capitalizeFirstLetter(opt.name),
         value: opt.id,

@@ -1,22 +1,33 @@
+import { RegisterFormData } from '#/types/RegisterTypes';
 import { Specialization } from '#/types/SpecializationTypes';
 import { Form, Tag } from 'antd';
+import { useCallback, useEffect } from 'react';
 
 const SpecializationSelector: React.FC<{
   specializations: Specialization[];
   isLoading: boolean;
   selectedSpecializations: string[];
   setSelectedSpecializations: React.Dispatch<React.SetStateAction<string[]>>;
+  updateFormData: (data: Partial<RegisterFormData>) => void;
 }> = ({
   specializations,
   isLoading,
   selectedSpecializations,
   setSelectedSpecializations,
+  updateFormData,
 }) => {
-  const toggleSpecialization = (id: string) => {
-    setSelectedSpecializations((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-    );
-  };
+  const toggleSpecialization = useCallback(
+    (id: string) => {
+      setSelectedSpecializations((prev) =>
+        prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+      );
+    },
+    [setSelectedSpecializations]
+  );
+
+  useEffect(() => {
+    updateFormData({ specializations: selectedSpecializations });
+  }, [updateFormData, selectedSpecializations]);
 
   return (
     <Form.Item

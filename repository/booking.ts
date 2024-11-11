@@ -7,8 +7,7 @@ const url = {
     status: string | undefined,
     page: number,
     limit: number,
-    sortBy?: string,
-    order?: string
+    sortBy?: string
   ) => {
     const params = new URLSearchParams();
 
@@ -23,9 +22,6 @@ const url = {
     }
     if (sortBy) {
       params.append('sortBy', sortBy);
-    }
-    if (order) {
-      params.append('order', order);
     }
 
     const queryString = params.toString();
@@ -57,11 +53,10 @@ const hooks = {
     status: string | undefined,
     page: number,
     limit: number,
-    sortBy?: string,
-    order?: string
+    sortBy?: string
   ) => {
     return useSWR(
-      url.getBookings(role, status, page, limit, sortBy, order),
+      url.getBookings(role, status, page, limit, sortBy),
       http.fetcher
     );
   },

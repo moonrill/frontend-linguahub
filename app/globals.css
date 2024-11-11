@@ -357,10 +357,6 @@ p {
   padding: 24px 0px !important;
 }
 
-.language-select {
-  @apply text-gray-400 !important;
-}
-
 .ant-dropdown .ant-dropdown-menu .ant-dropdown-menu-item-selected {
   @apply bg-zinc-200 text-black !important;
 }
@@ -481,4 +477,8 @@ p {
     --chart-4: 210 98% 78%;
     --chart-5: 212 97% 87%;
   }
+}
+
+.ant-upload-list-item-name {
+  @apply truncate max-w-[160px] !important;
 }

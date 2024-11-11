@@ -5,8 +5,8 @@ const url = {
   certificate: () => '/translators/upload/certificate',
   uploadFlag: () => `/languages/upload/flagImage`,
   uploadLogo: () => `/specializations/upload/logo`,
+  profilePicture: () => '/users/upload/profile-picture',
   uploadPoster: () => `/events/upload/poster`,
-
 };
 
 const api = {
@@ -34,6 +34,12 @@ const api = {
 
     return http.post(url.uploadLogo()).send(formData);
   },
+  useUploadProfilePicture(profilePicture: any) {
+    const formData = new FormData();
+    formData.append('profilePicture', profilePicture);
+
+    return http.post(url.profilePicture()).send(formData);
+  },
 
   useUploadPoster(poster: any) {
     const formData = new FormData();
@@ -41,7 +47,6 @@ const api = {
 
     return http.post(url.uploadPoster()).send(formData);
   },
-
 };
 
 export const uploadRepository = {
