@@ -11,6 +11,7 @@ import { Button, Dropdown, Input, MenuProps, message, TableProps } from "antd";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import dayjs from "dayjs";
+import { eventRepository } from '#/repository/event';
 
 const AdminCoupons = () => {
   const router = useRouter();
@@ -27,6 +28,10 @@ const AdminCoupons = () => {
     10,
     page
   );
+
+  const{ data: listEvents} = eventRepository.hooks.useAllEvents(100, 1);
+
+
 
   const handlePageChange = (page: number) => {
     router.push(`/dashboard/promotion/coupon?page=${page}`);
@@ -53,7 +58,7 @@ const AdminCoupons = () => {
       label: (
         <div className="flex items-center">
           <Icon icon={"hugeicons:pencil-edit-01"} className="text-lg" />
-          <span className="ml-2">Edit</span>
+          <span className="ml-2">Edit Coupon</span>
         </div>
       ),
       onClick: () => handleSelect(coupon, "edit"),
@@ -84,16 +89,16 @@ const AdminCoupons = () => {
       ),
       onClick: () => handleSelect(coupon, "delete"),
     },
-    {
-      key: "detail",
-      label: (
-        <div className="flex items-center">
-          <Icon icon={"tabler:info-circle"} className="text-lg" />
-          <span className="ml-2">Detail</span>
-        </div>
-      ),
-      onClick: () => handleSelect(coupon, "detail"),
-    },
+    // {
+    //   key: "detail",
+    //   label: (
+    //     <div className="flex items-center">
+    //       <Icon icon={"tabler:info-circle"} className="text-lg" />
+    //       <span className="ml-2">Detail</span>
+    //     </div>
+    //   ),
+    //   onClick: () => handleSelect(coupon, "detail"),
+    // },
   ];
 
   const columns: TableProps["columns"] = [
@@ -110,7 +115,7 @@ const AdminCoupons = () => {
       key: "discount",
       ellipsis: true,
       render: (_, record) => (
-        <p className="text-xs font-medium">{record.discountPercentage}%</p>
+        <p className="font-medium">{record.discountPercentage}%</p>
       ),
     },
     {
@@ -119,10 +124,18 @@ const AdminCoupons = () => {
       key: "expiredAt",
       ellipsis: true,
       render: (_, record) => (
-        <p className="text-xs font-medium">
-          {dayjs(record.expiredAt).format("DD MMMM YYYY")}
+        <p className="font-medium">
+          {dayjs(record.expiredAt).format("DD MMMM YYYY HH:mm")}
         </p>
       ),
+    },
+    {
+      title: "Total Claimed",
+      dataIndex: "totalClaimed",
+      key: "totalClaimed",
+      ellipsis: true,
+      align: "center",
+      render: (_, record) => <p className="font-medium">{record.totalClaimed}</p>,
     },
     {
       title: "Status",
@@ -226,6 +239,7 @@ const AdminCoupons = () => {
         }}
         mutate={mutate}
         coupon={selectedCoupon}
+        events={listEvents?.data}
       />
 
       <ConfirmModal

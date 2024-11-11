@@ -29,6 +29,7 @@ const url = {
   getUserCouponsByEvent: (eventId: string) => `/users/coupons?event=${eventId}`,
   claimCoupon: (couponId: string) => `/coupons/claim/${couponId}`,
   getEvents: () => '/events',
+  toggleStatus: (id: string) => `/coupons/${id}/status`
 };
 
 const hooks = {
@@ -67,7 +68,7 @@ const hooks = {
 };
 
 const api = {
-  toggleStatus: (id: string) => http.put(url.updateCoupon(id)),
+    toggleStatus: (id: string) => http.put(url.toggleStatus(id)),
   createCoupon: (data: any) => http.post(url.createCoupon()).send(data),
   updateCoupon: (id: string, data: any) => http.put(url.updateCoupon(id)).send(data),
   deleteCoupon: (id: string) => http.del(url.deleteCoupon(id)),

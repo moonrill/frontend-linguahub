@@ -43,7 +43,7 @@ const AdminEvents = () => {
       ellipsis: true,
       sorter: (a, b) => dayjs(a.startDate).unix() - dayjs(b.startDate).unix(),
       render: (_, record) => (
-        <p className='text-xs 2xl:text-sm font-medium'>
+        <p className='font-medium'>
           {dayjs(record.startDate).format('DD MMMM YYYY HH:mm')}
         </p>
       ),
@@ -55,7 +55,7 @@ const AdminEvents = () => {
       ellipsis: true,
       sorter: (a, b) => dayjs(a.endDate).unix() - dayjs(b.endDate).unix(),
       render: (_, record) => (
-        <p className='text-xs 2xl:text-sm font-medium'>
+        <p className='font-medium'>
           {dayjs(record.endDate).format('DD MMMM YYYY HH:mm')}
         </p>
       ),
@@ -140,7 +140,7 @@ const AdminEvents = () => {
       label: (
         <div className='flex items-center text-rose-500'>
           <Icon icon={'tabler:trash'} className='text-lg ' />
-          <span className='ml-2'>Delete Event</span>
+          <span className='ml-2'>Delete</span>
         </div>
       ),
       onClick: () => handleSelect(event, 'delete'),

@@ -161,7 +161,7 @@ const EventModal = ({ open, onCancel, event, mutate }: Props) => {
               placeholder="Start Date"
               value={form.getFieldValue('startDate')}
               onChange={(value) => form.setFieldValue('startDate', value)}
-              suffixIcon={<Icon icon="mdi:clock-time-three-outline" className="text-2xl" />}
+              suffixIcon={<Icon icon="uiw:date" className="text-2xl" />}
               disabledDate={(current) => current && current < dayjs().startOf('day')}
               showTime={{ format: 'HH:mm' }} 
             />
@@ -185,7 +185,7 @@ const EventModal = ({ open, onCancel, event, mutate }: Props) => {
               placeholder="End Date"
               value={form.getFieldValue('endDate')}
               onChange={(value) => form.setFieldValue('endDate', value)}
-              suffixIcon={<Icon icon="mdi:clock-outline" className="text-2xl" />}
+              suffixIcon={<Icon icon="uiw:date" className="text-2xl" />}
               showTime={{ format: 'HH:mm' }} 
             />
           </Form.Item>
@@ -205,7 +205,7 @@ const EventModal = ({ open, onCancel, event, mutate }: Props) => {
     }}
     onBlur={(e) => {
       if (!e.target.value) {
-        e.target.style.backgroundColor = '#e5e7eb'; 
+        e.target.style.backgroundColor = '#f4f4f5'; 
       }
     }}
   />
