@@ -111,17 +111,21 @@ const CouponModal = ({ open, onCancel, mutate, coupon, events }: CouponModalProp
           />
         </Form.Item>
 
-        {/* Conditionally render eventId field only when creating a new coupon */}
         {!coupon && (
           <Form.Item
             name="eventId"
             rules={[{ required: true, message: "Please select an event" }]}
           >
-            <Select
-              placeholder="Select event"
-              className="h-16"
-              options={eventOptions}
-            />
+<Select
+  placeholder="Select event"
+  className="h-16"
+  options={eventOptions}
+  showSearch
+  filterOption={(input, option) => {
+    return option?.label.toLowerCase().includes(input.toLowerCase()) ?? false;
+  }}
+/>
+
           </Form.Item>
         )}
 

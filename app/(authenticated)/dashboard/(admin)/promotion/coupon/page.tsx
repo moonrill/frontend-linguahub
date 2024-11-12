@@ -21,7 +21,7 @@ const AdminCoupons = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [openConfirmModal, setOpenConfirmModal] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null);
+  const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null);  
   const [searchTerm, setSearchTerm] = useState("");
 
   const { data: listCoupons, isLoading, mutate } = couponRepository.hooks.useAllCoupons(
@@ -78,7 +78,8 @@ const AdminCoupons = () => {
           </span>
         </div>
       ),
-      onClick: () => toggleStatus(coupon.id),    },
+      onClick: () => toggleStatus(coupon.id),   
+     },
     {
       key: "delete",
       label: (
