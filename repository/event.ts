@@ -8,6 +8,7 @@ const url = {
   createEvent: () => `/events`,
   updateEvent: (id: string) => `/events/${id}`,
   deleteEvent: (id: string) => `/events/${id}`,
+  eventAll:  () => '/events',
 };
 
 const hooks = {
@@ -17,6 +18,11 @@ const hooks = {
   useGetEventById: (id: string) => {
     return useSWR(url.getEventById(id), http.fetcher);
   },
+
+  useGetEventAll: () => {
+    return useSWR(url.eventAll(), http.fetcher);
+  },
+
 };
 
 const api = {

@@ -1,24 +1,31 @@
 import { useEffect, useState } from "react";
-import { Modal, Form, Input, Select, Button, message } from "antd";
+import { Modal, Form, Input, Select, Button, message, DatePicker } from "antd";
 import { Icon } from "@iconify-icon/react";
 import { useForm } from "antd/es/form/Form";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from 'dayjs';
 import { couponRepository } from "#/repository/coupon";
 import { Coupon } from "#/types/CouponTypes";
+import { Event } from "#/types/EventTypes";
 
 interface CouponModalProps {
   open: boolean;
   onCancel: () => void;
   mutate: () => void;
   coupon?: Coupon | null;
+  events: Event[];
 }
 
-const CouponModal = ({ open, onCancel, mutate, coupon }: CouponModalProps) => {
+const CouponModal = ({ open, onCancel, mutate, coupon, events }: CouponModalProps) => {
   const [form] = useForm();
   const [loading, setLoading] = useState(false);
 
-  const { data: eventsResponse, isLoading: isEventsLoading } = couponRepository.hooks.useAllEvents();
-  const events = Array.isArray(eventsResponse?.data) ? eventsResponse.data : [];
+  // Map events to options
+  const eventOptions = Array.isArray(events)
+    ? events.map((event) => ({
+        value: event.id,
+        label: event.name,
+      }))
+    : [];
 
   useEffect(() => {
     if (coupon) {
@@ -26,7 +33,7 @@ const CouponModal = ({ open, onCancel, mutate, coupon }: CouponModalProps) => {
         name: coupon.name,
         description: coupon.description,
         discountPercentage: coupon.discountPercentage,
-        expiredAt: dayjs(coupon.expiredAt).format("YYYY-MM-DD"),
+        expiredAt: dayjs(coupon.expiredAt), // Ensure expiredAt is a Dayjs object
         eventId: coupon.event?.id,
       });
     } else {
@@ -47,7 +54,7 @@ const CouponModal = ({ open, onCancel, mutate, coupon }: CouponModalProps) => {
         description: values.description,
         discountPercentage: Number(values.discountPercentage),
         expiredAt: values.expiredAt,
-        eventId: values.eventId,
+        eventId: values.eventId, // Include eventId in payload if it's being created
       };
 
       if (coupon) {
@@ -83,10 +90,7 @@ const CouponModal = ({ open, onCancel, mutate, coupon }: CouponModalProps) => {
       >
         <Form.Item
           name="name"
-          rules={[
-            { required: true, message: "Please enter coupon name" },
-            { max: 50, message: "Name cannot exceed 50 characters" }
-          ]}
+          rules={[{ required: true, message: "Please enter coupon name" }, { max: 50, message: "Name cannot exceed 50 characters" }]}
         >
           <Input
             placeholder="Enter coupon name"
@@ -97,44 +101,52 @@ const CouponModal = ({ open, onCancel, mutate, coupon }: CouponModalProps) => {
 
         <Form.Item
           name="description"
-          rules={[
-            { required: true, message: "Please enter description" },
-            { max: 200, message: "Description cannot exceed 200 characters" }
-          ]}
+          rules={[{ required: true, message: "Please enter description" }, { max: 200, message: "Description cannot exceed 200 characters" }]}
         >
           <Input.TextArea
             rows={4}
             placeholder="Enter description"
-            className="h-14 bg-[#f4f4f5] hover:bg-[#e5e7eb]"
-            onFocus={(e) => {
-              e.target.style.backgroundColor = "#f4f4f5";
-            }}
-            onBlur={(e) => {
-              if (!e.target.value) {
-                e.target.style.backgroundColor = "#e5e7eb";
-              }
-            }}
+            className="h-14 bg-[#f4f4f5] hover:bg-[#e5e7eb] !ring-none !focus:ring-amber-600 !hover:border-transparent"
+            style={{ backgroundColor: "#f4f4f5" }}
           />
         </Form.Item>
 
-        <Form.Item
-          name="eventId"
-          rules={[{ required: true, message: "Please select an event" }]}
-        >
-          <Select
-            placeholder="Select event"
-            loading={isEventsLoading}
-            disabled={isEventsLoading}
-            showSearch
-            optionFilterProp="children"
-            className="h-10"
+        {/* Conditionally render eventId field only when creating a new coupon */}
+        {!coupon && (
+          <Form.Item
+            name="eventId"
+            rules={[{ required: true, message: "Please select an event" }]}
           >
-            {events.map((event) => (
-              <Select.Option key={event.id} value={event.id}>
-                {event.name}
-              </Select.Option>
-            ))}
-          </Select>
+            <Select
+              placeholder="Select event"
+              className="h-16"
+              options={eventOptions}
+            />
+          </Form.Item>
+        )}
+
+        <Form.Item
+          name="expiredAt"
+          rules={[
+            { required: true, message: "Please select expiration date" },
+            {
+              validator: (_, value) =>
+                value && dayjs(value).isBefore(dayjs(), "day")
+                  ? Promise.reject("Expiration date cannot be in the past")
+                  : Promise.resolve(),
+            },
+          ]}
+        >
+          <DatePicker
+            format="YYYY-MM-DD HH:mm"
+            placeholder="Select expiration date"
+            value={form.getFieldValue('expiredAt')}
+            onChange={(value: Dayjs | null) => form.setFieldValue('expiredAt', value)}
+            disabledDate={(current: Dayjs) => current && current < dayjs().startOf('day')}
+            suffixIcon={<Icon icon="uiw:date" className="text-2xl" />}
+            className="h-14 w-full"
+            showTime={{ format: 'HH:mm' }}
+          />
         </Form.Item>
 
         <Form.Item
@@ -146,7 +158,7 @@ const CouponModal = ({ open, onCancel, mutate, coupon }: CouponModalProps) => {
                 value >= 0 && value <= 100
                   ? Promise.resolve()
                   : Promise.reject("Discount must be between 0 and 100"),
-            }
+            },
           ]}
         >
           <Input
@@ -154,26 +166,8 @@ const CouponModal = ({ open, onCancel, mutate, coupon }: CouponModalProps) => {
             min={0}
             max={100}
             placeholder="Enter discount percentage"
-            className="h-10"
-          />
-        </Form.Item>
-
-        <Form.Item
-          name="expiredAt"
-          rules={[
-            { required: true, message: "Please select expiration date" },
-            {
-              validator: (_, value) =>
-                dayjs(value).isBefore(dayjs(), "day")
-                  ? Promise.reject("Expiration date cannot be in the past")
-                  : Promise.resolve(),
-            },
-          ]}
-        >
-          <Input
-            type="date"
-            min={dayjs().format("YYYY-MM-DD")}
-            className="h-10"
+            className="h-16"
+            suffix={<Icon icon="bi:alphabet" height={24} className="text-zinc-400 hidden" />}
           />
         </Form.Item>
 
@@ -191,6 +185,7 @@ const CouponModal = ({ open, onCancel, mutate, coupon }: CouponModalProps) => {
             type="primary"
             htmlType="submit"
             loading={loading}
+            disabled={loading}
           >
             {coupon ? "Update Coupon" : "Create Coupon"}
           </Button>

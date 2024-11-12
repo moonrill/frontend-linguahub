@@ -82,7 +82,7 @@ const EventDetail = ({ params }: { params: { id: string } }) => {
   });
 
   return (
-    <section className='bg-white text-slate-800 flex flex-col gap-6 mt-6'>
+    <section className='bg-white text-slate-800 flex flex-col gap-6 p-8'>
       {isLoading ? (
         <div className='flex flex-col gap-4'>
           <SkeletonImage active className='!w-full !h-[250px]' />
