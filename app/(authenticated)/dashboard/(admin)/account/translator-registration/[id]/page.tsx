@@ -21,6 +21,7 @@ import {
   Skeleton,
   Tag,
 } from 'antd';
+import dayjs from 'dayjs';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -144,7 +145,9 @@ const TranslatorDetail = ({ params }: { params: { id: string } }) => {
                         )}
                       </p>
                       <p className='text-xs 2xl:text-base font-semibold text-zinc-800'>
-                        {translator?.user?.userDetail?.dateOfBirth}
+                        {dayjs(
+                          translator?.user?.userDetail?.dateOfBirth
+                        ).format('DD MMMM YYYY')}
                       </p>
                       <p className='text-xs 2xl:text-base font-semibold text-zinc-800'>
                         {translator?.user?.userDetail?.phoneNumber}
@@ -260,7 +263,7 @@ const TranslatorDetail = ({ params }: { params: { id: string } }) => {
                     </p>
                     <p className='text-xs 2xl:text-base font-semibold text-zinc-800'>
                       {translator?.portfolioLink && (
-                        <Link href={translator?.portfolioLink}>
+                        <Link href={translator?.portfolioLink} target='_blank'>
                           <Tag
                             color='blue'
                             className='text-xs 2xl:text-base font-medium border-none px-2 py-0.5 hover:bg-blue-100 rounded-lg flex items-center gap-2 w-fit'

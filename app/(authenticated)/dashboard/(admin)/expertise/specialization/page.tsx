@@ -38,6 +38,7 @@ const DashboardSpecialization = () => {
       title: 'Logo',
       dataIndex: 'logo',
       key: 'logo',
+      ellipsis: true,
       render: (_, record) => (
         <div className={`relative w-8 h-8 2xl:w-10 2xl:h-10`}>
           <Image
@@ -54,6 +55,7 @@ const DashboardSpecialization = () => {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
+      ellipsis: true,
       render: (_, record) => <p className='font-medium'>{record.name}</p>,
     },
     {
@@ -61,12 +63,15 @@ const DashboardSpecialization = () => {
       dataIndex: 'translatorCount',
       key: 'translatorCount',
       align: 'center',
+      ellipsis: true,
       render: (_, record) => <p>{record.translatorCount}</p>,
     },
     {
       title: 'Action',
       dataIndex: 'action',
       key: 'action',
+      ellipsis: true,
+      fixed: 'right',
     },
   ];
 

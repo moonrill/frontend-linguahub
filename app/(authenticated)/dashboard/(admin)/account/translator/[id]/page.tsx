@@ -252,7 +252,7 @@ const TranslatorDetail = ({ params }: { params: { id: string } }) => {
                     </p>
                     <p className='text-xs 2xl:text-base font-semibold text-zinc-800'>
                       {translator?.portfolioLink && (
-                        <Link href={translator?.portfolioLink}>
+                        <Link href={translator?.portfolioLink} target='_blank'>
                           <Tag
                             color='blue'
                             className='text-xs 2xl:text-base font-medium border-none px-2 py-0.5 hover:bg-blue-100 rounded-lg flex items-center gap-2 w-fit'

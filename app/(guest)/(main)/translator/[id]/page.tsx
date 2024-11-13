@@ -2,7 +2,6 @@
 
 import CardSkeleton from '#/components/CardSkeleton';
 import LanguageFlag from '#/components/LanguageFlag';
-import ServiceRequestModal from '#/components/Modal/ServiceRequestModal';
 import ReviewCard from '#/components/ReviewCard';
 import { config } from '#/config/app';
 import { imgProfilePicture } from '#/constants/general';
@@ -67,11 +66,13 @@ const TranslatorDetail = ({ params }: { params: { id: string } }) => {
       title: 'Service Name',
       dataIndex: 'name',
       key: 'name',
+      ellipsis: true,
     },
     {
       title: 'Source Language',
       dataIndex: 'sourceLanguage',
       key: 'sourceLanguage',
+      ellipsis: true,
       render: (_, record) => (
         <div className='flex items-center gap-2'>
           <LanguageFlag language={record.sourceLanguage} />
@@ -83,6 +84,7 @@ const TranslatorDetail = ({ params }: { params: { id: string } }) => {
       title: 'Target Language',
       dataIndex: 'targetLanguage',
       key: 'targetLanguage',
+      ellipsis: true,
       render: (_, record) => (
         <div className='flex items-center gap-2'>
           <LanguageFlag language={record.targetLanguage} />
@@ -95,6 +97,9 @@ const TranslatorDetail = ({ params }: { params: { id: string } }) => {
       dataIndex: 'pricePerHour',
       key: 'pricePerHour',
       align: 'right',
+      ellipsis: true,
+      sortDirections: ['descend', 'ascend'],
+      sorter: (a, b) => a.pricePerHour - b.pricePerHour,
       render: (text) => (
         <p className='font-semibold'>Rp{text.toLocaleString('id-ID')}</p>
       ),
@@ -106,19 +111,18 @@ const TranslatorDetail = ({ params }: { params: { id: string } }) => {
     ...service,
   }));
 
-  const handleClick = () => {
+  const setHref = () => {
     if (user) {
       if (!user.googleCalendarToken) {
-        const authUrl = `${
-          config.baseUrl
-        }/auth/google?email=${encodeURIComponent(user.email)}`;
-        window.location.href = authUrl;
-        return;
+        return `${config.baseUrl}/auth/google?email=${encodeURIComponent(
+          user.email
+        )}`;
       }
-      setModalOpen(!modalOpen);
-      return;
+
+      return `/translator/${translator.id}/create-request`;
     }
-    router.push('/login');
+
+    return '/login';
   };
 
   return (
@@ -206,13 +210,14 @@ const TranslatorDetail = ({ params }: { params: { id: string } }) => {
                   </p>
                 </div>
                 {(!user || user?.role?.name === 'client') && (
-                  <Button
-                    type='primary'
-                    onClick={handleClick}
-                    className='text-xs 2xl:text-sm py-5 2xl:py-6 !mt-3 2xl:!mt-4 rounded-xl font-medium flex-grow'
-                  >
-                    Create a Request
-                  </Button>
+                  <Link href={setHref()}>
+                    <Button
+                      type='primary'
+                      className='text-xs 2xl:text-sm py-5 2xl:py-6 !mt-3 2xl:!mt-4 rounded-xl font-medium w-full'
+                    >
+                      Create a Request
+                    </Button>
+                  </Link>
                 )}
               </div>
             </div>
@@ -277,6 +282,7 @@ const TranslatorDetail = ({ params }: { params: { id: string } }) => {
                 columns={columns}
                 dataSource={services}
                 pagination={false}
+                scroll={{ x: 'max-content' }}
               />
             </div>
             <Divider style={{ margin: 0 }} className='!my-2 2xl:!my-4' />
@@ -309,11 +315,6 @@ const TranslatorDetail = ({ params }: { params: { id: string } }) => {
           }
         />
       )}
-      <ServiceRequestModal
-        translator={translator}
-        open={modalOpen}
-        onCancel={() => setModalOpen(false)}
-      />
     </div>
   );
 };

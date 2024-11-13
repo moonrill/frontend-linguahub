@@ -99,7 +99,7 @@ const TranslatorRegistration = () => {
       key: 'portfolio',
       ellipsis: true,
       render: (_, record) => (
-        <Link href={record?.portfolioLink}>
+        <Link href={record?.portfolioLink} target='_blank'>
           <Tag
             color='blue'
             className='text-xs 2xl:text-sm font-medium border-none px-2 py-0.5 hover:bg-blue-100 rounded-lg flex items-center gap-2 w-fit'

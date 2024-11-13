@@ -18,7 +18,7 @@ const Specializations = () => {
   const router = useRouter();
 
   // Get specialization name and page from the URL
-  const name = searchParams?.get('name') || 'general';
+  const name = searchParams?.get('name') || 'General';
   const page = Number(searchParams?.get('page')) || 1;
   const sortBy = searchParams?.get('sortBy') || 'mostReviewed';
 

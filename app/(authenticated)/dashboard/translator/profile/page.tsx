@@ -13,6 +13,7 @@ import { capitalizeFirstLetter } from '#/utils/capitalizeFirstLetter';
 import { Icon } from '@iconify-icon/react';
 import { Button, Form, Input, message, Skeleton, Tag } from 'antd';
 import { useForm } from 'antd/es/form/Form';
+import dayjs from 'dayjs';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -119,7 +120,9 @@ const TranslatorProfile = () => {
                           {capitalizeFirstLetter(profile?.userDetail?.gender)}
                         </p>
                         <p className='text-xs 2xl:text-base font-semibold text-zinc-800'>
-                          {profile?.userDetail?.dateOfBirth}
+                          {dayjs(profile?.userDetail?.dateOfBirth).format(
+                            'DD MMMM YYYY'
+                          )}
                         </p>
                         <p className='text-xs 2xl:text-base font-semibold text-zinc-800'>
                           {profile?.userDetail?.phoneNumber}
@@ -244,7 +247,10 @@ const TranslatorProfile = () => {
                       </p>
                       <p className='text-xs 2xl:text-base font-semibold text-zinc-800'>
                         {profile?.translator?.portfolioLink && (
-                          <Link href={profile?.translator?.portfolioLink}>
+                          <Link
+                            href={profile?.translator?.portfolioLink}
+                            target='_blank'
+                          >
                             <Tag
                               color='blue'
                               className='text-xs 2xl:text-base font-medium border-none px-2 py-0.5 hover:bg-blue-100 rounded-lg flex items-center gap-2 w-fit'

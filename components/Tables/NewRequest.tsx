@@ -238,9 +238,6 @@ const NewRequest = () => {
         dataSource={data}
         pagination={false}
         scroll={{ x: 'max-content' }}
-        rowClassName={
-          'cursor-pointer hover:bg-gray-100 transition-all duration-300 ease-in-out'
-        }
       />
       <ConfirmModal
         open={openApprove}

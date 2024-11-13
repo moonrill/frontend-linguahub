@@ -15,6 +15,11 @@ const nextConfig = {
         port: '3222',
         pathname: '/images/**/*',
       },
+      {
+        protocol: 'https',
+        hostname: 'vjjvv56d-3222.asse.devtunnels.ms',
+        pathname: '/images/**/*',
+      },
     ],
   },
 };
