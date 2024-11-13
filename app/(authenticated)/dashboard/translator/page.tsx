@@ -18,7 +18,7 @@ const TranslatorDashboard = () => {
           <DashboardCard
             icon='solar:wallet-money-bold'
             title='Total Earnings'
-            value={`Rp${response?.data?.translatorEarnings.toLocaleString(
+            value={`Rp${response?.data?.translatorEarnings?.toLocaleString(
               'id-ID'
             )}`}
             href='/dashboard/translator/payment'
