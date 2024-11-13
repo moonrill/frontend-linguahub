@@ -48,6 +48,7 @@ const url = {
 
     return url;
   },
+  getPaymentById: (id: string) => `/payments/${id}`,
   updateProof: (id: string) => `/payments/${id}/proof`,
   removeProof: (id: string) => `/payments/${id}/proof`,
   completePayment: (id: string) => `/payments/${id}/complete`,
@@ -69,6 +70,8 @@ const hooks = {
       http.fetcher
     );
   },
+  useGetPaymentById: (id: string) =>
+    useSWR(url.getPaymentById(id), http.fetcher),
 };
 
 const api = {

@@ -22,6 +22,8 @@ const CardButton = ({ booking, type }: { booking: Booking; type: string }) => {
       window.snap.pay(token);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 

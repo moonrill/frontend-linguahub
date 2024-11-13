@@ -30,6 +30,8 @@ const CardButton = ({
       window.snap.pay(token);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -315,14 +317,16 @@ const PaymentCard = ({ payment }: Props) => {
                   </p>
                 </div>
               )}
-              <Button
-                type='primary'
-                onClick={handleExport}
-                className='text-white mt-4 rounded-[10px] 2xl:rounded-xl text-xs 2xl:text-sm bg-blue-600 py-2.5 px-4 h-fit shadow-none'
-              >
-                Export Invoice
-                <Icon icon={'uil:export'} height={18} />
-              </Button>
+              {payment?.status === 'paid' && (
+                <Button
+                  type='primary'
+                  onClick={handleExport}
+                  className='text-white mt-4 rounded-[10px] 2xl:rounded-xl text-xs 2xl:text-sm bg-blue-600 py-2.5 px-4 h-fit shadow-none'
+                >
+                  Export Invoice
+                  <Icon icon={'uil:export'} height={18} />
+                </Button>
+              )}
             </div>
           </Drawer>
         </div>

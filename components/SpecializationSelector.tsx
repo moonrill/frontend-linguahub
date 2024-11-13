@@ -8,7 +8,7 @@ const SpecializationSelector: React.FC<{
   isLoading: boolean;
   selectedSpecializations: string[];
   setSelectedSpecializations: React.Dispatch<React.SetStateAction<string[]>>;
-  updateFormData: (data: Partial<RegisterFormData>) => void;
+  updateFormData?: (data: Partial<RegisterFormData>) => void;
 }> = ({
   specializations,
   isLoading,
@@ -26,7 +26,8 @@ const SpecializationSelector: React.FC<{
   );
 
   useEffect(() => {
-    updateFormData({ specializations: selectedSpecializations });
+    if (updateFormData)
+      updateFormData({ specializations: selectedSpecializations });
   }, [updateFormData, selectedSpecializations]);
 
   return (

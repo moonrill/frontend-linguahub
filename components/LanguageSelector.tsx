@@ -10,7 +10,7 @@ const LanguageSelector: React.FC<{
   isLoading: boolean;
   selectedLanguages: string[];
   setSelectedLanguages: React.Dispatch<React.SetStateAction<string[]>>;
-  updateFormData: (data: Partial<RegisterFormData>) => void;
+  updateFormData?: (data: Partial<RegisterFormData>) => void;
 }> = ({
   languages,
   isLoading,
@@ -28,7 +28,7 @@ const LanguageSelector: React.FC<{
   );
 
   useEffect(() => {
-    updateFormData({ languages: selectedLanguages });
+    if (updateFormData) updateFormData({ languages: selectedLanguages });
   }, [updateFormData, selectedLanguages]);
 
   return (

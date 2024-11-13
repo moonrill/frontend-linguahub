@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { decrypt } from './utils/auth';
 
-const protectedRoute = ['/dashboard', '/profile'];
+const protectedRoute = ['/dashboard', '/profile', '/thanks'];
 const publicRoute = ['/login', '/register', '/', '/specializations', '/events'];
 
 export default async function middleware(request: NextRequest) {
@@ -19,7 +19,6 @@ export default async function middleware(request: NextRequest) {
     try {
       const { payload } = await decrypt(accessToken);
 
-      // Redirect to the login page if the user is not client
       if (
         request.nextUrl.pathname.startsWith('/profile') &&
         payload.role !== 'client'
