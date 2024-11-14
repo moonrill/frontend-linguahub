@@ -281,7 +281,7 @@ const EditProfileModal = ({ open, onCancel, user, mutate }: Props) => {
         onFinish={handleFinish}
       >
         <div className='flex gap-4'>
-          <div>
+          <div className='max-w-[250px]'>
             <Form.Item name={'profilePicture'}>
               <p className='text-sm 2xl:text-base mb-2'>
                 Profile Picture

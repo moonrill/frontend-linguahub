@@ -41,16 +41,16 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     fetchUser();
   }, []);
 
-  // useEffect(() => {
-  //   if (user) {
-  //     if (user?.role?.name === 'translator' && !user?.googleCalendarToken) {
-  //       const authUrl = `${
-  //         config.baseUrl
-  //       }/auth/google?email=${encodeURIComponent(user?.email)}`;
-  //       window.location.href = authUrl;
-  //     }
-  //   }
-  // }, [user]);
+  useEffect(() => {
+    if (user) {
+      if (user?.role?.name === 'translator' && !user?.googleCalendarToken) {
+        const authUrl = `${
+          config.baseUrl
+        }/auth/google?email=${encodeURIComponent(user?.email)}`;
+        window.location.href = authUrl;
+      }
+    }
+  }, [user]);
 
   const pathSegments = pathname?.split('/').filter(Boolean) || [];
   const isDashboardPage =

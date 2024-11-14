@@ -39,7 +39,7 @@ const EditProfessionalModal = ({
   >([]);
 
   useEffect(() => {
-    if (translator) {
+    if (open && translator) {
       form.setFieldsValue({
         yearsOfExperience: translator.yearsOfExperience,
         portfolioLink: translator.portfolioLink,
@@ -54,7 +54,7 @@ const EditProfessionalModal = ({
         setSelectedSpecializations((prev) => [...prev, specialization.id]);
       });
     }
-  }, [form, translator]);
+  }, [form, translator, open]);
 
   const handleFinish = async (values: any) => {
     setLoading(true);
@@ -85,8 +85,15 @@ const EditProfessionalModal = ({
     }
   };
 
+  const handleCancel = () => {
+    form.resetFields();
+    setSelectedLanguages([]);
+    setSelectedSpecializations([]);
+    onCancel();
+  };
+
   return (
-    <Modal open={open} onCancel={onCancel} centered footer={null}>
+    <Modal open={open} onCancel={handleCancel} centered footer={null}>
       <div className='flex items-center gap-2'>
         <div className='p-2 bg-blue-600 rounded-full flex items-center justify-center text-white'>
           <Icon icon={'lets-icons:edit'} className='text-2xl' />
@@ -233,9 +240,7 @@ const EditProfessionalModal = ({
             type='default'
             htmlType='button'
             disabled={loading}
-            onClick={() => {
-              onCancel();
-            }}
+            onClick={handleCancel}
           >
             Cancel
           </Button>

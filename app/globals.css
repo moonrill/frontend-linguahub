@@ -478,3 +478,7 @@ p {
     --chart-5: 212 97% 87%;
   }
 }
+
+.ant-upload-list-item-name {
+  @apply truncate !important;
+}
