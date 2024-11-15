@@ -24,7 +24,7 @@ const DashboardLanguage = () => {
     data: listLanguages,
     isLoading,
     mutate,
-  } = languagesRepository.hooks.useAllLanguages(10, page);
+  } = languagesRepository.hooks.useAllLanguages(10, page, 'createdAt', 'DESC');
 
   const handlePageChange = (page: number) => {
     router.push(`/dashboard/expertise/language?page=${page}`);

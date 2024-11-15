@@ -27,7 +27,12 @@ const DashboardSpecialization = () => {
     data: listSpecializations,
     isLoading,
     mutate,
-  } = specializationRepository.hooks.useAllSpecializations(10, page);
+  } = specializationRepository.hooks.useAllSpecializations(
+    10,
+    page,
+    'createdAt',
+    'DESC'
+  );
 
   const handlePageChange = (page: number) => {
     router.push(`/dashboard/expertise/specialization?page=${page}`);

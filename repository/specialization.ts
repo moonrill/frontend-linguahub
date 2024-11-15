@@ -2,8 +2,23 @@ import { http } from '#/utils/http';
 import useSWR from 'swr';
 
 const url = {
-  getAllSpecializations: (limit?: number, page?: number) =>
-    `/specializations?limit=${limit}&page=${page}`,
+  getAllSpecializations: (
+    limit?: number,
+    page?: number,
+    orderBy?: string,
+    direction?: string
+  ) => {
+    const params = new URLSearchParams();
+
+    if (limit) params.append('limit', limit.toString());
+    if (page) params.append('page', page.toString());
+    if (orderBy) params.append('orderBy', orderBy.toString());
+    if (direction) params.append('direction', direction.toString());
+
+    return `/specializations${
+      params.toString() ? `?${params.toString()}` : ''
+    }`;
+  },
   getSpecialization: (
     name: string,
     limit?: number,
@@ -16,8 +31,16 @@ const url = {
 };
 
 const hooks = {
-  useAllSpecializations: (limit?: number, page?: number) => {
-    return useSWR(url.getAllSpecializations(limit, page), http.fetcher);
+  useAllSpecializations: (
+    limit?: number,
+    page?: number,
+    orderBy?: string,
+    direction?: string
+  ) => {
+    return useSWR(
+      url.getAllSpecializations(limit, page, orderBy, direction),
+      http.fetcher
+    );
   },
   useSpecialization: (
     name: string,

@@ -2,8 +2,20 @@ import { http } from '#/utils/http';
 import useSWR from 'swr';
 
 const url = {
-  getAllLanguages(limit?: number, page?: number) {
-    return `/languages?${limit && `limit=${limit}`}${page && `&page=${page}`}`;
+  getAllLanguages(
+    limit?: number,
+    page?: number,
+    orderBy?: string,
+    direction?: string
+  ) {
+    const params = new URLSearchParams();
+
+    if (limit) params.append('limit', limit.toString());
+    if (page) params.append('page', page.toString());
+    if (orderBy) params.append('orderBy', orderBy.toString());
+    if (direction) params.append('direction', direction.toString());
+
+    return `/languages${params.toString() ? `?${params.toString()}` : ''}`;
   },
   createLanguage() {
     return `/languages`;
@@ -14,8 +26,16 @@ const url = {
 };
 
 const hooks = {
-  useAllLanguages(limit?: number, page?: number) {
-    return useSWR(url.getAllLanguages(limit, page), http.fetcher);
+  useAllLanguages(
+    limit?: number,
+    page?: number,
+    orderBy?: string,
+    direction?: string
+  ) {
+    return useSWR(
+      url.getAllLanguages(limit, page, orderBy, direction),
+      http.fetcher
+    );
   },
 };
 

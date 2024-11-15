@@ -1,5 +1,6 @@
 'use client';
 import { eventPoster } from '#/constants/general';
+import { authRepository } from '#/repository/auth';
 import { couponRepository } from '#/repository/coupon';
 import { eventRepository } from '#/repository/event';
 import { Coupon, UserCoupon } from '#/types/CouponTypes';
@@ -22,6 +23,10 @@ const EventDetail = ({ params }: { params: { id: string } }) => {
   const isLoggedIn = TokenUtil.accessToken;
   const { data: uc, mutate } = useSWR(
     isLoggedIn ? couponRepository.url.getUserCouponsByEvent(params.id) : null,
+    http.fetcher
+  );
+  const { data: user } = useSWR(
+    isLoggedIn ? authRepository.url.profile() : null,
     http.fetcher
   );
 
@@ -164,21 +169,27 @@ const EventDetail = ({ params }: { params: { id: string } }) => {
                         </p>
                       </div>
                     </div>
-                    <Button
-                      type='primary'
-                      className='mt-3 mr-3 text-sm'
-                      disabled={
-                        !isLoggedIn ||
-                        claimedCoupons?.includes(coupon?.id) ||
-                        !isCouponClaimable(event?.startDate, event?.endDate) ||
-                        coupon?.status === 'Inactive'
-                      }
-                      onClick={() => handleClaimCoupon(coupon?.id)}
-                    >
-                      {claimedCoupons?.includes(coupon?.id)
-                        ? 'Claimed'
-                        : 'Claim'}
-                    </Button>
+                    {user?.data?.role?.name === 'client' && (
+                      <Button
+                        type='primary'
+                        className='mt-3 mr-3 text-sm'
+                        disabled={
+                          !isLoggedIn ||
+                          claimedCoupons?.includes(coupon?.id) ||
+                          !isCouponClaimable(
+                            event?.startDate,
+                            event?.endDate
+                          ) ||
+                          coupon?.status === 'Inactive'
+                        }
+                        loading={isClaiming}
+                        onClick={() => handleClaimCoupon(coupon?.id)}
+                      >
+                        {claimedCoupons?.includes(coupon?.id)
+                          ? 'Claimed'
+                          : 'Claim'}
+                      </Button>
+                    )}
                   </div>
                 ))}
               </div>
