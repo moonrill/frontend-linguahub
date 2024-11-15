@@ -4,13 +4,21 @@ import { eventRepository } from '#/repository/event';
 import { uploadRepository } from '#/repository/upload';
 import { Event } from '#/types/EventTypes';
 import { Icon } from '@iconify-icon/react';
-import { Button, Form, Input, message, Modal, Upload, UploadProps, TimePicker, DatePicker, Calendar} from 'antd';
+import {
+  Button,
+  DatePicker,
+  Form,
+  Input,
+  message,
+  Modal,
+  Upload,
+  UploadProps,
+} from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { UploadChangeParam, UploadFile } from 'antd/es/upload';
 import Dragger from 'antd/es/upload/Dragger';
-import { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
-
+import { useEffect, useState } from 'react';
 
 interface Props {
   open: boolean;
@@ -36,7 +44,11 @@ const EventModal = ({ open, onCancel, event, mutate }: Props) => {
     accept: '.jpg,.jpeg,.png,.svg',
     listType: 'picture-card',
     iconRender: () => (
-      <Icon icon='basil:document-solid' height={64} className='text-blue-600 mb-4' />
+      <Icon
+        icon='basil:document-solid'
+        height={64}
+        className='text-blue-600 mb-4'
+      />
     ),
     progress: {
       strokeColor: {
@@ -92,13 +104,12 @@ const EventModal = ({ open, onCancel, event, mutate }: Props) => {
       form.setFieldsValue({
         name: event.name,
         poster: event.poster,
-        startDate: dayjs(event.startDate), 
-        endDate: dayjs(event.endDate), 
+        startDate: dayjs(event.startDate),
+        endDate: dayjs(event.endDate),
         description: event.description,
       });
     }
   }, [form, event]);
-
 
   return (
     <Modal open={open} onCancel={handleCancel} centered footer={null}>
@@ -115,8 +126,7 @@ const EventModal = ({ open, onCancel, event, mutate }: Props) => {
         className='mt-6 text-black flex flex-col'
         onFinish={handleFinish}
       >
-
-<Form.Item
+        <Form.Item
           name='poster'
           rules={[{ required: true, message: 'Please upload event poster' }]}
         >
@@ -130,7 +140,9 @@ const EventModal = ({ open, onCancel, event, mutate }: Props) => {
           >
             <div className='flex flex-col justify-center items-center'>
               <Icon icon='iwwa:upload' height={64} className='text-blue-600' />
-              <p className='text-sm text-zinc-500'>Drag & drop or click to upload</p>
+              <p className='text-sm text-zinc-500'>
+                Drag & drop or click to upload
+              </p>
             </div>
           </Dragger>
           <p className='text-sm mt-2'>Use 24px x 24px image for best results</p>
@@ -148,73 +160,80 @@ const EventModal = ({ open, onCancel, event, mutate }: Props) => {
           <Input
             placeholder='Enter event name'
             className='h-16'
-            suffix={<Icon icon='bi:alphabet' height={24} className='text-zinc-400' />}
+            suffix={
+              <Icon icon='bi:alphabet' height={24} className='text-zinc-400' />
+            }
           />
         </Form.Item>
 
         <div className='grid md:grid-cols-2 gap-4'>
           <Form.Item
-            name="startDate"
-            rules={[{ required: true, message: 'Please select start time' }]}>
+            name='startDate'
+            rules={[{ required: true, message: 'Please select start time' }]}
+          >
             <DatePicker
-              format="YYYY-MM-DD HH:mm"
-              placeholder="Start Date"
+              format='YYYY-MM-DD HH:mm'
+              placeholder='Start Date'
               value={form.getFieldValue('startDate')}
               onChange={(value) => form.setFieldValue('startDate', value)}
-              suffixIcon={<Icon icon="uiw:date" className="text-2xl" />}
-              disabledDate={(current) => current && current < dayjs().startOf('day')}
-              showTime={{ format: 'HH:mm' }} 
+              suffixIcon={<Icon icon='uiw:date' className='text-2xl' />}
+              disabledDate={(current) =>
+                current && current < dayjs().startOf('day')
+              }
+              showTime={{ format: 'HH:mm' }}
             />
           </Form.Item>
 
           <Form.Item
-            name="endDate"
+            name='endDate'
             dependencies={['startDate']}
             rules={[
               { required: true, message: 'Please select end time' },
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   const startAt = getFieldValue('startDate');
-                  if (!value || !startAt || value.isAfter(startAt)) return Promise.resolve();
-                  return Promise.reject(new Error('End time must be later than start time'));
+                  if (!value || !startAt || value.isAfter(startAt))
+                    return Promise.resolve();
+                  return Promise.reject(
+                    new Error('End time must be later than start time')
+                  );
                 },
               }),
-            ]}>
+            ]}
+          >
             <DatePicker
-              format="YYYY-MM-DD HH:mm"
-              placeholder="End Date"
+              format='YYYY-MM-DD HH:mm'
+              placeholder='End Date'
               value={form.getFieldValue('endDate')}
               onChange={(value) => form.setFieldValue('endDate', value)}
-              suffixIcon={<Icon icon="uiw:date" className="text-2xl" />}
-              showTime={{ format: 'HH:mm' }} 
+              suffixIcon={<Icon icon='uiw:date' className='text-2xl' />}
+              showTime={{ format: 'HH:mm' }}
             />
           </Form.Item>
         </div>
 
         <Form.Item
-  name="description"
-  rules={[{ required: true, message: 'Please input a description' }]}
->
-  <Input.TextArea
-    rows={4}
-    placeholder="Event description"
-    className="h-14 bg-[#f4f4f5] hover:bg-[#e5e7eb] !ring-none !focus:ring-amber-600 !hover:border-transparent"
-    style={{ backgroundColor: '#f4f4f5' }}
-    onFocus={(e) => {
-      e.target.style.backgroundColor = '#f4f4f5'; 
-    }}
-    onBlur={(e) => {
-      if (!e.target.value) {
-        e.target.style.backgroundColor = '#f4f4f5'; 
-      }
-    }}
-  />
-</Form.Item>
-
-
+          name='description'
+          rules={[{ required: true, message: 'Please input a description' }]}
+        >
+          <Input.TextArea
+            rows={4}
+            placeholder='Event description'
+            className='h-14 bg-[#f4f4f5] hover:bg-[#e5e7eb] !ring-none !focus:ring-amber-600 !hover:border-transparent'
+            style={{ backgroundColor: '#f4f4f5' }}
+            onFocus={(e) => {
+              e.target.style.backgroundColor = '#f4f4f5';
+            }}
+            onBlur={(e) => {
+              if (!e.target.value) {
+                e.target.style.backgroundColor = '#f4f4f5';
+              }
+            }}
+          />
+        </Form.Item>
 
         <div className='flex justify-between gap-4 mt-4'>
-        <Button
+          <Button
             className='w-full py-6 font-medium rounded-xl'
             type='default'
             htmlType='button'
@@ -230,7 +249,7 @@ const EventModal = ({ open, onCancel, event, mutate }: Props) => {
             loading={loading}
             disabled={loading}
           >
-            Add Event
+            {event ? 'Update Event' : 'Create Event'}
           </Button>
         </div>
       </Form>
