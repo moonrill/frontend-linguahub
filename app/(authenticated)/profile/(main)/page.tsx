@@ -58,22 +58,26 @@ const Profile = () => {
           ) : (
             <div className='flex gap-32'>
               <div className='flex flex-col'>
-                <p className='text-gray-500 font-medium text-xs'>Full Name</p>
-                <h3 className='text-blue-950 font-semibold'>
+                <p className='text-gray-500 font-medium text-sm 2xl:text-base'>
+                  Full Name
+                </p>
+                <h3 className='text-blue-950 text-base 2xl:text-lg font-semibold'>
                   {user?.userDetail?.fullName}
                 </h3>
               </div>
               <div className='flex flex-col'>
-                <p className='text-gray-500 font-medium text-xs'>Gender</p>
-                <h3 className='text-blue-950 font-semibold'>
+                <p className='text-gray-500 font-medium text-sm 2xl:text-base'>
+                  Gender
+                </p>
+                <h3 className='text-blue-950 text-base 2xl:text-lg font-semibold'>
                   {capitalizeFirstLetter(user?.userDetail?.gender)}
                 </h3>
               </div>
               <div className='flex flex-col'>
-                <p className='text-gray-500 font-medium text-xs'>
+                <p className='text-gray-500 font-medium text-sm 2xl:text-base'>
                   Date of Birth
                 </p>
-                <h3 className='text-blue-950 font-semibold'>
+                <h3 className='text-blue-950 text-base 2xl:text-lg font-semibold'>
                   {new Date(user?.userDetail?.dateOfBirth).toLocaleDateString(
                     'en-UK',
                     {
@@ -96,14 +100,18 @@ const Profile = () => {
           ) : (
             <div className='flex gap-32'>
               <div className='flex flex-col'>
-                <p className='text-gray-500 font-medium text-xs'>Email</p>
-                <h3 className='text-blue-950 font-semibold'>{user?.email}</h3>
+                <p className='text-gray-500 font-medium text-sm 2xl:text-base'>
+                  Email
+                </p>
+                <h3 className='text-blue-950 text-base 2xl:text-lg font-semibold'>
+                  {user?.email}
+                </h3>
               </div>
               <div className='flex flex-col'>
-                <p className='text-gray-500 font-medium text-xs'>
+                <p className='text-gray-500 font-medium text-sm 2xl:text-base'>
                   Phone Number
                 </p>
-                <h3 className='text-blue-950 font-semibold'>
+                <h3 className='text-blue-950 text-base 2xl:text-lg font-semibold'>
                   {user?.userDetail?.phoneNumber}
                 </h3>
               </div>
@@ -120,37 +128,45 @@ const Profile = () => {
             <div className='flex gap-32'>
               <div>
                 <div className='flex flex-col'>
-                  <p className='text-gray-500 font-medium text-xs'>Province</p>
-                  <h3 className='text-blue-950 font-semibold'>
+                  <p className='text-gray-500 font-medium text-sm 2xl:text-base'>
+                    Province
+                  </p>
+                  <h3 className='text-blue-950 text-base 2xl:text-lg font-semibold'>
                     {user?.userDetail?.province}
                   </h3>
                 </div>
                 <div className='flex flex-col mt-3'>
-                  <p className='text-gray-500 font-medium text-xs'>District</p>
-                  <h3 className='text-blue-950 font-semibold'>
+                  <p className='text-gray-500 font-medium text-sm 2xl:text-base'>
+                    District
+                  </p>
+                  <h3 className='text-blue-950 text-base 2xl:text-lg font-semibold'>
                     {user?.userDetail?.district}
                   </h3>
                 </div>
               </div>
               <div>
                 <div className='flex flex-col'>
-                  <p className='text-gray-500 font-medium text-xs'>City</p>
-                  <h3 className='text-blue-950 font-semibold'>
+                  <p className='text-gray-500 font-medium text-sm 2xl:text-base'>
+                    City
+                  </p>
+                  <h3 className='text-blue-950 text-base 2xl:text-lg font-semibold'>
                     {user?.userDetail?.city}
                   </h3>
                 </div>
                 <div className='flex flex-col mt-3'>
-                  <p className='text-gray-500 font-medium text-xs'>
+                  <p className='text-gray-500 font-medium text-sm 2xl:text-base'>
                     Sub District
                   </p>
-                  <h3 className='text-blue-950 font-semibold'>
+                  <h3 className='text-blue-950 text-base 2xl:text-lg font-semibold'>
                     {user?.userDetail?.subDistrict}
                   </h3>
                 </div>
               </div>
               <div className='flex flex-col'>
-                <p className='text-gray-500 font-medium text-xs'>Street</p>
-                <h3 className='text-blue-950 font-semibold'>
+                <p className='text-gray-500 font-medium text-sm 2xl:text-base'>
+                  Street
+                </p>
+                <h3 className='text-blue-950 text-base 2xl:text-lg font-semibold'>
                   {user?.userDetail?.street}
                 </h3>
               </div>

@@ -142,7 +142,7 @@ const TranslatorReviews = () => {
       render: (_, record) => (
         <Tooltip title='View Detail'>
           <Link
-            href={`/dashboard/translator/booking/${record?.bookingId}?scroll=bottom`}
+            href={`/dashboard/translator/booking/${record?.bookingId}`}
             className='text-gray-500 cursor-pointer p-2 hover:bg-zinc-200 rounded-lg transition-all duration-500 flex items-center justify-center w-fit'
           >
             <Icon

@@ -344,34 +344,34 @@ const TranslatorPayment = () => {
         {selectedPayment && (
           <div>
             <h1 className='text-xl font-semibold'>Booking Summary</h1>
-            <div className='text-sm mt-2 flex flex-col gap-1'>
+            <div className='text-sm 2xl:text-base mt-2 flex flex-col gap-1'>
               <div className='flex justify-between'>
-                <p className='font-medium text-slate-500'>Client</p>
+                <p className='text-slate-500'>Client</p>
                 <p className='font-semibold text-blue-950'>
                   {selectedPayment?.booking?.user?.userDetail?.fullName}
                 </p>
               </div>
               <div className='flex justify-between'>
-                <p className='font-medium text-slate-500'>Service</p>
+                <p className='text-slate-500'>Service</p>
                 <p className='font-semibold text-blue-950'>
                   {selectedPayment?.booking?.service.name}
                 </p>
               </div>
               <div className='flex justify-between'>
-                <p className='font-medium text-slate-500'>Source Language</p>
+                <p className='text-slate-500'>Source Language</p>
                 <p className='font-semibold text-blue-950'>
                   {selectedPayment?.booking?.service.sourceLanguage.name}
                 </p>
               </div>
               <div className='flex justify-between'>
-                <p className='font-medium text-slate-500'>Target Language</p>
+                <p className='text-slate-500'>Target Language</p>
                 <p className='font-semibold text-blue-950'>
                   {selectedPayment?.booking?.service.targetLanguage.name}
                 </p>
               </div>
 
               <div className='flex justify-between'>
-                <p className='font-medium text-slate-500'>Booking Date</p>
+                <p className='text-slate-500'>Booking Date</p>
                 <p className='font-semibold text-blue-950'>
                   {dayjs(selectedPayment?.booking.bookingDate).format(
                     'DD MMMM YYYY'
@@ -381,9 +381,9 @@ const TranslatorPayment = () => {
             </div>
             <Divider />
             <h1 className='text-xl font-semibold'>Price Details</h1>
-            <div className='text-sm mt-2 flex flex-col gap-1'>
+            <div className='text-sm 2xl:text-base mt-2 flex flex-col gap-1'>
               <div className='flex justify-between'>
-                <p className='font-medium text-slate-500'>Service price</p>
+                <p className='text-slate-500'>Service price</p>
                 <p className='font-medium text-blue-950'>
                   Rp
                   {selectedPayment?.booking?.service?.pricePerHour.toLocaleString(
@@ -392,7 +392,7 @@ const TranslatorPayment = () => {
                 </p>
               </div>
               <div className='flex justify-between'>
-                <p className='font-medium text-slate-500'>Duration</p>
+                <p className='text-slate-500'>Duration</p>
                 <p className='font-medium text-blue-950'>
                   {selectedPayment?.booking.duration} Hours
                 </p>
@@ -429,7 +429,9 @@ const TranslatorPayment = () => {
                   )}
                 </>
               ) : (
-                <p className='text-sm text-slate-500'>No proof uploaded yet</p>
+                <p className='text-sm 2xl:text-base text-slate-500'>
+                  No proof uploaded yet
+                </p>
               )}
             </div>
           </div>

@@ -23,12 +23,8 @@ import { UploadChangeParam, UploadFile } from 'antd/es/upload';
 import Dragger from 'antd/es/upload/Dragger';
 import dayjs from 'dayjs';
 import Image from 'next/image';
-import { useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
 
 const BookingDetail = ({ params }: { params: { id: string } }) => {
-  const searchParams = useSearchParams();
-  const scroll = searchParams?.get('scroll');
   const { data, isLoading, mutate } = bookingRepository.hooks.useGetBookingById(
     params.id
   );
@@ -110,15 +106,6 @@ const BookingDetail = ({ params }: { params: { id: string } }) => {
     );
   }
 
-  useEffect(() => {
-    if (!isLoading && scroll === 'bottom') {
-      window.scrollTo({
-        top: document.body.scrollHeight,
-        behavior: 'smooth',
-      });
-    }
-  }, [scroll, isLoading]);
-
   return (
     <>
       {isLoading ? (
@@ -126,264 +113,328 @@ const BookingDetail = ({ params }: { params: { id: string } }) => {
       ) : (
         booking && (
           <div className='flex flex-col gap-4 bg-white p-4 2xl:p-6 rounded-2xl'>
-            <div className='flex justify-between items-center bg-zinc-50 rounded-xl py-2 px-4 w-full'>
-              <div>
-                <p className='text-xs 2xl:text-sm'>
-                  Booking ID :{' '}
-                  <span className='font-semibold'>{params.id}</span>
-                </p>
-                <p className='text-xs 2xl:text-sm'>
-                  Requested at :{' '}
-                  <span className='font-semibold'>
-                    {dayjs(booking?.createdAt).format('DD MMMM YYYY, HH:mm')}
-                  </span>
-                </p>
-              </div>
-              <StatusBadge
-                status={booking?.bookingStatus}
-                text={capitalizeFirstLetter(booking?.bookingStatus)}
-              />
-            </div>
-            <section className='flex flex-col gap-2 border p-4 rounded-xl'>
-              <p className='text-xs 2xl:text-sm font-medium'>Client</p>
-              <div className='flex justify-between'>
-                <div className='flex gap-4'>
-                  <div className='relative w-[100px] h-[100px] 2xl:w-[120px] 2xl:h-[120px]'>
-                    <Image
-                      src={
-                        booking?.user?.userDetail.profilePicture
-                          ? imgProfilePicture(
-                              booking?.user?.userDetail.profilePicture
-                            )
-                          : '/images/avatar-placeholder.png'
-                      }
-                      alt={'Translator Profile Picture'}
-                      fill
-                      sizes='(max-width: 400px)'
-                      className='object-cover rounded-2xl'
-                      priority
-                    />
-                  </div>
-                  <div className='flex flex-col justify-between'>
-                    <div>
-                      <h1 className='font-semibold text-xl 2xl:text-3xl'>
-                        {booking?.user?.userDetail?.fullName}
-                      </h1>
-                      <p className='text-xs 2xl:text-base font-semibold text-gray-400'>
-                        {booking?.user?.email}
-                      </p>
-                    </div>
-                    <div className='flex flex-col gap-1'>
-                      <div className='flex gap-1 items-center text-zinc-500'>
-                        <Icon
-                          icon={
-                            booking?.user?.userDetail.gender === 'male'
-                              ? 'mdi:gender-male'
-                              : 'mdi:gender-female'
-                          }
-                          className='text-base 2xl:text-xl'
-                        />
-                        <p className='text-xs 2xl:text-sm font-medium'>
-                          {capitalizeFirstLetter(
-                            booking?.user?.userDetail?.gender
-                          )}
-                        </p>
-                      </div>
-                      <div className='flex gap-1 items-center text-zinc-500'>
-                        <Icon
-                          icon={'ic:round-phone'}
-                          className='text-base 2xl:text-xl'
-                        />
-                        <p className='text-xs 2xl:text-sm font-medium'>
-                          {booking?.user?.userDetail.phoneNumber}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
-            <section className='flex flex-col gap-2 border p-4 rounded-xl'>
-              <p className='text-xs 2xl:text-sm font-medium'>Service</p>
-              <h1 className='font-semibold text-xl 2xl:text-2xl'>
-                {booking?.service?.name}
-              </h1>
-              <div className='flex justify-between items-center'>
-                <div className='flex items-center gap-2'>
-                  <div className='flex items-center gap-2'>
-                    <LanguageFlag language={booking?.service?.sourceLanguage} />
-                    <span className='text-sm'>
-                      {booking?.service?.sourceLanguage?.name}
-                    </span>
-                  </div>
-                  <Icon icon={'lucide:arrow-right'} className='text-lg' />
-                  <div className='flex items-center gap-2'>
-                    <LanguageFlag language={booking?.service?.targetLanguage} />
-                    <span className='text-sm'>
-                      {booking?.service?.targetLanguage?.name}
-                    </span>
-                  </div>
-                </div>
-                <h3 className='text-lg font-semibold text-blue-600'>
-                  Rp
-                  {booking?.service?.pricePerHour.toLocaleString('id-ID')}
-                  /hr
-                </h3>
-              </div>
-            </section>
-            <section className='flex flex-col gap-2 border p-4 rounded-xl'>
-              <p className='text-xs 2xl:text-sm font-medium'>Date & Time</p>
-              <div className='flex gap-1 2xl:gap-2'>
-                <Icon
-                  icon='ic:round-date-range'
-                  className='text-xl 2xl:text-2xl text-blue-600'
-                />
-                <p className='text-sm 2xl:text-base font-medium'>
-                  {new Date(booking?.bookingDate).toLocaleString('en-UK', {
-                    weekday: 'long',
-                  })}
-                  , {dayjs(booking?.bookingDate).format('DD MMMM YYYY')}
-                </p>
-              </div>
-              <div className='flex gap-1 2xl:gap-2'>
-                <Icon
-                  icon='mdi:clock-outline'
-                  className='text-xl 2xl:text-2xl text-blue-600'
-                />
-                <p className='text-sm 2xl:text-base font-medium'>
-                  {booking?.startAt.slice(0, 5)} - {booking?.endAt.slice(0, 5)}{' '}
-                  ({booking?.duration} hours)
-                </p>
-              </div>
-              <p className='text-xs 2xl:text-sm font-medium mt-2'>Location</p>
-              <div className='flex gap-1 2xl:gap-2'>
-                <Icon
-                  icon='mdi:map-marker'
-                  className='text-xl 2xl:text-2xl text-blue-600'
-                />
-                <p className='text-sm 2xl:text-base font-medium'>
-                  {booking?.location}
-                </p>
-              </div>
-            </section>
-            {booking?.notes && (
-              <section className='flex flex-col gap-2 border p-4 rounded-xl'>
-                <p className='text-xs 2xl:text-sm font-medium'>Notes</p>
-                <div className='flex gap-1'>
-                  <Icon
-                    icon='mdi:file-document-edit-outline'
-                    className='text-xl 2xl:text-2xl text-blue-600'
+            <div className='flex flex-col gap-6'>
+              <div className='bg-white rounded-xl p-6 border'>
+                <div className='flex justify-between items-center mb-4'>
+                  <h1 className='text-2xl font-bold'>Booking Details</h1>
+                  <StatusBadge
+                    status={booking?.bookingStatus}
+                    text={capitalizeFirstLetter(booking?.bookingStatus)}
                   />
-                  <p className='text-sm 2xl:text-base'>{booking?.notes}</p>
                 </div>
-              </section>
-            )}
-            {booking?.coupon && (
-              <section className='flex flex-col gap-2 border p-4 rounded-xl'>
-                <p className='text-xs 2xl:text-sm font-medium'>Coupon</p>
-                <div className='flex justify-between'>
-                  <div className='flex gap-3'>
-                    <div className='p-3 bg-blue-600 flex justify-center items-center rounded-xl'>
-                      <Icon
-                        icon='mdi:ticket-percent'
-                        className='text-2xl text-white'
-                      />
-                    </div>
-                    <div className='flex flex-col justify-between'>
-                      <p className='text-base font-semibold'>
-                        {booking?.coupon?.discountPercentage} % OFF
-                      </p>
-                      <p className='text-sm font-medium'>
-                        {booking?.coupon?.name}
-                      </p>
-                    </div>
-                  </div>
-                  <p className='text-sm text-rose-600'>
-                    Exp:{' '}
-                    {dayjs(booking?.coupon?.expiredAt).format('DD MMM YYYY')}
+                <div className='text-sm text-gray-600'>
+                  <p>
+                    Request ID: <span className='font-medium'>{params.id}</span>
+                  </p>
+                  <p>
+                    Created:{' '}
+                    <span className='font-medium'>
+                      {dayjs(booking?.createdAt).format('DD MMMM YYYY, HH:mm')}
+                    </span>
                   </p>
                 </div>
-              </section>
-            )}
-
-            <section className='flex flex-col gap-2 border p-4 rounded-xl'>
-              <p className='text-xs 2xl:text-sm font-medium'>Proof</p>
-              {booking?.proof ? (
-                <>
-                  <AntdImage
-                    width={500}
-                    height={300}
-                    className='object-cover rounded-xl'
-                    src={`${config.baseUrl}/images/proof/booking/${booking?.proof}`}
-                  />
-                  {booking?.bookingStatus === 'in_progress' && (
-                    <Button
-                      className='w-fit py-6 font-medium rounded-xl hover:!border-rose-600 hover:!text-rose-600'
-                      type='default'
-                      htmlType='button'
-                      onClick={handleRemoveProof}
-                    >
-                      Remove Proof
-                    </Button>
-                  )}
-                </>
-              ) : (
-                booking?.bookingStatus === 'in_progress' && (
-                  <Dragger
-                    {...uploadProps}
-                    style={{ width: 300, padding: '3rem 0' }}
-                    onChange={(info: UploadChangeParam<UploadFile>) => {
-                      const { file } = info;
-                      if (file.status !== 'removed') {
-                        handleUploadProof(file);
-                      }
-                    }}
-                  >
-                    <div className='flex flex-col justify-center items-center'>
-                      <Icon
-                        icon={'iwwa:upload'}
-                        height={64}
-                        className=' text-blue-600'
-                      />
-                      <p className='text-sm text-zinc-500'>
-                        Drag & drop or click to upload
-                      </p>
+              </div>
+              <div className='grid grid-cols-12 gap-6'>
+                {/* Left Column - Main Info */}
+                <div className='col-span-8 border rounded-xl'>
+                  {/* Client Card */}
+                  <div className='bg-white rounded-xl p-6'>
+                    <h2 className='text-lg font-semibold mb-4'>Client</h2>
+                    <div className='flex gap-6'>
+                      <div className='relative w-36 h-36 flex-shrink-0'>
+                        <Image
+                          src={
+                            booking?.user?.userDetail.profilePicture
+                              ? imgProfilePicture(
+                                  booking?.user?.userDetail.profilePicture
+                                )
+                              : '/images/avatar-placeholder.png'
+                          }
+                          alt='Translator Profile'
+                          fill
+                          className='object-cover rounded-xl'
+                          priority
+                        />
+                      </div>
+                      <div className='flex-grow'>
+                        <div className='flex justify-between items-start'>
+                          <div>
+                            <h3 className='text-3xl font-bold mb-1'>
+                              {booking?.user?.userDetail?.fullName}
+                            </h3>
+                            <p className='text-gray-500'>
+                              {booking?.user?.email}
+                            </p>
+                          </div>
+                        </div>
+                        <div className='mt-4 flex flex-col gap-4'>
+                          <div className='flex items-center gap-2'>
+                            <Icon
+                              icon={'ic:round-phone'}
+                              className='text-xl 2xl:text-2xl text-gray-500'
+                            />
+                            <p className='text-sm 2xl:text-base text-gray-500'>
+                              {booking?.user?.userDetail?.phoneNumber}
+                            </p>
+                          </div>
+                          <div className='flex gap-2'>
+                            <Icon
+                              icon={'mdi:map-marker'}
+                              className='text-xl 2xl:text-2xl text-gray-500'
+                            />
+                            <p className='text-sm 2xl:text-base text-gray-500'>
+                              {booking?.user?.userDetail?.city},{' '}
+                              {booking?.user?.userDetail?.province}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </Dragger>
-                )
-              )}
-            </section>
-
-            {booking?.review && (
-              <section className='flex flex-col gap-2 border p-4 rounded-xl'>
-                <p className='text-xs 2xl:text-sm font-medium'>Review</p>
-                <ReviewCard border={false} review={booking?.review} />
-              </section>
-            )}
-            <section className='flex flex-col gap-2 border p-4 rounded-xl'>
-              <p className='text-xs 2xl:text-sm font-medium'>Pricing</p>
-              <div className='flex flex-col gap-1'>
-                <div className='flex justify-between text-sm 2xl:text-base'>
-                  <p>Service fee</p>
-                  <p>Rp{booking?.serviceFee.toLocaleString('id-ID')}</p>
-                </div>
-                <div className='flex justify-between text-sm 2xl:text-base'>
-                  <p>System fee</p>
-                  <p>Rp{booking?.systemFee.toLocaleString('id-ID')}</p>
-                </div>
-                {booking?.discountAmount && (
-                  <div className='flex justify-between text-sm 2xl:text-base'>
-                    <p>Discount Amount</p>
-                    <p>-Rp{booking?.discountAmount.toLocaleString('id-ID')}</p>
                   </div>
-                )}
-                <Divider style={{ margin: 0 }} className='!my-2' />
-                <div className='flex justify-between text-base 2xl:text-xl font-semibold'>
-                  <p>Total price</p>
-                  <p>Rp{booking?.totalPrice.toLocaleString('id-ID')}</p>
+
+                  <Divider style={{ margin: 0 }} />
+
+                  {/* Service Details */}
+                  <div className='bg-white rounded-xl p-6'>
+                    <h2 className='text-lg font-semibold mb-4'>
+                      Service Details
+                    </h2>
+                    <div className='space-y-4'>
+                      <h3 className='text-xl font-medium'>
+                        {booking?.service?.name}
+                      </h3>
+                      <div className='flex justify-between items-center'>
+                        <div className='flex items-center gap-6'>
+                          <div className='flex items-center gap-2'>
+                            <LanguageFlag
+                              language={booking?.service?.sourceLanguage}
+                            />
+                            <span>
+                              {booking?.service?.sourceLanguage?.name}
+                            </span>
+                          </div>
+                          <Icon icon='lucide:arrow-right' className='text-xl' />
+                          <div className='flex items-center gap-2'>
+                            <LanguageFlag
+                              language={booking?.service?.targetLanguage}
+                            />
+                            <span>
+                              {booking?.service?.targetLanguage?.name}
+                            </span>
+                          </div>
+                        </div>
+                        <div className='text-xl font-semibold text-blue-600'>
+                          Rp{' '}
+                          {booking?.service?.pricePerHour.toLocaleString(
+                            'id-ID'
+                          )}
+                          /hr
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <Divider style={{ margin: 0 }} />
+
+                  {/* Schedule & Location */}
+                  <div className='bg-white rounded-xl p-6'>
+                    <div className='grid grid-cols-2 gap-8'>
+                      <div>
+                        <h2 className='text-lg font-semibold mb-4'>
+                          Date & Time
+                        </h2>
+                        <div className='space-y-4'>
+                          <div className='flex items-center gap-3'>
+                            <Icon
+                              icon='ic:round-date-range'
+                              className='text-blue-600 text-xl'
+                            />
+                            <span>
+                              {dayjs(booking?.bookingDate).format(
+                                'dddd, DD MMMM YYYY'
+                              )}
+                            </span>
+                          </div>
+                          <div className='flex items-center gap-3'>
+                            <Icon
+                              icon='mdi:clock-outline'
+                              className='text-blue-600 text-xl'
+                            />
+                            <span>
+                              {booking?.startAt.slice(0, 5)} -{' '}
+                              {booking?.endAt.slice(0, 5)}
+                              <span className='text-gray-500 ml-1'>
+                                (
+                                {booking?.duration > 1
+                                  ? `${booking?.duration} hrs`
+                                  : `${booking?.duration} hr`}
+                                )
+                              </span>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <div>
+                        <h2 className='text-lg font-semibold mb-4'>Location</h2>
+                        <div className='flex items-start gap-3'>
+                          <Icon
+                            icon='mdi:map-marker'
+                            className='text-blue-600 text-xl mt-1'
+                          />
+                          <span>{booking?.location}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <Divider style={{ margin: 0 }} />
+
+                  {/* Notes Section */}
+                  {booking?.notes && (
+                    <>
+                      <div className='bg-white rounded-xl p-6'>
+                        <h2 className='text-lg font-semibold mb-4'>
+                          Additional Notes
+                        </h2>
+                        <div className='flex gap-3'>
+                          <Icon
+                            icon='mdi:file-document-edit-outline'
+                            className='text-blue-600 text-xl flex-shrink-0 mt-1'
+                          />
+                          <p className='text-gray-600'>{booking?.notes}</p>
+                        </div>
+                      </div>
+                      <Divider style={{ margin: 0 }} />
+                    </>
+                  )}
+
+                  {/* Proof Section */}
+                  <div className='bg-white rounded-xl p-6'>
+                    <h2 className='text-lg font-semibold mb-4'>
+                      Booking Proof
+                    </h2>
+                    {booking?.proof ? (
+                      <div className='flex flex-col gap-4'>
+                        <AntdImage
+                          width={'100%'}
+                          height={350}
+                          className='object-cover rounded-xl'
+                          src={`${config.baseUrl}/images/proof/booking/${booking?.proof}`}
+                        />
+                        {booking?.bookingStatus === 'in_progress' && (
+                          <Button
+                            className='w-fit py-6 font-medium rounded-xl hover:!border-rose-600 hover:!text-rose-600'
+                            type='default'
+                            htmlType='button'
+                            onClick={handleRemoveProof}
+                          >
+                            Remove Proof
+                          </Button>
+                        )}
+                      </div>
+                    ) : (
+                      booking?.bookingStatus === 'in_progress' && (
+                        <Dragger
+                          {...uploadProps}
+                          style={{ width: '100%', padding: '3rem 0' }}
+                          onChange={(info: UploadChangeParam<UploadFile>) => {
+                            const { file } = info;
+                            if (file.status !== 'removed') {
+                              handleUploadProof(file);
+                            }
+                          }}
+                        >
+                          <div className='flex flex-col justify-center items-center'>
+                            <Icon
+                              icon={'iwwa:upload'}
+                              height={64}
+                              className=' text-blue-600'
+                            />
+                            <p className='text-sm text-zinc-500'>
+                              Drag & drop or click to upload
+                            </p>
+                          </div>
+                        </Dragger>
+                      )
+                    )}
+                  </div>
+                </div>
+
+                {/* Right Column - Pricing & Actions */}
+                <div className='col-span-4 space-y-6'>
+                  {/* Pricing Card */}
+                  <div className='bg-white rounded-xl p-6 border'>
+                    <h2 className='text-lg font-semibold mb-4'>
+                      Price Summary
+                    </h2>
+                    <div className='space-y-4'>
+                      <div className='flex justify-between'>
+                        <span>Service fee</span>
+                        <span>
+                          Rp {booking?.serviceFee.toLocaleString('id-ID')}
+                        </span>
+                      </div>
+                      <div className='flex justify-between'>
+                        <span>System fee</span>
+                        <span>
+                          Rp {booking?.systemFee.toLocaleString('id-ID')}
+                        </span>
+                      </div>
+                      {booking?.discountAmount &&
+                        booking?.discountAmount > 0 && (
+                          <div className='flex justify-between text-blue-600'>
+                            <span>Discount</span>
+                            <span>
+                              - Rp{' '}
+                              {booking?.discountAmount.toLocaleString('id-ID')}
+                            </span>
+                          </div>
+                        )}
+                      <Divider className='my-4' />
+                      <div className='flex justify-between text-lg font-bold'>
+                        <span>Total Price</span>
+                        <span>
+                          Rp {booking?.totalPrice.toLocaleString('id-ID')}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Coupon Card */}
+                  {booking?.coupon && (
+                    <div className='bg-white rounded-xl p-6 border'>
+                      <h2 className='text-lg font-semibold mb-4'>
+                        Applied Coupon
+                      </h2>
+                      <div className='flex items-center gap-4'>
+                        <div className='p-3 flex items-center justify-center bg-blue-600 rounded-lg'>
+                          <Icon
+                            icon='mdi:ticket-percent'
+                            className='text-2xl text-white'
+                          />
+                        </div>
+                        <div className='flex-grow'>
+                          <p className='font-semibold text-lg'>
+                            {booking?.coupon?.discountPercentage}% OFF
+                          </p>
+                          <p className='text-gray-600 text-sm'>
+                            {booking?.coupon?.name}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Review Card */}
+                  {booking?.review && (
+                    <div className='rounded-xl p-6 border'>
+                      <h2 className='text-lg font-semibold mb-4'>Review</h2>
+                      <ReviewCard border={false} review={booking?.review} />
+                    </div>
+                  )}
                 </div>
               </div>
-            </section>
+            </div>
           </div>
         )
       )}
