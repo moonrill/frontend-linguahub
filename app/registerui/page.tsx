@@ -1,22 +1,24 @@
 "use client";
 
-import { RegisterFormData } from '#/types/RegisterTypes';
+import { RegisterFormData, TranslatorFormData } from '#/types/RegisterTypes';
 import { Button, Form, message } from 'antd';
 import { useEffect, useState } from 'react';
 import { fetchAddress } from '#/repository/address';
 import { authRepository } from '#/repository/auth';
-import { Addresses, City, District, Province, SelectedAddressName, SubDistrict } from '#/types/AddressTypes';
+import { Addresses, City, District, Province, SubDistrict } from '#/types/AddressTypes';
 import { PersonalInfoForm } from './components/StepOne';
 import { AddressForm } from './components/StepTwo';
 import { ProfessionalInfoForm } from './components/StepThree';
 import { DocumentsUploadForm } from './components/StepFour';
 import Link from 'next/link';
+import dayjs from 'dayjs';
 
 const RegisterUi = () => {
   const [form] = Form.useForm();
-  const [formData, setFormData] = useState<Partial<RegisterFormData>>({});
+  const [formData, setFormData] = useState<Partial<RegisterFormData>>({
+    role: 'client' // Default role
+  });
   const [loading, setLoading] = useState(false);
-  const [selectedAddressName, setSelectedAddressName] = useState<SelectedAddressName>({});
   const [addresses, setAddresses] = useState<Addresses>({
     province: [],
     city: [],
@@ -55,28 +57,12 @@ const RegisterUi = () => {
   }, [formData.districtId]);
 
   useEffect(() => {
-    if (
-      formData.provinceId ||
-      formData.cityId ||
-      formData.districtId ||
-      formData.subDistrictId ||
-      formData.street
-    ) {
-      setSelectedAddressName({
-        province: formData.province,
-        city: formData.city,
-        district: formData.district,
-        subDistrict: formData.subDistrict,
-      });
-      form.setFieldsValue({
-        provinceId: formData.provinceId,
-        cityId: formData.cityId,
-        districtId: formData.districtId,
-        subDistrictId: formData.subDistrictId,
-        street: formData.street,
-      });
+    if (formData.role) {
+      // Reset form when role changes
+      form.resetFields();
+      setFormData({ role: formData.role });
     }
-  }, [formData, form]);
+  }, [formData.role, form]);
 
   const updateFormData = (data: Partial<RegisterFormData>) => {
     setFormData((prev) => ({ ...prev, ...data }));
@@ -87,13 +73,10 @@ const RegisterUi = () => {
     label: string,
     value: string
   ) => {
-    setSelectedAddressName((prev) => ({
-      ...prev,
+    updateFormData({
+      [addressType]: value,
       [addressType.slice(0, -2)]: label,
-    }));
-
-    updateFormData({ [addressType]: value });
-    updateFormData({ [addressType.slice(0, -2)]: label });
+    });
 
     const resetTypes = {
       provinceId: ['cityId', 'districtId', 'subDistrictId'],
@@ -102,12 +85,8 @@ const RegisterUi = () => {
     };
 
     resetTypes[addressType as keyof typeof resetTypes]?.forEach((type) => {
-      updateFormData({ [type]: null });
-      setSelectedAddressName((prev) => ({
-        ...prev,
-        [type.slice(0, -2)]: null,
-      }));
-      setAddresses((prev) => ({ ...prev, [type]: [] }));
+      updateFormData({ [type]: undefined });
+      setAddresses((prev) => ({ ...prev, [type.slice(0, -2)]: [] }));
       form.resetFields([type]);
     });
   };
@@ -115,12 +94,22 @@ const RegisterUi = () => {
   const onFinish = async (values: any) => {
     setLoading(true);
     try {
+      // Transform date format
+      const transformedValues = {
+        ...values,
+        dateOfBirth: dayjs(values.dateOfBirth).format('YYYY-MM-DD'),
+      };
+
+      // Merge form data
       const clientData = {
         ...formData,
-        ...values,
+        ...transformedValues,
       };
+
       await authRepository.api.register(clientData);
       message.success('Registration successful');
+      form.resetFields();
+      setFormData({ role: 'client' });
     } catch (error: any) {
       message.error(error?.response?.body?.message || 'Something went wrong');
     } finally {
@@ -155,17 +144,22 @@ const RegisterUi = () => {
             />
           </div>
 
-          <div className="bg-gray-50 rounded-xl p-8 shadow-md">
-            <h2 className="text-2xl font-bold mb-6">Professional Information</h2>
-            <ProfessionalInfoForm 
-              updateFormData={updateFormData} 
-            />
-          </div>
+          {formData.role === 'translator' && (
+            <>
+              <div className="bg-gray-50 rounded-xl p-8 shadow-md">
+                <h2 className="text-2xl font-bold mb-6">Professional Information</h2>
+                <ProfessionalInfoForm 
+                formData={formData}
+                  updateFormData={updateFormData} 
+                />
+              </div>
 
-          <div className="bg-gray-50 rounded-xl p-8 shadow-md">
-            <h2 className="text-2xl font-bold mb-6">Documents Upload</h2>
-            <DocumentsUploadForm updateFormData={updateFormData} />
-          </div>
+              <div className="bg-gray-50 rounded-xl p-8 shadow-md">
+                <h2 className="text-2xl font-bold mb-6">Documents Upload</h2>
+                <DocumentsUploadForm updateFormData={updateFormData} />
+              </div>
+            </>
+          )}
         </div>
 
         <div className="flex flex-col gap-6 items-center mt-10">
