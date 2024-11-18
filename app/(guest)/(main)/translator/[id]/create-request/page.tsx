@@ -156,7 +156,7 @@ const CreateServiceRequestPage = ({ params }: { params: { id: string } }) => {
                     alt={'profile-picture'}
                     fill
                     sizes='(max-width: 64px)'
-                    className='object-cover rounded-2xl'
+                    className='object-cover rounded-xl'
                   />
                 </div>
                 <div className='flex flex-col gap-2'>
@@ -343,7 +343,7 @@ const CreateServiceRequestPage = ({ params }: { params: { id: string } }) => {
             </Form.Item>
           </div>
         </section>
-        <section className='w-2/5 rounded-2xl border p-6 flex flex-col justify-between'>
+        <section className='w-2/5 rounded-2xl flex flex-col justify-between'>
           <div className='flex flex-col gap-4'>
             <div className='border p-4 rounded-xl'>
               <div>

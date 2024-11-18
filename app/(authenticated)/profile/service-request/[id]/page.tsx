@@ -6,19 +6,20 @@ import EditServiceRequestModal from '#/components/Modal/EditServiceRequestModal'
 import StatusBadge from '#/components/StatusBadge';
 import { imgProfilePicture } from '#/constants/general';
 import { serviceRequestRepository } from '#/repository/service-request';
-import { Booking } from '#/types/BookingTypes';
 import { Language } from '#/types/LanguageTypes';
+import { Specialization } from '#/types/SpecializationTypes';
 import { capitalizeFirstLetter } from '#/utils/capitalizeFirstLetter';
 import { Icon } from '@iconify-icon/react';
-import { Button, Divider, message, Skeleton } from 'antd';
+import { Button, Divider, Skeleton, Tag, message } from 'antd';
 import dayjs from 'dayjs';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useState } from 'react';
 
 const ServiceRequestDetail = ({ params }: { params: { id: string } }) => {
   const { data, isLoading, mutate } =
     serviceRequestRepository.hooks.useGetServiceRequestById(params.id);
-  const serviceRequest: Booking = data?.data;
+  const serviceRequest = data?.data;
 
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
@@ -38,36 +39,41 @@ const ServiceRequestDetail = ({ params }: { params: { id: string } }) => {
     }
   };
 
+  if (isLoading) return <Skeleton active />;
+
   return (
     <>
-      {isLoading ? (
-        <Skeleton active />
-      ) : (
-        <div className='flex flex-col gap-4'>
-          <div className='flex justify-between items-center bg-zinc-50 rounded-lg py-2 px-4 w-full'>
-            <div>
-              <p className='text-xs 2xl:text-sm'>
-                Request ID : <span className='font-semibold'>{params.id}</span>
-              </p>
-              <p className='text-xs 2xl:text-sm'>
-                Requested at :{' '}
-                <span className='font-semibold'>
-                  {dayjs(serviceRequest?.createdAt).format(
-                    'DD MMMM YYYY, HH:mm'
-                  )}
-                </span>
-              </p>
-            </div>
+      <div className='w-full'>
+        {/* Header Section */}
+        <div className='bg-white rounded-xl p-6 mb-6 border'>
+          <div className='flex justify-between items-center mb-4'>
+            <h1 className='text-2xl font-bold'>Service Request Details</h1>
             <StatusBadge
               status={serviceRequest?.requestStatus}
               text={capitalizeFirstLetter(serviceRequest?.requestStatus)}
             />
           </div>
-          <section className='flex flex-col gap-2 border p-4 rounded-lg'>
-            <p className='text-xs 2xl:text-sm font-medium'>Translator</p>
-            <div className='flex justify-between'>
-              <div className='flex gap-4'>
-                <div className='relative w-[100px] h-[100px] 2xl:w-[120px] 2xl:h-[120px]'>
+          <div className='text-sm text-gray-600'>
+            <p>
+              Request ID: <span className='font-medium'>{params.id}</span>
+            </p>
+            <p>
+              Created:{' '}
+              <span className='font-medium'>
+                {dayjs(serviceRequest?.createdAt).format('DD MMMM YYYY, HH:mm')}
+              </span>
+            </p>
+          </div>
+        </div>
+
+        <div className='grid grid-cols-12 gap-6'>
+          {/* Left Column - Main Info */}
+          <div className='col-span-8 border rounded-xl'>
+            {/* Translator Card */}
+            <div className='bg-white rounded-xl p-6'>
+              <h2 className='text-lg font-semibold mb-4'>Translator</h2>
+              <div className='flex gap-6'>
+                <div className='relative w-32 h-32 2xl:w-64 2xl:h-64 flex-shrink-0'>
                   <Image
                     src={
                       serviceRequest?.translator?.user?.userDetail
@@ -78,249 +84,307 @@ const ServiceRequestDetail = ({ params }: { params: { id: string } }) => {
                           )
                         : '/images/avatar-placeholder.png'
                     }
-                    alt={'Translator Profile Picture'}
+                    alt='Translator Profile'
                     fill
-                    sizes='(max-width: 400px)'
-                    className='object-cover rounded-2xl'
+                    className='object-cover rounded-xl'
                     priority
                   />
                 </div>
-                <div className='flex flex-col justify-between'>
-                  <div>
-                    <h1 className='font-bold text-xl 2xl:text-3xl'>
-                      {serviceRequest?.translator?.user?.userDetail?.fullName}
-                    </h1>
-                    <p className='text-xs 2xl:text-base font-semibold text-gray-400'>
-                      {serviceRequest?.translator?.user?.email}
-                    </p>
+                <div className='flex-grow'>
+                  <div className='flex justify-between items-start'>
+                    <div>
+                      <h3 className='text-3xl font-bold mb-1'>
+                        {serviceRequest?.translator?.user?.userDetail?.fullName}
+                      </h3>
+                      <p className='text-gray-500'>
+                        {serviceRequest?.translator?.user?.email}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <div className='flex gap-1 items-center'>
+                  <div className='mt-4 flex gap-8'>
+                    <div className='flex items-center gap-2'>
                       <Icon
-                        icon={'tabler:star-filled'}
-                        className='text-yellow-400 text-sm 2xl:text-lg'
+                        icon='tabler:star-filled'
+                        className='text-yellow-400 text-lg'
                       />
-                      <p className='text-xs 2xl:text-sm font-semibold'>
+                      <span className='font-medium'>
                         {serviceRequest?.translator?.rating}
-                      </p>
-                      <p className='text-xs 2xl:text-sm font-light'>
+                      </span>
+                      <span className='text-gray-500'>
                         ({serviceRequest?.translator?.reviewsCount} reviews)
-                      </p>
+                      </span>
                     </div>
-                    <div className='flex gap-1 items-center text-zinc-500'>
+                    <div className='flex items-center gap-2'>
                       <Icon
-                        icon={'solar:square-academic-cap-bold'}
-                        className='text-base 2xl:text-xl'
+                        icon='solar:square-academic-cap-bold'
+                        className='text-lg'
                       />
-                      <p className='text-xs 2xl:text-sm font-medium'>
-                        {serviceRequest?.translator?.yearsOfExperience} Years of
+                      <span>
+                        {serviceRequest?.translator?.yearsOfExperience} Years
                         Experience
-                      </p>
+                      </span>
+                    </div>
+                  </div>
+                  <div className='mt-4 flex flex-col gap-2'>
+                    <p className='text-sm'>Languages</p>
+                    <div className='flex gap-2'>
+                      {serviceRequest?.translator?.languages?.map(
+                        (language: Language, index: number) => (
+                          <LanguageFlag key={index} language={language} />
+                        )
+                      )}
+                    </div>
+                  </div>
+                  <div className='flex mt-4 flex-col gap-2'>
+                    <p className='text-sm'>Specializations</p>
+                    <div className='flex flex-wrap'>
+                      {serviceRequest?.translator?.specializations?.map(
+                        (specialization: Specialization, index: number) => (
+                          <Link
+                            key={index}
+                            href={`/specialization?name=${specialization.name}`}
+                            className='group'
+                          >
+                            <Tag
+                              color='default'
+                              className='!bg-white text-xs 2xl:text-sm text-blue-600 py-1 px-5 rounded-full font-medium !border-blue-600 group-hover:!bg-blue-600 group-hover:text-white'
+                            >
+                              {specialization.name}
+                            </Tag>
+                          </Link>
+                        )
+                      )}
                     </div>
                   </div>
                 </div>
               </div>
-              <div className='flex flex-col justify-between items-end'>
-                <div className='flex gap-1'>
-                  {serviceRequest?.translator?.languages?.map(
-                    (language: Language, index: number) => (
-                      <LanguageFlag key={index} language={language} />
-                    )
-                  )}
-                </div>
-                <Button
-                  type='link'
-                  href={`/translator/${serviceRequest?.translator?.id}`}
-                  className='text-blue-600 rounded-[10px] 2xl:rounded-xl text-xs 2xl:text-sm font-semibold bg-blue-100 py-2.5 px-4 h-fit hover:!text-blue-600 hover:!bg-blue-200 shadow-none'
-                >
-                  Details
-                </Button>
-              </div>
             </div>
-          </section>
-          <section className='flex flex-col gap-2 border p-4 rounded-lg'>
-            <p className='text-xs 2xl:text-sm font-medium'>Service</p>
-            <h1 className='font-semibold text-xl 2xl:text-2xl'>
-              {serviceRequest?.service?.name}
-            </h1>
-            <div className='flex justify-between items-center'>
-              <div className='flex items-center gap-2'>
-                <div className='flex items-center gap-2'>
-                  <LanguageFlag
-                    language={serviceRequest?.service?.sourceLanguage}
-                  />
-                  <span className='text-sm'>
-                    {serviceRequest?.service?.sourceLanguage?.name}
-                  </span>
-                </div>
-                <Icon icon={'lucide:arrow-right'} className='text-lg' />
-                <div className='flex items-center gap-2'>
-                  <LanguageFlag
-                    language={serviceRequest?.service?.targetLanguage}
-                  />
-                  <span className='text-sm'>
-                    {serviceRequest?.service?.targetLanguage?.name}
-                  </span>
+
+            <Divider style={{ margin: 0 }} />
+
+            {/* Service Details */}
+            <div className='bg-white rounded-xl p-6'>
+              <h2 className='text-lg font-semibold mb-4'>Service Details</h2>
+              <div className='space-y-4'>
+                <h3 className='text-xl font-medium'>
+                  {serviceRequest?.service?.name}
+                </h3>
+                <div className='flex justify-between items-center'>
+                  <div className='flex items-center gap-6'>
+                    <div className='flex items-center gap-2'>
+                      <LanguageFlag
+                        language={serviceRequest?.service?.sourceLanguage}
+                      />
+                      <span>
+                        {serviceRequest?.service?.sourceLanguage?.name}
+                      </span>
+                    </div>
+                    <Icon icon='lucide:arrow-right' className='text-xl' />
+                    <div className='flex items-center gap-2'>
+                      <LanguageFlag
+                        language={serviceRequest?.service?.targetLanguage}
+                      />
+                      <span>
+                        {serviceRequest?.service?.targetLanguage?.name}
+                      </span>
+                    </div>
+                  </div>
+                  <div className='text-xl font-semibold text-blue-600'>
+                    Rp{' '}
+                    {serviceRequest?.service?.pricePerHour.toLocaleString(
+                      'id-ID'
+                    )}
+                    /hr
+                  </div>
                 </div>
               </div>
-              <h3 className='text-lg font-semibold text-blue-600'>
-                Rp
-                {serviceRequest?.service?.pricePerHour.toLocaleString('id-ID')}
-                /hr
-              </h3>
             </div>
-          </section>
-          <section className='flex flex-col gap-2 border p-4 rounded-lg'>
-            <p className='text-xs 2xl:text-sm font-medium'>Date & Time</p>
-            <div className='flex gap-1 2xl:gap-2'>
-              <Icon
-                icon='ic:round-date-range'
-                className='text-xl 2xl:text-2xl text-blue-600'
-              />
-              <p className='text-sm 2xl:text-base font-medium'>
-                {new Date(serviceRequest?.bookingDate).toLocaleString('en-UK', {
-                  weekday: 'long',
-                })}
-                , {dayjs(serviceRequest?.bookingDate).format('DD MMMM YYYY')}
-              </p>
-            </div>
-            <div className='flex gap-1 2xl:gap-2'>
-              <Icon
-                icon='mdi:clock-outline'
-                className='text-xl 2xl:text-2xl text-blue-600'
-              />
-              <p className='text-sm 2xl:text-base font-medium'>
-                {serviceRequest?.startAt.slice(0, 5)} -{' '}
-                {serviceRequest?.endAt.slice(0, 5)} ({serviceRequest?.duration}{' '}
-                hours)
-              </p>
-            </div>
-            <p className='text-xs 2xl:text-sm font-medium mt-2'>Location</p>
-            <div className='flex gap-1 2xl:gap-2'>
-              <Icon
-                icon='mdi:map-marker'
-                className='text-xl 2xl:text-2xl text-blue-600'
-              />
-              <p className='text-sm 2xl:text-base font-medium'>
-                {serviceRequest?.location}
-              </p>
-            </div>
-          </section>
-          {serviceRequest?.notes && (
-            <section className='flex flex-col gap-2 border p-4 rounded-lg'>
-              <p className='text-xs 2xl:text-sm font-medium'>Notes</p>
-              <div className='flex gap-1'>
-                <Icon
-                  icon='mdi:file-document-edit-outline'
-                  className='text-xl 2xl:text-2xl text-blue-600'
-                />
-                <p className='text-sm 2xl:text-base'>{serviceRequest?.notes}</p>
+
+            <Divider style={{ margin: 0 }} />
+
+            {/* Schedule & Location */}
+            <div className='bg-white rounded-xl p-6'>
+              <div className='grid grid-cols-2 gap-8'>
+                <div>
+                  <h2 className='text-lg font-semibold mb-4'>Date & Time</h2>
+                  <div className='space-y-4'>
+                    <div className='flex items-center gap-3'>
+                      <Icon
+                        icon='ic:round-date-range'
+                        className='text-blue-600 text-xl'
+                      />
+                      <span>
+                        {dayjs(serviceRequest?.bookingDate).format(
+                          'dddd, DD MMMM YYYY'
+                        )}
+                      </span>
+                    </div>
+                    <div className='flex items-center gap-3'>
+                      <Icon
+                        icon='mdi:clock-outline'
+                        className='text-blue-600 text-xl'
+                      />
+                      <span>
+                        {serviceRequest?.startAt.slice(0, 5)} -{' '}
+                        {serviceRequest?.endAt.slice(0, 5)}
+                        <span className='text-gray-500 ml-1'>
+                          (
+                          {serviceRequest?.duration > 1
+                            ? `${serviceRequest?.duration} hrs`
+                            : `${serviceRequest?.duration} hr`}
+                          )
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <h2 className='text-lg font-semibold mb-4'>Location</h2>
+                  <div className='flex items-start gap-3'>
+                    <Icon
+                      icon='mdi:map-marker'
+                      className='text-blue-600 text-xl mt-1'
+                    />
+                    <span>{serviceRequest?.location}</span>
+                  </div>
+                </div>
               </div>
-            </section>
-          )}
-          {serviceRequest?.coupon && (
-            <section className='flex flex-col gap-2 border p-4 rounded-lg'>
-              <p className='text-xs 2xl:text-sm font-medium'>Coupon</p>
-              <div className='flex justify-between'>
+            </div>
+
+            <Divider style={{ margin: 0 }} />
+
+            {/* Notes Section */}
+            {serviceRequest?.notes && (
+              <div className='bg-white rounded-xl p-6'>
+                <h2 className='text-lg font-semibold mb-4'>Additional Notes</h2>
                 <div className='flex gap-3'>
-                  <div className='p-3 bg-blue-600 flex justify-center items-center rounded-lg'>
+                  <Icon
+                    icon='mdi:file-document-edit-outline'
+                    className='text-blue-600 text-xl flex-shrink-0 mt-1'
+                  />
+                  <p className='text-gray-600'>{serviceRequest?.notes}</p>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Right Column - Pricing & Actions */}
+          <div className='col-span-4 space-y-6'>
+            {/* Pricing Card */}
+            <div className='bg-white rounded-xl p-6 border'>
+              <h2 className='text-lg font-semibold mb-4'>Price Summary</h2>
+              <div className='space-y-4'>
+                <div className='flex justify-between'>
+                  <span>Service fee</span>
+                  <span>
+                    Rp {serviceRequest?.serviceFee.toLocaleString('id-ID')}
+                  </span>
+                </div>
+                <div className='flex justify-between'>
+                  <span>System fee</span>
+                  <span>
+                    Rp {serviceRequest?.systemFee.toLocaleString('id-ID')}
+                  </span>
+                </div>
+                {serviceRequest?.discountAmount > 0 && (
+                  <div className='flex justify-between text-blue-600'>
+                    <span>Discount</span>
+                    <span>
+                      - Rp{' '}
+                      {serviceRequest?.discountAmount.toLocaleString('id-ID')}
+                    </span>
+                  </div>
+                )}
+                <Divider className='my-4' />
+                <div className='flex justify-between text-lg font-bold'>
+                  <span>Total Price</span>
+                  <span>
+                    Rp {serviceRequest?.totalPrice.toLocaleString('id-ID')}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Coupon Card */}
+            {serviceRequest?.coupon && (
+              <div className='bg-white rounded-xl p-6 border'>
+                <h2 className='text-lg font-semibold mb-4'>Applied Coupon</h2>
+                <div className='flex items-center gap-4'>
+                  <div className='p-3 flex items-center justify-center bg-blue-600 rounded-lg'>
                     <Icon
                       icon='mdi:ticket-percent'
                       className='text-2xl text-white'
                     />
                   </div>
-                  <div className='flex flex-col justify-between'>
-                    <p className='text-base font-semibold'>
-                      {serviceRequest?.coupon?.discountPercentage} % OFF
+                  <div className='flex-grow'>
+                    <p className='font-semibold text-lg'>
+                      {serviceRequest?.coupon?.discountPercentage}% OFF
                     </p>
-                    <p className='text-sm font-medium'>
+                    <p className='text-gray-600 text-sm'>
                       {serviceRequest?.coupon?.name}
                     </p>
                   </div>
                 </div>
-                <p className='text-sm text-rose-600'>
-                  Exp:{' '}
-                  {dayjs(serviceRequest?.coupon?.expiredAt).format(
-                    'DD MMM YYYY'
-                  )}
+              </div>
+            )}
+
+            {/* Action Buttons */}
+            {serviceRequest?.requestStatus === 'pending' && (
+              <div className='flex flex-col gap-3'>
+                <Button
+                  type='primary'
+                  className='w-full h-12 text-base rounded-xl'
+                  onClick={() => setEditModalOpen(true)}
+                >
+                  <Icon
+                    icon='hugeicons:pencil-edit-01'
+                    className='text-xl mr-2'
+                  />
+                  Edit Request
+                </Button>
+                <Button
+                  className='w-full h-12 text-base rounded-xl hover:!text-red-600 hover:!border-red-600'
+                  onClick={() => setIsCancelModalOpen(true)}
+                >
+                  Cancel Request
+                </Button>
+              </div>
+            )}
+
+            {/* Rejection Reason */}
+            {serviceRequest?.rejectionReason && (
+              <div className='bg-white rounded-xl p-6 border-2 border-blue-600'>
+                <h2 className='text-lg font-semibold mb-2 text-blue-600'>
+                  Rejection Reason
+                </h2>
+                <p className='text-gray-600'>
+                  {serviceRequest?.rejectionReason}
                 </p>
               </div>
-            </section>
-          )}
-          <section className='flex flex-col gap-2 border p-4 rounded-lg'>
-            <p className='text-xs 2xl:text-sm font-medium'>Pricing</p>
-            <div className='flex flex-col gap-1'>
-              <div className='flex justify-between text-sm 2xl:text-base'>
-                <p>Service fee</p>
-                <p>Rp{serviceRequest?.serviceFee.toLocaleString('id-ID')}</p>
-              </div>
-              <div className='flex justify-between text-sm 2xl:text-base'>
-                <p>System fee</p>
-                <p>Rp{serviceRequest?.systemFee.toLocaleString('id-ID')}</p>
-              </div>
-              {serviceRequest?.discountAmount && (
-                <div className='flex justify-between text-sm 2xl:text-base'>
-                  <p>Discount Amount</p>
-                  <p>
-                    -Rp{serviceRequest?.discountAmount.toLocaleString('id-ID')}
-                  </p>
-                </div>
-              )}
-              <Divider style={{ margin: 0 }} className='!my-2' />
-              <div className='flex justify-between text-base 2xl:text-xl font-semibold'>
-                <p>Total price</p>
-                <p>Rp{serviceRequest?.totalPrice.toLocaleString('id-ID')}</p>
-              </div>
-            </div>
-          </section>
-          {serviceRequest?.rejectionReason && (
-            <section className='flex flex-col gap-2 border-2 p-4 border-blue-600 rounded-lg'>
-              <p className='text-xs 2xl:text-sm font-medium'>
-                Rejection Reason
-              </p>
-              <p className='text-sm 2xl:text-base'>
-                {serviceRequest?.rejectionReason}
-              </p>
-            </section>
-          )}
-          {serviceRequest?.requestStatus === 'pending' && (
-            <section className='flex justify-end gap-3'>
-              <Button
-                type='default'
-                className='py-3 px-5 w-fit h-fit text-sm rounded-xl hover:!border-rose-600 hover:!text-rose-600'
-                onClick={() => setIsCancelModalOpen(true)}
-              >
-                Cancel Request
-              </Button>
-              <ConfirmModal
-                type='danger'
-                title='Cancel Request'
-                description='Are you sure you want to cancel this request? This action cannot be undone.'
-                confirmText='Yes, cancel it'
-                cancelText='No, keep it'
-                open={isCancelModalOpen}
-                onCancel={() => setIsCancelModalOpen(false)}
-                onConfirm={handleCancelRequest}
-                isLoading={isCancelLoading}
-              />
-              <Button
-                type='primary'
-                className='py-3 px-5 w-fit h-fit text-sm rounded-xl'
-                onClick={() => setEditModalOpen(true)}
-              >
-                <Icon icon={'hugeicons:pencil-edit-01'} className='text-xl' />
-                Edit
-              </Button>
-            </section>
-          )}
-          <EditServiceRequestModal
-            open={editModalOpen}
-            onCancel={() => setEditModalOpen(false)}
-            serviceRequest={serviceRequest}
-            mutate={mutate}
-          />
+            )}
+          </div>
         </div>
-      )}
+      </div>
+
+      {/* Modals */}
+      <ConfirmModal
+        type='danger'
+        title='Cancel Request'
+        description='Are you sure you want to cancel this request? This action cannot be undone.'
+        confirmText='Yes, cancel it'
+        cancelText='No, keep it'
+        open={isCancelModalOpen}
+        onCancel={() => setIsCancelModalOpen(false)}
+        onConfirm={handleCancelRequest}
+        isLoading={isCancelLoading}
+      />
+
+      <EditServiceRequestModal
+        open={editModalOpen}
+        onCancel={() => setEditModalOpen(false)}
+        serviceRequest={serviceRequest}
+        mutate={mutate}
+      />
     </>
   );
 };

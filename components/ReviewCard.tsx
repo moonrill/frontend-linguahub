@@ -53,7 +53,7 @@ const ReviewCard = ({
       </div>
       {comment && review?.comment && (
         <div className='flex justify-between'>
-          <p className='text-xs 2xl:text-sm font-light'>{review?.comment}</p>
+          <p className='text-sm 2xl:text-base'>{review?.comment}</p>
         </div>
       )}
     </div>

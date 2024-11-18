@@ -172,7 +172,7 @@ const TranslatorBooking = () => {
         </div>
       </div>
     ),
-    price: booking?.serviceFee.toLocaleString('id-ID'),
+    price: booking?.totalPrice?.toLocaleString('id-ID'),
   }));
 
   const handlePageChange = (page: number) => {

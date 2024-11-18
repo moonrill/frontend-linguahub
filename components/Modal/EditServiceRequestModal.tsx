@@ -31,6 +31,7 @@ const EditServiceRequestModal = ({
 }: Props) => {
   const [form] = useForm();
   const [duration, setDuration] = useState(0);
+  const [loading, setLoading] = useState(false);
   const [fees, setFees] = useState({
     serviceFee: 0,
     systemFee: 0,
@@ -39,10 +40,14 @@ const EditServiceRequestModal = ({
   });
 
   const calculateDuration = () => {
-    const { startAt, endAt } = form.getFieldsValue(['startAt', 'endAt']);
+    const startAt = form.getFieldValue('startAt');
+    const endAt = form.getFieldValue('endAt');
 
     if (startAt && endAt) {
-      const diff = endAt.diff(startAt, 'hour', true).toFixed(2);
+      // Convert to dayjs objects if they aren't already
+      const start = dayjs(startAt);
+      const end = dayjs(endAt);
+      const diff = end.diff(start, 'hour', true).toFixed(2);
       setDuration(Number(diff));
     }
   };
@@ -59,6 +64,7 @@ const EditServiceRequestModal = ({
   }, [duration, serviceRequest]);
 
   const handleFinish = async (values: any) => {
+    setLoading(true);
     const data = {
       ...values,
       duration,
@@ -77,6 +83,7 @@ const EditServiceRequestModal = ({
     } finally {
       onCancel();
       mutate();
+      setLoading(false);
     }
   };
 
@@ -87,7 +94,7 @@ const EditServiceRequestModal = ({
       bookingDate: dayjs(serviceRequest?.bookingDate),
       startAt: moment(serviceRequest.startAt.slice(0, 5), 'HH:mm'),
       endAt: moment(serviceRequest.endAt.slice(0, 5), 'HH:mm'),
-      note: serviceRequest?.notes,
+      notes: serviceRequest?.notes,
       location: serviceRequest?.location,
       duration: serviceRequest?.duration,
     });
@@ -216,7 +223,7 @@ const EditServiceRequestModal = ({
               </div>
               <div className='flex flex-col gap-2 '>
                 <p className='text-xs 2xl:text-sm font-medium'>Notes</p>
-                <Form.Item name={'notes'}>
+                <Form.Item name={'notes'} className='!m-0'>
                   <Input
                     type='text'
                     placeholder='Notes'
@@ -327,6 +334,7 @@ const EditServiceRequestModal = ({
               type='default'
               htmlType='button'
               onClick={onCancel}
+              disabled={loading}
             >
               Cancel
             </Button>
@@ -334,6 +342,8 @@ const EditServiceRequestModal = ({
               className='w-full py-6 font-medium rounded-xl'
               type='primary'
               htmlType='submit'
+              loading={loading}
+              disabled={loading}
             >
               Save
             </Button>

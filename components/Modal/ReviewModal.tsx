@@ -36,7 +36,7 @@ const ReviewModal = ({ bookingId, open, onCancel, mutate }: Props) => {
     } catch (error) {
       message.error('Failed to submit review');
     } finally {
-      // onCancel();
+      onCancel();
       setLoading(false);
     }
   };
