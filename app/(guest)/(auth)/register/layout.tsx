@@ -1,12 +1,11 @@
 import { Metadata } from 'next';
-import Register from './page';
 
 export const metadata: Metadata = {
   title: 'Register',
 };
 
-const RegisterLayout = () => {
-  return <Register />;
+const RegisterLayout = ({ children }: { children: React.ReactNode }) => {
+  return children;
 };
 
 export default RegisterLayout;

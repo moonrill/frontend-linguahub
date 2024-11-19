@@ -7,6 +7,7 @@ const url = {
   profile: () => '/auth/profile',
   updateProfile: (id: string) => `/users/${id}`,
   updatePassword: () => '/auth/change-password',
+  editTranslatorRegister: () => '/auth/register/edit',
 };
 
 const api = {
@@ -21,6 +22,9 @@ const api = {
   },
   updatePassword: (data: any) => {
     return http.put(url.updatePassword()).send(data);
+  },
+  editTranslatorRegister: (data: any) => {
+    return http.put(url.editTranslatorRegister()).send(data);
   },
 };
 
