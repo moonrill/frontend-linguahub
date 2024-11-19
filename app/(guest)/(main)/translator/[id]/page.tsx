@@ -222,7 +222,7 @@ const TranslatorDetail = ({ params }: { params: { id: string } }) => {
               </div>
             </div>
           </Card>
-          <Card className='my-card hover:!shadow-none flex-1 p-4 2xl:p-6'>
+          <Card className='my-card hover:!shadow-none flex-1 p-4 2xl:p-6 w-full'>
             <div className='flex justify-between items-center'>
               <div className='flex flex-col gap-2'>
                 <div>
@@ -282,7 +282,6 @@ const TranslatorDetail = ({ params }: { params: { id: string } }) => {
                 columns={columns}
                 dataSource={services}
                 pagination={false}
-                scroll={{ x: 'max-content' }}
               />
             </div>
             <Divider style={{ margin: 0 }} className='!my-2 2xl:!my-4' />
