@@ -41,7 +41,7 @@ const ExportModal: React.FC<Props> = ({ open, onCancel, role }) => {
       startDate: values.dateRange[0].format('YYYY-MM-DD'),
       endDate: values.dateRange[1].format('YYYY-MM-DD'),
       status: selectedStatus.map((s) => s.toLowerCase()),
-      type: selectedType.map((t) => t.toLowerCase()),
+      paymentType: selectedType.map((t) => t.toLowerCase()),
     };
 
     try {

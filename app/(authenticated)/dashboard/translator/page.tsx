@@ -71,7 +71,7 @@ const TranslatorDashboard = () => {
           style={{ padding: '0' }}
           className='h-full bg-white rounded-2xl 2xl:rounded-3xl'
         >
-          <div className='p-4 2xl:px-5 h-full'>
+          <div className='p-4 2xl:px-5 h-full flex flex-col'>
             <div className='mb-4 2xl:mb-4 flex items-center justify-between'>
               <h1 className='m-0 text-base 2xl:text-lg font-semibold'>
                 Recent Reviews

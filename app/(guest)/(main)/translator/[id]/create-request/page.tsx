@@ -8,6 +8,7 @@ import { translatorRepository } from '#/repository/translator';
 import { UserCoupon } from '#/types/CouponTypes';
 import { Language } from '#/types/LanguageTypes';
 import { Service } from '#/types/ServiceTypes';
+import { Translator } from '#/types/TranslatorTypes';
 import { Icon } from '@iconify-icon/react';
 import {
   Button,
@@ -56,7 +57,10 @@ const CreateServiceRequestPage = ({ params }: { params: { id: string } }) => {
     'desc'
   );
 
-  const translator = result?.data;
+  const translator: Translator = result?.data;
+  const activeService = translator?.services?.filter(
+    (s: Service) => s.status === 'Active'
+  );
 
   const calculateDuration = () => {
     const { startAt, endAt } = form.getFieldsValue(['startAt', 'endAt']);
@@ -201,7 +205,7 @@ const CreateServiceRequestPage = ({ params }: { params: { id: string } }) => {
                 placeholder='Select a service'
                 className='h-16'
                 onChange={handleServiceChange}
-                options={translator?.services?.map((service: Service) => ({
+                options={activeService?.map((service: Service) => ({
                   label: (
                     <div className='flex justify-between gap-2 py-2 items-center'>
                       <div>
