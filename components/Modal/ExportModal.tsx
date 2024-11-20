@@ -37,12 +37,15 @@ const ExportModal: React.FC<Props> = ({ open, onCancel, role }) => {
   };
 
   const handleFinish = async (values: any) => {
-    const data = {
+    const data: any = {
       startDate: values.dateRange[0].format('YYYY-MM-DD'),
       endDate: values.dateRange[1].format('YYYY-MM-DD'),
       status: selectedStatus.map((s) => s.toLowerCase()),
-      paymentType: selectedType.map((t) => t.toLowerCase()),
     };
+
+    if (role === 'admin') {
+      data['paymentType'] = selectedType.map((t) => t.toLowerCase());
+    }
 
     try {
       const response = await fetch(`${config.baseUrl}/payments/export`, {
