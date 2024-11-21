@@ -44,9 +44,12 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   useEffect(() => {
     if (user) {
       if (user?.role?.name === 'translator' && !user?.googleCalendarToken) {
+        const redirectUrl = new URL(window.location.href);
         const authUrl = `${
           config.baseUrl
-        }/auth/google?email=${encodeURIComponent(user?.email)}`;
+        }/auth/google?email=${encodeURIComponent(
+          user?.email
+        )}&redirectUrl=${encodeURIComponent(redirectUrl.href)}`;
         window.location.href = authUrl;
       }
     }

@@ -24,12 +24,9 @@ import {
 } from 'antd';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 const TranslatorDetail = ({ params }: { params: { id: string } }) => {
-  const router = useRouter();
-  const [modalOpen, setModalOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const { data: result, isLoading } =
     translatorRepository.hooks.useGetTranslatorById(params.id);
@@ -114,9 +111,10 @@ const TranslatorDetail = ({ params }: { params: { id: string } }) => {
   const setHref = () => {
     if (user) {
       if (!user.googleCalendarToken) {
+        const redirectUrl = new URL(window.location.href);
         return `${config.baseUrl}/auth/google?email=${encodeURIComponent(
           user.email
-        )}`;
+        )}&redirectUrl=${encodeURIComponent(redirectUrl.href)}`;
       }
 
       return `/translator/${translator.id}/create-request`;
