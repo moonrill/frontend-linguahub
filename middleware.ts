@@ -3,15 +3,36 @@ import { decrypt } from './utils/auth';
 
 const protectedRoute = ['/dashboard', '/profile', '/thanks'];
 const publicRoute = ['/login', '/register', '/', '/specializations', '/events'];
+const translatorRequestRegex = /^\/translator\/[0-9a-fA-F-]+\/create-request$/;
 
 export default async function middleware(request: NextRequest) {
+  const accessToken = request.cookies.get('accessToken')?.value;
   const isProtectedRoute = protectedRoute.some((route) =>
     request.nextUrl.pathname.startsWith(route)
   );
 
-  if (isProtectedRoute) {
-    const accessToken = request.cookies.get('accessToken')?.value;
+  if (translatorRequestRegex.test(request.nextUrl.pathname)) {
+    if (!accessToken) {
+      // Pengguna tidak login, redirect ke login
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
 
+    try {
+      const { payload } = await decrypt(accessToken);
+
+      // Hanya role 'client' yang diizinkan
+      if (payload.role !== 'client') {
+        return NextResponse.redirect(new URL('/login', request.url));
+      }
+    } catch (error) {
+      // Token tidak valid, redirect ke login
+      const response = NextResponse.redirect(new URL('/login', request.url));
+      response.cookies.set('accessToken', '', { expires: new Date(0) });
+      return response;
+    }
+  }
+
+  if (isProtectedRoute) {
     if (!accessToken) {
       return NextResponse.redirect(new URL('/login', request.url));
     }
