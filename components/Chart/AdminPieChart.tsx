@@ -1,13 +1,7 @@
 'use client';
 
 import { Label, Pie, PieChart } from 'recharts';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '../ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import {
   ChartConfig,
   ChartContainer,
@@ -56,7 +50,6 @@ const AdminPieChart = ({ system, translator, coupon }: Props) => {
     <Card className='bg-white rounded-2xl w-full border-none shadow-none h-full'>
       <CardHeader className='items-center pb-0'>
         <CardTitle>Payment Deliveries</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
       </CardHeader>
       <CardContent className='flex-1 pb-0'>
         <ChartContainer

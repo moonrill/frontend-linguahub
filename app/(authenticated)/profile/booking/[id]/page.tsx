@@ -48,6 +48,7 @@ const BookingDetail = ({ params }: { params: { id: string } }) => {
 
       if (actionType === 'complete') {
         await bookingRepository.api.completeBooking(params.id);
+        await mutate();
       } else {
         await bookingRepository.api.cancelBooking(params.id);
         await mutate();

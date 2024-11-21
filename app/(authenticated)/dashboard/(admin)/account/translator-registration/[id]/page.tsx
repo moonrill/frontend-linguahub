@@ -320,43 +320,53 @@ const TranslatorDetail = ({ params }: { params: { id: string } }) => {
               </div>
             </div>
           </section>
-          <section className='flex p-4 border w-full rounded-xl gap-6'>
-            <div className='flex flex-col gap-2'>
-              <h1 className='text-sm 2xl:text-xl font-semibold text-zinc-600'>
-                CV/Resume
-              </h1>
-              <Link
-                target='_blank'
-                href={`${config.baseUrl}/translators/cv/${translator?.cv}`}
-                className='group'
-              >
-                <div className='w-[120px] h-[120px] rounded-xl bg-blue-50 flex flex-col justify-center items-center group-hover:border group-hover:border-blue-600 transition-all duration-300'>
-                  <Icon
-                    icon='basil:document-solid'
-                    height={64}
-                    className='text-blue-600 group-hover:scale-110 transition-all duration-300'
-                  />
-                </div>
-              </Link>
+          <section className='flex p-4 border w-full rounded-xl gap-20'>
+            <div className='flex gap-6'>
+              <div className='flex flex-col gap-2'>
+                <h1 className='text-sm 2xl:text-xl font-semibold text-zinc-600'>
+                  CV/Resume
+                </h1>
+                <Link
+                  target='_blank'
+                  href={`${config.baseUrl}/translators/cv/${translator?.cv}`}
+                  className='group'
+                >
+                  <div className='w-[120px] h-[120px] rounded-xl bg-blue-50 flex flex-col justify-center items-center group-hover:border group-hover:border-blue-600 transition-all duration-300'>
+                    <Icon
+                      icon='basil:document-solid'
+                      height={64}
+                      className='text-blue-600 group-hover:scale-110 transition-all duration-300'
+                    />
+                  </div>
+                </Link>
+              </div>
+              <div className='flex flex-col gap-2'>
+                <h1 className='text-sm 2xl:text-xl font-semibold text-zinc-600'>
+                  Certificate
+                </h1>
+                <Link
+                  target='_blank'
+                  href={`${config.baseUrl}/translators/certificates/${translator?.certificate}`}
+                  className='group'
+                >
+                  <div className='w-[120px] h-[120px] rounded-xl bg-blue-50 flex flex-col justify-center items-center group-hover:border group-hover:border-blue-600 transition-all duration-300'>
+                    <Icon
+                      icon='basil:document-solid'
+                      height={64}
+                      className='text-blue-600 group-hover:scale-110 transition-all duration-300'
+                    />
+                  </div>
+                </Link>
+              </div>
             </div>
-            <div className='flex flex-col gap-2'>
-              <h1 className='text-sm 2xl:text-xl font-semibold text-zinc-600'>
-                Certificate
-              </h1>
-              <Link
-                target='_blank'
-                href={`${config.baseUrl}/translators/certificates/${translator?.certificate}`}
-                className='group'
-              >
-                <div className='w-[120px] h-[120px] rounded-xl bg-blue-50 flex flex-col justify-center items-center group-hover:border group-hover:border-blue-600 transition-all duration-300'>
-                  <Icon
-                    icon='basil:document-solid'
-                    height={64}
-                    className='text-blue-600 group-hover:scale-110 transition-all duration-300'
-                  />
-                </div>
-              </Link>
-            </div>
+            {translator?.rejectionReason && (
+              <div className='bg-white rounded-xl flex flex-col gap-1'>
+                <h1 className='text-sm 2xl:text-xl font-semibold text-red-600'>
+                  Rejection Reason
+                </h1>
+                <p className='text-gray-600'>{translator?.rejectionReason}</p>
+              </div>
+            )}
           </section>
           {translator?.status === 'pending' && (
             <>

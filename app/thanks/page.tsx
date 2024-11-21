@@ -74,10 +74,10 @@ const ThanksPage = () => {
 
           <div className='flex gap-4' data-aos='zoom-in' data-aos-delay='800'>
             <Link
-              href={'/profile/booking'}
+              href={'/profile/payment'}
               className='px-6 py-4 rounded-2xl focus:ring-0 font-medium bg-blue-600 text-center text-white hover:text-white hover:bg-blue-700 transition-all duration-300 w-fit flex gap-2'
             >
-              Back to Booking Page
+              See my payments
             </Link>
             <Link
               href={'https://calendar.google.com'}
