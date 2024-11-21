@@ -277,15 +277,15 @@ const UnpaidTranslatorTable = ({ data, mutate }: Props) => {
         {selectedPayment && (
           <div>
             <h1 className='text-xl font-semibold'>Booking Summary</h1>
-            <div className='text-sm mt-2 flex flex-col gap-1'>
+            <div className='text-sm 2xl:text-base mt-2 flex flex-col gap-1'>
               <div className='flex justify-between'>
-                <p className='font-medium text-slate-500'>Client</p>
+                <p className='text-slate-500'>Client</p>
                 <p className='font-semibold text-blue-950'>
                   {selectedPayment?.booking?.user?.userDetail?.fullName}
                 </p>
               </div>
               <div className='flex justify-between'>
-                <p className='font-medium text-slate-500'>Translator</p>
+                <p className='text-slate-500'>Translator</p>
                 <p className='font-semibold text-blue-950'>
                   {
                     selectedPayment?.booking?.translator?.user?.userDetail
@@ -294,26 +294,26 @@ const UnpaidTranslatorTable = ({ data, mutate }: Props) => {
                 </p>
               </div>
               <div className='flex justify-between'>
-                <p className='font-medium text-slate-500'>Service</p>
+                <p className='text-slate-500'>Service</p>
                 <p className='font-semibold text-blue-950'>
                   {selectedPayment?.booking?.service.name}
                 </p>
               </div>
               <div className='flex justify-between'>
-                <p className='font-medium text-slate-500'>Source Language</p>
+                <p className='text-slate-500'>Source Language</p>
                 <p className='font-semibold text-blue-950'>
                   {selectedPayment?.booking?.service.sourceLanguage.name}
                 </p>
               </div>
               <div className='flex justify-between'>
-                <p className='font-medium text-slate-500'>Target Language</p>
+                <p className='text-slate-500'>Target Language</p>
                 <p className='font-semibold text-blue-950'>
                   {selectedPayment?.booking?.service.targetLanguage.name}
                 </p>
               </div>
 
               <div className='flex justify-between'>
-                <p className='font-medium text-slate-500'>Booking Date</p>
+                <p className='text-slate-500'>Booking Date</p>
                 <p className='font-semibold text-blue-950'>
                   {dayjs(selectedPayment?.booking.bookingDate).format(
                     'DD MMMM YYYY'
@@ -322,7 +322,7 @@ const UnpaidTranslatorTable = ({ data, mutate }: Props) => {
               </div>
               {selectedPayment?.paymentType === 'client' && (
                 <div className='flex justify-between'>
-                  <p className='font-medium text-slate-500'>Duration</p>
+                  <p className='text-slate-500'>Duration</p>
                   <p className='font-semibold text-blue-950'>
                     {selectedPayment?.booking?.duration} Hours
                   </p>
@@ -331,11 +331,11 @@ const UnpaidTranslatorTable = ({ data, mutate }: Props) => {
             </div>
             <Divider />
             <h1 className='text-xl font-semibold'>Price Details</h1>
-            <div className='text-sm mt-2 flex flex-col gap-1'>
+            <div className='text-sm 2xl:text-base mt-2 flex flex-col gap-1'>
               {selectedPayment?.paymentType === 'client' ? (
                 <>
                   <div className='flex justify-between'>
-                    <p className='font-medium text-slate-500'>Service fee</p>
+                    <p className='text-slate-500'>Service fee</p>
                     <p className='font-medium text-blue-950'>
                       Rp
                       {selectedPayment?.booking?.serviceFee.toLocaleString(
@@ -344,7 +344,7 @@ const UnpaidTranslatorTable = ({ data, mutate }: Props) => {
                     </p>
                   </div>
                   <div className='flex justify-between'>
-                    <p className='font-medium text-slate-500'>System fee</p>
+                    <p className='text-slate-500'>System fee</p>
                     <p className='font-medium text-blue-950'>
                       Rp
                       {selectedPayment?.booking?.systemFee.toLocaleString(
@@ -354,9 +354,7 @@ const UnpaidTranslatorTable = ({ data, mutate }: Props) => {
                   </div>
                   {selectedPayment?.booking?.discountAmount && (
                     <div className='flex justify-between'>
-                      <p className='font-medium text-slate-500'>
-                        Discount Amount
-                      </p>
+                      <p className='text-slate-500'>Discount Amount</p>
                       <p className='font-medium text-blue-950'>
                         -Rp
                         {selectedPayment?.booking?.discountAmount.toLocaleString(
@@ -369,7 +367,7 @@ const UnpaidTranslatorTable = ({ data, mutate }: Props) => {
               ) : (
                 <>
                   <div className='flex justify-between'>
-                    <p className='font-medium text-slate-500'>Service price</p>
+                    <p className='text-slate-500'>Service price</p>
                     <p className='font-medium text-blue-950'>
                       Rp
                       {selectedPayment?.booking?.service?.pricePerHour.toLocaleString(
@@ -378,7 +376,7 @@ const UnpaidTranslatorTable = ({ data, mutate }: Props) => {
                     </p>
                   </div>
                   <div className='flex justify-between'>
-                    <p className='font-medium text-slate-500'>Duration</p>
+                    <p className='text-slate-500'>Duration</p>
                     <p className='font-medium text-blue-950'>
                       {selectedPayment?.booking.duration} Hours
                     </p>
@@ -399,18 +397,16 @@ const UnpaidTranslatorTable = ({ data, mutate }: Props) => {
             <Divider />
             {selectedPayment?.paymentType === 'translator' && (
               <>
-                <div className='flex flex-col gap-3 text-sm'>
+                <div className='flex flex-col gap-3 text-sm 2xl:text-base'>
                   <h1 className='text-xl font-semibold'>Translator Bank</h1>
                   <div className='flex justify-between'>
-                    <p className='font-medium text-slate-500'>Bank Name</p>
+                    <p className='text-slate-500'>Bank Name</p>
                     <p className='font-medium text-blue-950'>
                       {selectedPayment?.booking?.translator?.bank}
                     </p>
                   </div>
                   <div className='flex justify-between'>
-                    <p className='font-medium text-slate-500'>
-                      Bank Account Number
-                    </p>
+                    <p className='text-slate-500'>Bank Account Number</p>
                     <p className='font-medium text-blue-950'>
                       {selectedPayment?.booking?.translator?.bankAccountNumber}
                     </p>
@@ -469,7 +465,7 @@ const UnpaidTranslatorTable = ({ data, mutate }: Props) => {
             {selectedPayment?.paymentType === 'client' &&
               selectedPayment?.paymentMethod && (
                 <div className='flex justify-between text-sm mt-4'>
-                  <p className='font-medium text-slate-500'>Payment Method</p>
+                  <p className='text-slate-500'>Payment Method</p>
                   <p className='font-semibold text-blue-950'>
                     {selectedPayment?.paymentMethod}
                   </p>
