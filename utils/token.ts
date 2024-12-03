@@ -2,7 +2,7 @@ export class TokenUtil {
   static accessToken?: string;
   static refreshToken?: string;
   static loadToken() {
-    if (typeof window === "undefined") {
+    if (typeof window === 'undefined') {
       return;
     }
 
@@ -16,7 +16,7 @@ export class TokenUtil {
     if (refreshToken) {
       TokenUtil.setRefreshToken(refreshToken);
     }
-  };
+  }
 
   static persistToken() {
     if (TokenUtil.accessToken != null) {
@@ -30,7 +30,6 @@ export class TokenUtil {
     } else {
       localStorage.removeItem('refresh_token');
     }
-
   }
 
   static setAccessToken(accessToken: string) {
@@ -43,6 +42,7 @@ export class TokenUtil {
 
   static clearAccessToken() {
     TokenUtil.accessToken = undefined;
+    TokenUtil.persistToken();
   }
 
   static clearRefreshToken() {

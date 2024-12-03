@@ -1,10 +1,14 @@
 'use client';
 
 import { TokenUtil } from '#/utils/token';
-import { ConfigProvider } from 'antd';
+import { App, ConfigProvider } from 'antd';
 import { Inter } from 'next/font/google';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  preload: false,
+});
 
 TokenUtil.loadToken();
 export const Provider = ({ children }: any) => {
@@ -22,9 +26,31 @@ export const Provider = ({ children }: any) => {
           fontSize: 16,
           colorLink: '#2563eb',
         },
+        components: {
+          Input: {
+            colorTextPlaceholder: '#a1a1aa',
+          },
+          DatePicker: {
+            colorTextPlaceholder: '#a1a1aa',
+          },
+          Select: {
+            colorTextPlaceholder: '#a1a1aa',
+            optionFontSize: 16,
+            optionActiveBg: '#d4d4d4',
+            optionSelectedBg: '#f4f4f5',
+            optionSelectedFontWeight: 500,
+          },
+          Segmented: {
+            itemSelectedBg: '#2563eb',
+            itemSelectedColor: '#ffffff',
+          },
+          Table: {
+            headerSplitColor: 'transparent',
+          },
+        },
       }}
     >
-      {children}
+      <App>{children}</App>
     </ConfigProvider>
   );
 };

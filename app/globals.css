@@ -1,4 +1,484 @@
-/*@tailwind base;*/
+@tailwind base;
 @tailwind components;
 @tailwind utilities;
+a {
+  @apply no-underline;
+}
 
+a:hover {
+  @apply text-blue-500;
+}
+
+h1,
+p {
+  @apply m-0;
+}
+
+.ant-form-item {
+  margin-bottom: 16px;
+}
+
+.ant-input-prefix {
+  @apply mr-2 !important;
+}
+
+.ant-input-affix-wrapper {
+  border: none;
+  @apply bg-zinc-100 !important;
+  padding: 0 1.5rem !important;
+  border-radius: 1rem !important;
+  min-height: 2.5rem;
+}
+
+.ant-input-affix-wrapper {
+  @apply hover:bg-zinc-200 !important;
+}
+
+.ant-input-affix-wrapper-focused {
+  border: none;
+  box-shadow: 0 0 0 2px white !important;
+  background-color: #f4f4f5 !important;
+}
+
+.ant-input-password-icon {
+  cursor: pointer;
+}
+
+.ant-col.ant-form-item-label {
+  padding: 0 0 10px 0 !important;
+}
+
+.ant-input-status-error {
+  background-color: #f4f4f5 !important;
+  border: 2px solid #f43f5e !important;
+  @apply text-rose-500;
+}
+
+.ant-picker-status-error {
+  background-color: #f4f4f5 !important;
+  border: 2px solid #f43f5e !important;
+  @apply text-rose-500;
+}
+
+.ant-select-status-error > .ant-select-selector {
+  background-color: #f4f4f5 !important;
+  border: 2px solid #f43f5e !important;
+  @apply text-rose-500;
+}
+
+.ant-select-status-error
+  > .ant-select-selector
+  > .ant-select-selection-placeholder {
+  @apply text-rose-500;
+  @apply font-medium;
+}
+
+.ant-input-status-error > input::placeholder {
+  @apply text-rose-500;
+  @apply font-medium;
+}
+
+.ant-picker-status-error > .ant-picker-input > input::placeholder {
+  @apply text-rose-500;
+  @apply font-medium;
+}
+
+.ant-picker-status-error > .ant-picker-input > .ant-picker-suffix * {
+  @apply text-rose-500 !important;
+}
+
+.ant-input-status-error > .ant-input-suffix * {
+  @apply text-rose-500 !important;
+}
+
+.ant-select-status-error > .ant-select-arrow * {
+  @apply text-rose-500;
+}
+
+.ant-form-item-explain {
+  margin-top: 4px;
+}
+
+.ant-form-item-explain-error {
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+  line-height: 1rem;
+}
+
+/* .ant-btn {
+  @apply px-6 py-4 shadow-none rounded-xl !important;
+} */
+
+.ant-btn:disabled {
+  border: none;
+}
+
+.ant-steps-item-active
+  > .ant-steps-item-container
+  > .ant-steps-item-content
+  > .ant-steps-item-title {
+  font-weight: 600;
+  color: #2563eb !important;
+}
+
+.ant-steps-item > .ant-steps-item-container > .ant-steps-item-tail {
+  top: 22px;
+  margin-inline-start: 62px;
+  padding: 0 28px;
+}
+
+.ant-steps-item > .ant-steps-item-container > .ant-steps-item-content {
+  margin-inline-start: 10px;
+}
+
+.ant-steps-item-content > .ant-steps-item-title {
+  font-size: 14px;
+  line-height: 1.5rem;
+  @apply font-medium;
+}
+
+.ant-steps-item-container > .ant-steps-item-icon {
+  width: 45px;
+  height: 45px;
+  font-weight: 500 !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.ant-steps-item-container > .ant-steps-item-icon > .ant-steps-icon {
+  font-size: 16px;
+}
+
+.ant-picker-outlined {
+  border: none;
+}
+
+.ant-picker-outlined:focus-within {
+  border: none !important;
+  box-shadow: 0 0 0 2px white !important;
+  background-color: #f4f4f5;
+}
+
+.ant-select-selector {
+  border: none !important;
+  background-color: #f4f4f5 !important;
+  padding: 0 24px !important;
+  border-radius: 1rem !important;
+  box-shadow: 0 0 0 2px white !important;
+}
+
+.ant-select-selector {
+  @apply hover:bg-zinc-200 !important;
+}
+
+.ant-select-arrow {
+  margin-right: 10px !important;
+}
+
+.ant-select-dropdown {
+  @apply p-2 !important;
+}
+
+.ant-select-selection-search {
+  margin-left: 15px;
+}
+
+.ant-tag-checkable:hover {
+  @apply border-blue-500 bg-blue-50 !important;
+}
+
+.ant-tag-checkable-checked {
+  @apply border-blue-500 bg-blue-50 text-blue-500 font-medium !important;
+}
+
+.ant-tooltip {
+  @apply text-sm !important;
+}
+
+.ant-tooltip-inner {
+  color: black !important;
+  background-color: white !important;
+}
+
+.ant-tooltip-arrow::before {
+  background-color: white !important;
+}
+
+.ant-upload {
+  @apply bg-transparent !important;
+}
+
+.ant-upload-drag-hover > .ant-upload > .ant-upload-drag-container > * {
+  @apply text-blue-600 transition duration-300 !important;
+}
+
+.ant-upload-list-item {
+  @apply bg-transparent !important;
+}
+
+.document-upload > .ant-upload-list-item {
+  @apply p-0 bg-blue-400 !important;
+}
+
+.ant-menu-light.ant-menu-root.ant-menu-vertical {
+  @apply border-none !important;
+}
+
+.ant-menu-item {
+  @apply m-0 h-[56px] w-full flex items-center text-gray-500 px-4 rounded-xl !important;
+}
+
+.ant-menu-item-selected {
+  @apply bg-blue-600 text-white !important;
+}
+
+.ant-menu-submenu-title {
+  @apply h-[56px] w-full m-0 rounded-xl text-gray-500 !important;
+}
+
+.ant-menu-item > .ant-menu-title-content {
+  @apply flex items-center gap-2 !important;
+}
+
+.ant-layout > .ant-layout-header {
+  background: transparent;
+  margin-bottom: 32px;
+}
+
+.ant-menu-light.ant-menu-inline .ant-menu-sub.ant-menu-inline {
+  background: transparent;
+}
+
+.ant-menu-submenu-title {
+  padding-left: 16px !important;
+}
+
+.ant-menu-light.ant-menu-inline .ant-menu-sub.ant-menu-inline > .ant-menu-item {
+  height: 40px !important;
+  border-radius: 10px !important;
+  font-size: 14px !important;
+  padding-left: 48px !important;
+}
+
+.ant-breadcrumb-link > a {
+  @apply text-gray-500 !important;
+}
+
+.ant-breadcrumb-link > a:hover {
+  @apply text-blue-500 bg-transparent !important;
+}
+
+.ant-dropdown-menu {
+  @apply w-[200px] flex flex-col gap-0.5 rounded-xl p-1.5 !important;
+}
+
+.ant-dropdown-menu-item {
+  @apply text-sm py-2 rounded-lg !important;
+}
+
+.ant-dropdown-menu-item-danger:hover {
+  @apply text-rose-600 bg-rose-50 !important;
+}
+
+.dashboard-sidebar > .ant-layout-sider-children {
+  @apply flex flex-col h-full !important;
+}
+
+.ant-btn-dangerous {
+  @apply bg-transparent shadow-none text-gray-500 hover:bg-rose-200 hover:text-red-500 !important;
+}
+
+.ant-btn-loading {
+  @apply bg-zinc-200 hover:bg-zinc-200 text-zinc-500 hover:text-zinc-500 !important;
+}
+
+.ant-card-body {
+  @apply xl:p-4 2xl:p-6  !important;
+}
+
+.ant-table-thead > tr > th {
+  @apply bg-blue-50 text-blue-600 uppercase text-[10px] !important;
+}
+
+.ant-table-cell {
+  @apply py-3 2xl:py-3 px-6 border-none text-xs 2xl:text-base !important;
+}
+
+.ant-table-container table > * > tr > *:first-child {
+  @apply rounded-s-xl !important;
+}
+
+.ant-table-container table > * > tr > *:last-child {
+  @apply rounded-e-xl !important;
+}
+
+.ant-table-wrapper {
+  @apply h-full !important;
+}
+
+.ant-btn-dangerous {
+  @apply bg-transparent shadow-none text-gray-500 hover:bg-rose-200 hover:text-red-500 !important;
+}
+
+.ant-btn-loading {
+  @apply bg-zinc-200 hover:bg-zinc-200 text-zinc-500 hover:text-zinc-500 !important;
+}
+
+.ant-card-body {
+  @apply xl:p-4 2xl:p-6  !important;
+}
+
+.ant-table-thead > tr > th {
+  @apply bg-blue-50 text-blue-600 font-bold uppercase 2xl:text-sm !important;
+}
+
+.ant-table-cell {
+  @apply py-3 2xl:py-3 px-6 border-none text-xs 2xl:text-base !important;
+}
+
+.ant-table-container table > * > tr > *:first-child {
+  @apply rounded-s-xl !important;
+}
+
+.ant-table-container table > * > tr > *:last-child {
+  @apply rounded-e-xl !important;
+}
+
+.ant-table-wrapper {
+  @apply h-full !important;
+}
+
+.ant-table-footer {
+  @apply bg-transparent text-xs !important;
+}
+
+.ant-layout-footer {
+  padding: 24px 0px !important;
+}
+
+.ant-dropdown .ant-dropdown-menu .ant-dropdown-menu-item-selected {
+  @apply bg-zinc-200 text-black !important;
+}
+
+.my-card {
+  @apply rounded-2xl h-full 2xl:rounded-3xl hover:shadow-[rgba(17,_17,_26,_0.1)_0px_0px_16px] transition duration-300 !important;
+}
+
+.my-card > .ant-card-body {
+  @apply p-0 h-full flex flex-col overflow-hidden !important;
+}
+
+.ant-layout-footer {
+  @apply px-[120px] py-16 !important;
+}
+
+.ant-pagination-item {
+  @apply rounded-xl w-9 h-9 2xl:w-10 2xl:h-10 flex items-center justify-center bg-zinc-100 hover:bg-zinc-200 me-1 !important;
+}
+
+.ant-pagination-item a {
+  @apply text-sm 2xl:text-base !important;
+}
+
+.ant-pagination-item-active {
+  @apply bg-blue-600 text-white border-none hover:bg-blue-500 !important;
+}
+
+.ant-pagination-item-active a {
+  @apply text-white font-light text-sm 2xl:text-base !important;
+}
+
+.ant-pagination-prev,
+.ant-pagination-next {
+  @apply rounded-xl w-9 h-9 2xl:w-10 2xl:h-10 text-base 2xl:text-xl flex items-center justify-center bg-zinc-100 hover:bg-zinc-200 me-1 !important;
+}
+
+.review-card > .ant-card-body {
+  @apply p-4 2xl:p-5  !important;
+}
+
+.ant-modal-content {
+  @apply rounded-2xl !important;
+}
+
+.ant-picker {
+  @apply rounded-xl h-14 px-6 bg-zinc-100 !important;
+}
+
+.profile-sider > .ant-layout-sider-children {
+  @apply w-full  flex flex-col items-center  !important;
+}
+
+.ant-segmented {
+  @apply p-1.5 flex items-center justify-center text-xs 2xl:text-sm w-fit h-fit rounded-xl !important;
+}
+
+.ant-segmented-group > .ant-segmented-item {
+  @apply py-0.5 px-1 2xl:py-1 2xl:px-2 rounded-lg !important;
+}
+
+.ant-rate .ant-rate-star {
+  @apply mr-1 !important;
+}
+
+/* Sapphire */
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 44%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.5rem;
+    --chart-1: 221.2 83.2% 53.3%;
+    --chart-2: 212 95% 68%;
+    --chart-3: 216 92% 60%;
+    --chart-4: 210 98% 78%;
+    --chart-5: 212 97% 87%;
+  }
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 221.2 83.2% 53.3%;
+    --chart-1: 221.2 83.2% 53.3%;
+    --chart-2: 212 95% 68%;
+    --chart-3: 216 92% 60%;
+    --chart-4: 210 98% 78%;
+    --chart-5: 212 97% 87%;
+  }
+}
+
+.ant-upload-list-item-name {
+  @apply truncate !important;
+}

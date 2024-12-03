@@ -1,76 +1,83 @@
-import superagent from "superagent";
+import superagent from 'superagent';
 // @ts-ignore
-import superagentIntercept from 'superagent-intercept';
 import { config } from '#/config/app';
-import { attachSuperagentLogger } from "./http_logger";
+import superagentIntercept from 'superagent-intercept';
+import { attachSuperagentLogger } from './http_logger';
 import { TokenUtil } from './token';
 
 let AuthIntercept = superagentIntercept((err: any, res: any) => {
-    if ((res && res.status === 401)) {
-        console.log('AuthIntercept 401');
-        TokenUtil.clearAccessToken();
-        TokenUtil.persistToken();
-        window.location.href = "/login";
-    }
+  if (res && res.status === 401) {
+    console.log('AuthIntercept 401');
+    TokenUtil.clearAccessToken();
+    TokenUtil.persistToken();
+    fetch('/api/logout', { method: 'POST' }).then(() => {
+      window.location.href = '/login';
+    });
+  }
 });
 
 export const http = {
-    get: (url: string, opts = {}) => {
-        let req = superagent.get(config.baseUrl + url)
-            .use(AuthIntercept)
-            .use(attachSuperagentLogger);
+  get: (url: string, opts = {}) => {
+    let req = superagent
+      .get(config.baseUrl + url)
+      .use(AuthIntercept)
+      .use(attachSuperagentLogger);
 
-        if (TokenUtil.accessToken) {
-            req = req.set('Authorization', 'Bearer ' + TokenUtil.accessToken);
-        }
+    if (TokenUtil.accessToken) {
+      req = req.set('Authorization', 'Bearer ' + TokenUtil.accessToken);
+    }
 
-        return req;
-    },
+    return req;
+  },
 
-    post: (url: string, opts = {}) => {
-        let req = superagent.post(config.baseUrl + url)
-            .use(AuthIntercept)
-            .use(attachSuperagentLogger);
+  post: (url: string, opts = {}) => {
+    let req = superagent
+      .post(config.baseUrl + url)
+      .use(AuthIntercept)
+      .use(attachSuperagentLogger);
 
-        if (TokenUtil.accessToken) {
-            req = req.set('Authorization', 'Bearer ' + TokenUtil.accessToken);
-        }
-        return req;
-    },
+    if (TokenUtil.accessToken) {
+      req = req.set('Authorization', 'Bearer ' + TokenUtil.accessToken);
+    }
+    return req;
+  },
 
-    put: (url: string, opts = {}) => {
-        let req = superagent.put(config.baseUrl + url)
-            .use(AuthIntercept)
-            .use(attachSuperagentLogger);
+  put: (url: string, opts = {}) => {
+    let req = superagent
+      .put(config.baseUrl + url)
+      .use(AuthIntercept)
+      .use(attachSuperagentLogger);
 
-        if (TokenUtil.accessToken) {
-            req = req.set('Authorization', 'Bearer ' + TokenUtil.accessToken);
-        }
+    if (TokenUtil.accessToken) {
+      req = req.set('Authorization', 'Bearer ' + TokenUtil.accessToken);
+    }
 
-        return req;
-    },
+    return req;
+  },
 
-    del: (url: string, opts = {}) => {
-        let req = superagent.del(config.baseUrl + url)
-            .use(AuthIntercept)
-            .use(attachSuperagentLogger);
+  del: (url: string, opts = {}) => {
+    let req = superagent
+      .del(config.baseUrl + url)
+      .use(AuthIntercept)
+      .use(attachSuperagentLogger);
 
-        if (TokenUtil.accessToken) {
-            req = req.set('Authorization', 'Bearer ' + TokenUtil.accessToken);
-        }
-        return req;
-    },
+    if (TokenUtil.accessToken) {
+      req = req.set('Authorization', 'Bearer ' + TokenUtil.accessToken);
+    }
+    return req;
+  },
 
-    fetcher: async (url: string) => {
-        let req = superagent.get(config.baseUrl + url)
-            .use(AuthIntercept)
-            .use(attachSuperagentLogger)
+  fetcher: async (url: string) => {
+    let req = superagent
+      .get(config.baseUrl + url)
+      .use(AuthIntercept)
+      .use(attachSuperagentLogger);
 
-        if (TokenUtil.accessToken) {
-            req = req.set('Authorization', 'Bearer ' + TokenUtil.accessToken);
-        }
+    if (TokenUtil.accessToken) {
+      req = req.set('Authorization', 'Bearer ' + TokenUtil.accessToken);
+    }
 
-        const resp = await req
-        return resp.body;
-    },
+    const resp = await req;
+    return resp.body;
+  },
 };
